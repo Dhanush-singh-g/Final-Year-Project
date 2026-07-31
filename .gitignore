@@ -1,0 +1,14 @@
+# Shell scripts
+*.sh
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest cache
+.pytest_cache/
+
+# Dataset directories
+datasets/raw/
+datasets/processed/
