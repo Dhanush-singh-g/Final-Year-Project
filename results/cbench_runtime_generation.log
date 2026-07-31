@@ -1,0 +1,598 @@
+I0716 16:57:45.159034 32354 CreateAndRunCompilerGymServiceImpl.h:121] Service "/dev/shm/compiler_gym_dhanush/s/0716T165745-010329-d9ca" listening on 44689, PID = 32354
+/home/dhanush/miniconda3/envs/neurocompiler/lib/python3.10/site-packages/networkx/readwrite/json_graph/node_link.py:287: FutureWarning: 
+The default value will be changed to `edges="edges" in NetworkX 3.6.
+
+To make this warning go away, explicitly set the edges kwarg, e.g.:
+
+  nx.node_link_graph(data, edges="links") to preserve current behavior, or
+  nx.node_link_graph(data, edges="edges") for forward compatibility.
+  warnings.warn(
+2026-07-16 16:57:45,309 | INFO | neurocompiler.generate_dataset | Benchmark 1/23: benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,109 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,109 | INFO | neurocompiler.generate_dataset | Running 1/460 benchmark=benchmark://cbench-v1/adpcm pass=-adce (1/20)
+2026-07-16 16:57:47,122 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,128 | INFO | neurocompiler.generate_dataset | Running 2/460 benchmark=benchmark://cbench-v1/adpcm pass=-aggressive-instcombine (2/20)
+2026-07-16 16:57:47,139 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,143 | INFO | neurocompiler.generate_dataset | Running 3/460 benchmark=benchmark://cbench-v1/adpcm pass=-argpromotion (3/20)
+2026-07-16 16:57:47,153 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,158 | INFO | neurocompiler.generate_dataset | Running 4/460 benchmark=benchmark://cbench-v1/adpcm pass=-constmerge (4/20)
+2026-07-16 16:57:47,169 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,174 | INFO | neurocompiler.generate_dataset | Running 5/460 benchmark=benchmark://cbench-v1/adpcm pass=-correlated-propagation (5/20)
+2026-07-16 16:57:47,185 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,190 | INFO | neurocompiler.generate_dataset | Running 6/460 benchmark=benchmark://cbench-v1/adpcm pass=-dce (6/20)
+2026-07-16 16:57:47,201 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,207 | INFO | neurocompiler.generate_dataset | Running 7/460 benchmark=benchmark://cbench-v1/adpcm pass=-deadargelim (7/20)
+2026-07-16 16:57:47,217 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,222 | INFO | neurocompiler.generate_dataset | Running 8/460 benchmark=benchmark://cbench-v1/adpcm pass=-dse (8/20)
+2026-07-16 16:57:47,233 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,238 | INFO | neurocompiler.generate_dataset | Running 9/460 benchmark=benchmark://cbench-v1/adpcm pass=-early-cse (9/20)
+2026-07-16 16:57:47,249 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,254 | INFO | neurocompiler.generate_dataset | Running 10/460 benchmark=benchmark://cbench-v1/adpcm pass=-globaldce (10/20)
+2026-07-16 16:57:47,264 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,268 | INFO | neurocompiler.generate_dataset | Running 11/460 benchmark=benchmark://cbench-v1/adpcm pass=-globalopt (11/20)
+2026-07-16 16:57:47,279 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,283 | INFO | neurocompiler.generate_dataset | Running 12/460 benchmark=benchmark://cbench-v1/adpcm pass=-gvn (12/20)
+2026-07-16 16:57:47,297 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,302 | INFO | neurocompiler.generate_dataset | Running 13/460 benchmark=benchmark://cbench-v1/adpcm pass=-indvars (13/20)
+2026-07-16 16:57:47,313 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,318 | INFO | neurocompiler.generate_dataset | Running 14/460 benchmark=benchmark://cbench-v1/adpcm pass=-inline (14/20)
+2026-07-16 16:57:47,328 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,334 | INFO | neurocompiler.generate_dataset | Running 15/460 benchmark=benchmark://cbench-v1/adpcm pass=-instcombine (15/20)
+2026-07-16 16:57:47,348 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,353 | INFO | neurocompiler.generate_dataset | Running 16/460 benchmark=benchmark://cbench-v1/adpcm pass=-jump-threading (16/20)
+2026-07-16 16:57:47,364 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,369 | INFO | neurocompiler.generate_dataset | Running 17/460 benchmark=benchmark://cbench-v1/adpcm pass=-licm (17/20)
+2026-07-16 16:57:47,383 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,388 | INFO | neurocompiler.generate_dataset | Running 18/460 benchmark=benchmark://cbench-v1/adpcm pass=-loop-unroll (18/20)
+2026-07-16 16:57:47,399 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,404 | INFO | neurocompiler.generate_dataset | Running 19/460 benchmark=benchmark://cbench-v1/adpcm pass=-loop-vectorize (19/20)
+2026-07-16 16:57:47,414 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,419 | INFO | neurocompiler.generate_dataset | Running 20/460 benchmark=benchmark://cbench-v1/adpcm pass=-sroa (20/20)
+2026-07-16 16:57:47,429 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/adpcm
+2026-07-16 16:57:47,434 | INFO | neurocompiler.generate_dataset | Benchmark 2/23: benchmark://cbench-v1/bitcount
+2026-07-16 16:57:52,509 | INFO | neurocompiler.generate_dataset | Running 21/460 benchmark=benchmark://cbench-v1/bitcount pass=-adce (1/20)
+2026-07-16 16:57:55,309 | INFO | neurocompiler.generate_dataset | Running 22/460 benchmark=benchmark://cbench-v1/bitcount pass=-aggressive-instcombine (2/20)
+2026-07-16 16:57:58,137 | INFO | neurocompiler.generate_dataset | Running 23/460 benchmark=benchmark://cbench-v1/bitcount pass=-argpromotion (3/20)
+2026-07-16 16:58:00,977 | INFO | neurocompiler.generate_dataset | Running 24/460 benchmark=benchmark://cbench-v1/bitcount pass=-constmerge (4/20)
+2026-07-16 16:58:03,828 | INFO | neurocompiler.generate_dataset | Running 25/460 benchmark=benchmark://cbench-v1/bitcount pass=-correlated-propagation (5/20)
+2026-07-16 16:58:06,706 | INFO | neurocompiler.generate_dataset | Running 26/460 benchmark=benchmark://cbench-v1/bitcount pass=-dce (6/20)
+2026-07-16 16:58:09,617 | INFO | neurocompiler.generate_dataset | Running 27/460 benchmark=benchmark://cbench-v1/bitcount pass=-deadargelim (7/20)
+2026-07-16 16:58:12,458 | INFO | neurocompiler.generate_dataset | Running 28/460 benchmark=benchmark://cbench-v1/bitcount pass=-dse (8/20)
+2026-07-16 16:58:17,200 | INFO | neurocompiler.generate_dataset | Running 29/460 benchmark=benchmark://cbench-v1/bitcount pass=-early-cse (9/20)
+2026-07-16 16:58:20,027 | INFO | neurocompiler.generate_dataset | Running 30/460 benchmark=benchmark://cbench-v1/bitcount pass=-globaldce (10/20)
+2026-07-16 16:58:22,816 | INFO | neurocompiler.generate_dataset | Running 31/460 benchmark=benchmark://cbench-v1/bitcount pass=-globalopt (11/20)
+2026-07-16 16:58:25,697 | INFO | neurocompiler.generate_dataset | Running 32/460 benchmark=benchmark://cbench-v1/bitcount pass=-gvn (12/20)
+2026-07-16 16:58:29,163 | INFO | neurocompiler.generate_dataset | Running 33/460 benchmark=benchmark://cbench-v1/bitcount pass=-indvars (13/20)
+2026-07-16 16:58:32,025 | INFO | neurocompiler.generate_dataset | Running 34/460 benchmark=benchmark://cbench-v1/bitcount pass=-inline (14/20)
+2026-07-16 16:58:34,874 | INFO | neurocompiler.generate_dataset | Running 35/460 benchmark=benchmark://cbench-v1/bitcount pass=-instcombine (15/20)
+2026-07-16 16:58:37,692 | INFO | neurocompiler.generate_dataset | Running 36/460 benchmark=benchmark://cbench-v1/bitcount pass=-jump-threading (16/20)
+2026-07-16 16:58:40,475 | INFO | neurocompiler.generate_dataset | Running 37/460 benchmark=benchmark://cbench-v1/bitcount pass=-licm (17/20)
+2026-07-16 16:58:45,070 | INFO | neurocompiler.generate_dataset | Running 38/460 benchmark=benchmark://cbench-v1/bitcount pass=-loop-unroll (18/20)
+2026-07-16 16:58:50,475 | INFO | neurocompiler.generate_dataset | Running 39/460 benchmark=benchmark://cbench-v1/bitcount pass=-loop-vectorize (19/20)
+2026-07-16 16:58:53,358 | INFO | neurocompiler.generate_dataset | Running 40/460 benchmark=benchmark://cbench-v1/bitcount pass=-sroa (20/20)
+2026-07-16 16:58:56,972 | INFO | neurocompiler.generate_dataset | Benchmark 3/23: benchmark://cbench-v1/blowfish
+2026-07-16 16:59:00,102 | INFO | neurocompiler.generate_dataset | Running 41/460 benchmark=benchmark://cbench-v1/blowfish pass=-adce (1/20)
+2026-07-16 16:59:00,691 | INFO | neurocompiler.generate_dataset | Running 42/460 benchmark=benchmark://cbench-v1/blowfish pass=-aggressive-instcombine (2/20)
+2026-07-16 16:59:01,351 | INFO | neurocompiler.generate_dataset | Running 43/460 benchmark=benchmark://cbench-v1/blowfish pass=-argpromotion (3/20)
+2026-07-16 16:59:01,985 | INFO | neurocompiler.generate_dataset | Running 44/460 benchmark=benchmark://cbench-v1/blowfish pass=-constmerge (4/20)
+2026-07-16 16:59:02,554 | INFO | neurocompiler.generate_dataset | Running 45/460 benchmark=benchmark://cbench-v1/blowfish pass=-correlated-propagation (5/20)
+2026-07-16 16:59:03,186 | INFO | neurocompiler.generate_dataset | Running 46/460 benchmark=benchmark://cbench-v1/blowfish pass=-dce (6/20)
+2026-07-16 16:59:03,788 | INFO | neurocompiler.generate_dataset | Running 47/460 benchmark=benchmark://cbench-v1/blowfish pass=-deadargelim (7/20)
+2026-07-16 16:59:04,406 | INFO | neurocompiler.generate_dataset | Running 48/460 benchmark=benchmark://cbench-v1/blowfish pass=-dse (8/20)
+2026-07-16 16:59:05,053 | INFO | neurocompiler.generate_dataset | Running 49/460 benchmark=benchmark://cbench-v1/blowfish pass=-early-cse (9/20)
+2026-07-16 16:59:05,652 | INFO | neurocompiler.generate_dataset | Running 50/460 benchmark=benchmark://cbench-v1/blowfish pass=-globaldce (10/20)
+2026-07-16 16:59:06,270 | INFO | neurocompiler.generate_dataset | Running 51/460 benchmark=benchmark://cbench-v1/blowfish pass=-globalopt (11/20)
+2026-07-16 16:59:06,858 | INFO | neurocompiler.generate_dataset | Running 52/460 benchmark=benchmark://cbench-v1/blowfish pass=-gvn (12/20)
+2026-07-16 16:59:07,473 | INFO | neurocompiler.generate_dataset | Running 53/460 benchmark=benchmark://cbench-v1/blowfish pass=-indvars (13/20)
+2026-07-16 16:59:08,073 | INFO | neurocompiler.generate_dataset | Running 54/460 benchmark=benchmark://cbench-v1/blowfish pass=-inline (14/20)
+2026-07-16 16:59:08,649 | INFO | neurocompiler.generate_dataset | Running 55/460 benchmark=benchmark://cbench-v1/blowfish pass=-instcombine (15/20)
+2026-07-16 16:59:09,244 | INFO | neurocompiler.generate_dataset | Running 56/460 benchmark=benchmark://cbench-v1/blowfish pass=-jump-threading (16/20)
+2026-07-16 16:59:09,787 | INFO | neurocompiler.generate_dataset | Running 57/460 benchmark=benchmark://cbench-v1/blowfish pass=-licm (17/20)
+2026-07-16 16:59:10,376 | INFO | neurocompiler.generate_dataset | Running 58/460 benchmark=benchmark://cbench-v1/blowfish pass=-loop-unroll (18/20)
+2026-07-16 16:59:10,942 | INFO | neurocompiler.generate_dataset | Running 59/460 benchmark=benchmark://cbench-v1/blowfish pass=-loop-vectorize (19/20)
+2026-07-16 16:59:11,511 | INFO | neurocompiler.generate_dataset | Running 60/460 benchmark=benchmark://cbench-v1/blowfish pass=-sroa (20/20)
+2026-07-16 16:59:12,061 | INFO | neurocompiler.generate_dataset | Benchmark 4/23: benchmark://cbench-v1/bzip2
+2026-07-16 16:59:21,233 | INFO | neurocompiler.generate_dataset | Running 61/460 benchmark=benchmark://cbench-v1/bzip2 pass=-adce (1/20)
+2026-07-16 16:59:26,185 | INFO | neurocompiler.generate_dataset | Running 62/460 benchmark=benchmark://cbench-v1/bzip2 pass=-aggressive-instcombine (2/20)
+2026-07-16 16:59:28,712 | INFO | neurocompiler.generate_dataset | Running 63/460 benchmark=benchmark://cbench-v1/bzip2 pass=-argpromotion (3/20)
+2026-07-16 16:59:31,335 | INFO | neurocompiler.generate_dataset | Running 64/460 benchmark=benchmark://cbench-v1/bzip2 pass=-constmerge (4/20)
+2026-07-16 16:59:33,906 | INFO | neurocompiler.generate_dataset | Running 65/460 benchmark=benchmark://cbench-v1/bzip2 pass=-correlated-propagation (5/20)
+2026-07-16 16:59:36,422 | INFO | neurocompiler.generate_dataset | Running 66/460 benchmark=benchmark://cbench-v1/bzip2 pass=-dce (6/20)
+2026-07-16 16:59:38,846 | INFO | neurocompiler.generate_dataset | Running 67/460 benchmark=benchmark://cbench-v1/bzip2 pass=-deadargelim (7/20)
+2026-07-16 16:59:41,302 | INFO | neurocompiler.generate_dataset | Running 68/460 benchmark=benchmark://cbench-v1/bzip2 pass=-dse (8/20)
+2026-07-16 16:59:43,326 | INFO | neurocompiler.generate_dataset | Running 69/460 benchmark=benchmark://cbench-v1/bzip2 pass=-early-cse (9/20)
+2026-07-16 16:59:45,712 | INFO | neurocompiler.generate_dataset | Running 70/460 benchmark=benchmark://cbench-v1/bzip2 pass=-globaldce (10/20)
+2026-07-16 16:59:48,179 | INFO | neurocompiler.generate_dataset | Running 71/460 benchmark=benchmark://cbench-v1/bzip2 pass=-globalopt (11/20)
+2026-07-16 16:59:50,637 | INFO | neurocompiler.generate_dataset | Running 72/460 benchmark=benchmark://cbench-v1/bzip2 pass=-gvn (12/20)
+2026-07-16 16:59:55,034 | INFO | neurocompiler.generate_dataset | Running 73/460 benchmark=benchmark://cbench-v1/bzip2 pass=-indvars (13/20)
+2026-07-16 17:00:00,185 | INFO | neurocompiler.generate_dataset | Running 74/460 benchmark=benchmark://cbench-v1/bzip2 pass=-inline (14/20)
+2026-07-16 17:00:02,789 | INFO | neurocompiler.generate_dataset | Running 75/460 benchmark=benchmark://cbench-v1/bzip2 pass=-instcombine (15/20)
+2026-07-16 17:00:05,383 | INFO | neurocompiler.generate_dataset | Running 76/460 benchmark=benchmark://cbench-v1/bzip2 pass=-jump-threading (16/20)
+2026-07-16 17:00:07,941 | INFO | neurocompiler.generate_dataset | Running 77/460 benchmark=benchmark://cbench-v1/bzip2 pass=-licm (17/20)
+2026-07-16 17:00:10,426 | INFO | neurocompiler.generate_dataset | Running 78/460 benchmark=benchmark://cbench-v1/bzip2 pass=-loop-unroll (18/20)
+2026-07-16 17:00:12,661 | INFO | neurocompiler.generate_dataset | Running 79/460 benchmark=benchmark://cbench-v1/bzip2 pass=-loop-vectorize (19/20)
+2026-07-16 17:00:15,175 | INFO | neurocompiler.generate_dataset | Running 80/460 benchmark=benchmark://cbench-v1/bzip2 pass=-sroa (20/20)
+2026-07-16 17:00:18,696 | INFO | neurocompiler.generate_dataset | Benchmark 5/23: benchmark://cbench-v1/crc32
+2026-07-16 17:00:21,460 | INFO | neurocompiler.generate_dataset | Running 81/460 benchmark=benchmark://cbench-v1/crc32 pass=-adce (1/20)
+2026-07-16 17:00:22,041 | INFO | neurocompiler.generate_dataset | Running 82/460 benchmark=benchmark://cbench-v1/crc32 pass=-aggressive-instcombine (2/20)
+2026-07-16 17:00:22,651 | INFO | neurocompiler.generate_dataset | Running 83/460 benchmark=benchmark://cbench-v1/crc32 pass=-argpromotion (3/20)
+2026-07-16 17:00:23,295 | INFO | neurocompiler.generate_dataset | Running 84/460 benchmark=benchmark://cbench-v1/crc32 pass=-constmerge (4/20)
+2026-07-16 17:00:23,926 | INFO | neurocompiler.generate_dataset | Running 85/460 benchmark=benchmark://cbench-v1/crc32 pass=-correlated-propagation (5/20)
+2026-07-16 17:00:24,555 | INFO | neurocompiler.generate_dataset | Running 86/460 benchmark=benchmark://cbench-v1/crc32 pass=-dce (6/20)
+2026-07-16 17:00:25,136 | INFO | neurocompiler.generate_dataset | Running 87/460 benchmark=benchmark://cbench-v1/crc32 pass=-deadargelim (7/20)
+2026-07-16 17:00:25,791 | INFO | neurocompiler.generate_dataset | Running 88/460 benchmark=benchmark://cbench-v1/crc32 pass=-dse (8/20)
+2026-07-16 17:00:26,467 | INFO | neurocompiler.generate_dataset | Running 89/460 benchmark=benchmark://cbench-v1/crc32 pass=-early-cse (9/20)
+2026-07-16 17:00:27,038 | INFO | neurocompiler.generate_dataset | Running 90/460 benchmark=benchmark://cbench-v1/crc32 pass=-globaldce (10/20)
+2026-07-16 17:00:27,621 | INFO | neurocompiler.generate_dataset | Running 91/460 benchmark=benchmark://cbench-v1/crc32 pass=-globalopt (11/20)
+2026-07-16 17:00:28,224 | INFO | neurocompiler.generate_dataset | Running 92/460 benchmark=benchmark://cbench-v1/crc32 pass=-gvn (12/20)
+2026-07-16 17:00:28,806 | INFO | neurocompiler.generate_dataset | Running 93/460 benchmark=benchmark://cbench-v1/crc32 pass=-indvars (13/20)
+2026-07-16 17:00:29,408 | INFO | neurocompiler.generate_dataset | Running 94/460 benchmark=benchmark://cbench-v1/crc32 pass=-inline (14/20)
+2026-07-16 17:00:29,919 | INFO | neurocompiler.generate_dataset | Running 95/460 benchmark=benchmark://cbench-v1/crc32 pass=-instcombine (15/20)
+2026-07-16 17:00:30,512 | INFO | neurocompiler.generate_dataset | Running 96/460 benchmark=benchmark://cbench-v1/crc32 pass=-jump-threading (16/20)
+2026-07-16 17:00:31,105 | INFO | neurocompiler.generate_dataset | Running 97/460 benchmark=benchmark://cbench-v1/crc32 pass=-licm (17/20)
+2026-07-16 17:00:31,687 | INFO | neurocompiler.generate_dataset | Running 98/460 benchmark=benchmark://cbench-v1/crc32 pass=-loop-unroll (18/20)
+2026-07-16 17:00:32,281 | INFO | neurocompiler.generate_dataset | Running 99/460 benchmark=benchmark://cbench-v1/crc32 pass=-loop-vectorize (19/20)
+2026-07-16 17:00:35,490 | INFO | neurocompiler.generate_dataset | Running 100/460 benchmark=benchmark://cbench-v1/crc32 pass=-sroa (20/20)
+2026-07-16 17:00:36,159 | INFO | neurocompiler.generate_dataset | Benchmark 6/23: benchmark://cbench-v1/dijkstra
+2026-07-16 17:00:38,980 | INFO | neurocompiler.generate_dataset | Running 101/460 benchmark=benchmark://cbench-v1/dijkstra pass=-adce (1/20)
+2026-07-16 17:00:39,567 | INFO | neurocompiler.generate_dataset | Running 102/460 benchmark=benchmark://cbench-v1/dijkstra pass=-aggressive-instcombine (2/20)
+2026-07-16 17:00:40,175 | INFO | neurocompiler.generate_dataset | Running 103/460 benchmark=benchmark://cbench-v1/dijkstra pass=-argpromotion (3/20)
+2026-07-16 17:00:40,792 | INFO | neurocompiler.generate_dataset | Running 104/460 benchmark=benchmark://cbench-v1/dijkstra pass=-constmerge (4/20)
+2026-07-16 17:00:41,382 | INFO | neurocompiler.generate_dataset | Running 105/460 benchmark=benchmark://cbench-v1/dijkstra pass=-correlated-propagation (5/20)
+2026-07-16 17:00:41,981 | INFO | neurocompiler.generate_dataset | Running 106/460 benchmark=benchmark://cbench-v1/dijkstra pass=-dce (6/20)
+2026-07-16 17:00:42,548 | INFO | neurocompiler.generate_dataset | Running 107/460 benchmark=benchmark://cbench-v1/dijkstra pass=-deadargelim (7/20)
+2026-07-16 17:00:43,141 | INFO | neurocompiler.generate_dataset | Running 108/460 benchmark=benchmark://cbench-v1/dijkstra pass=-dse (8/20)
+2026-07-16 17:00:43,754 | INFO | neurocompiler.generate_dataset | Running 109/460 benchmark=benchmark://cbench-v1/dijkstra pass=-early-cse (9/20)
+2026-07-16 17:00:44,327 | INFO | neurocompiler.generate_dataset | Running 110/460 benchmark=benchmark://cbench-v1/dijkstra pass=-globaldce (10/20)
+2026-07-16 17:00:44,927 | INFO | neurocompiler.generate_dataset | Running 111/460 benchmark=benchmark://cbench-v1/dijkstra pass=-globalopt (11/20)
+2026-07-16 17:00:45,557 | INFO | neurocompiler.generate_dataset | Running 112/460 benchmark=benchmark://cbench-v1/dijkstra pass=-gvn (12/20)
+2026-07-16 17:00:45,909 | INFO | neurocompiler.generate_dataset | Running 113/460 benchmark=benchmark://cbench-v1/dijkstra pass=-indvars (13/20)
+2026-07-16 17:00:46,198 | INFO | neurocompiler.generate_dataset | Running 114/460 benchmark=benchmark://cbench-v1/dijkstra pass=-inline (14/20)
+2026-07-16 17:00:46,773 | INFO | neurocompiler.generate_dataset | Running 115/460 benchmark=benchmark://cbench-v1/dijkstra pass=-instcombine (15/20)
+2026-07-16 17:00:47,331 | INFO | neurocompiler.generate_dataset | Running 116/460 benchmark=benchmark://cbench-v1/dijkstra pass=-jump-threading (16/20)
+2026-07-16 17:00:47,916 | INFO | neurocompiler.generate_dataset | Running 117/460 benchmark=benchmark://cbench-v1/dijkstra pass=-licm (17/20)
+2026-07-16 17:00:48,493 | INFO | neurocompiler.generate_dataset | Running 118/460 benchmark=benchmark://cbench-v1/dijkstra pass=-loop-unroll (18/20)
+2026-07-16 17:00:49,064 | INFO | neurocompiler.generate_dataset | Running 119/460 benchmark=benchmark://cbench-v1/dijkstra pass=-loop-vectorize (19/20)
+2026-07-16 17:00:49,650 | INFO | neurocompiler.generate_dataset | Running 120/460 benchmark=benchmark://cbench-v1/dijkstra pass=-sroa (20/20)
+2026-07-16 17:00:50,240 | INFO | neurocompiler.generate_dataset | Benchmark 7/23: benchmark://cbench-v1/ghostscript
+2026-07-16 17:01:58,708 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:01:58,709 | INFO | neurocompiler.generate_dataset | Running 121/460 benchmark=benchmark://cbench-v1/ghostscript pass=-adce (1/20)
+2026-07-16 17:02:00,387 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:00,395 | INFO | neurocompiler.generate_dataset | Running 122/460 benchmark=benchmark://cbench-v1/ghostscript pass=-aggressive-instcombine (2/20)
+2026-07-16 17:02:01,840 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:01,845 | INFO | neurocompiler.generate_dataset | Running 123/460 benchmark=benchmark://cbench-v1/ghostscript pass=-argpromotion (3/20)
+2026-07-16 17:02:03,098 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:03,107 | INFO | neurocompiler.generate_dataset | Running 124/460 benchmark=benchmark://cbench-v1/ghostscript pass=-constmerge (4/20)
+2026-07-16 17:02:04,489 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:04,497 | INFO | neurocompiler.generate_dataset | Running 125/460 benchmark=benchmark://cbench-v1/ghostscript pass=-correlated-propagation (5/20)
+2026-07-16 17:02:06,030 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:06,038 | INFO | neurocompiler.generate_dataset | Running 126/460 benchmark=benchmark://cbench-v1/ghostscript pass=-dce (6/20)
+2026-07-16 17:02:07,437 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:07,442 | INFO | neurocompiler.generate_dataset | Running 127/460 benchmark=benchmark://cbench-v1/ghostscript pass=-deadargelim (7/20)
+2026-07-16 17:02:08,941 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:08,949 | INFO | neurocompiler.generate_dataset | Running 128/460 benchmark=benchmark://cbench-v1/ghostscript pass=-dse (8/20)
+2026-07-16 17:02:10,929 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:10,948 | INFO | neurocompiler.generate_dataset | Running 129/460 benchmark=benchmark://cbench-v1/ghostscript pass=-early-cse (9/20)
+2026-07-16 17:02:12,592 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:12,599 | INFO | neurocompiler.generate_dataset | Running 130/460 benchmark=benchmark://cbench-v1/ghostscript pass=-globaldce (10/20)
+2026-07-16 17:02:13,849 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:13,855 | INFO | neurocompiler.generate_dataset | Running 131/460 benchmark=benchmark://cbench-v1/ghostscript pass=-globalopt (11/20)
+2026-07-16 17:02:15,421 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:15,429 | INFO | neurocompiler.generate_dataset | Running 132/460 benchmark=benchmark://cbench-v1/ghostscript pass=-gvn (12/20)
+2026-07-16 17:02:22,179 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:22,185 | INFO | neurocompiler.generate_dataset | Running 133/460 benchmark=benchmark://cbench-v1/ghostscript pass=-indvars (13/20)
+2026-07-16 17:02:23,470 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:23,476 | INFO | neurocompiler.generate_dataset | Running 134/460 benchmark=benchmark://cbench-v1/ghostscript pass=-inline (14/20)
+2026-07-16 17:02:25,512 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:25,520 | INFO | neurocompiler.generate_dataset | Running 135/460 benchmark=benchmark://cbench-v1/ghostscript pass=-instcombine (15/20)
+2026-07-16 17:02:28,421 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:28,430 | INFO | neurocompiler.generate_dataset | Running 136/460 benchmark=benchmark://cbench-v1/ghostscript pass=-jump-threading (16/20)
+2026-07-16 17:02:30,104 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:30,110 | INFO | neurocompiler.generate_dataset | Running 137/460 benchmark=benchmark://cbench-v1/ghostscript pass=-licm (17/20)
+2026-07-16 17:02:32,717 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:32,726 | INFO | neurocompiler.generate_dataset | Running 138/460 benchmark=benchmark://cbench-v1/ghostscript pass=-loop-unroll (18/20)
+2026-07-16 17:02:34,289 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:34,294 | INFO | neurocompiler.generate_dataset | Running 139/460 benchmark=benchmark://cbench-v1/ghostscript pass=-loop-vectorize (19/20)
+2026-07-16 17:02:35,889 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:35,897 | INFO | neurocompiler.generate_dataset | Running 140/460 benchmark=benchmark://cbench-v1/ghostscript pass=-sroa (20/20)
+2026-07-16 17:02:37,626 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ghostscript
+2026-07-16 17:02:37,634 | INFO | neurocompiler.generate_dataset | Benchmark 8/23: benchmark://cbench-v1/gsm
+2026-07-16 17:02:43,176 | INFO | neurocompiler.generate_dataset | Running 141/460 benchmark=benchmark://cbench-v1/gsm pass=-adce (1/20)
+2026-07-16 17:02:44,726 | INFO | neurocompiler.generate_dataset | Running 142/460 benchmark=benchmark://cbench-v1/gsm pass=-aggressive-instcombine (2/20)
+2026-07-16 17:02:46,252 | INFO | neurocompiler.generate_dataset | Running 143/460 benchmark=benchmark://cbench-v1/gsm pass=-argpromotion (3/20)
+2026-07-16 17:02:47,802 | INFO | neurocompiler.generate_dataset | Running 144/460 benchmark=benchmark://cbench-v1/gsm pass=-constmerge (4/20)
+2026-07-16 17:02:49,281 | INFO | neurocompiler.generate_dataset | Running 145/460 benchmark=benchmark://cbench-v1/gsm pass=-correlated-propagation (5/20)
+2026-07-16 17:02:50,828 | INFO | neurocompiler.generate_dataset | Running 146/460 benchmark=benchmark://cbench-v1/gsm pass=-dce (6/20)
+2026-07-16 17:02:54,919 | INFO | neurocompiler.generate_dataset | Running 147/460 benchmark=benchmark://cbench-v1/gsm pass=-deadargelim (7/20)
+2026-07-16 17:02:56,480 | INFO | neurocompiler.generate_dataset | Running 148/460 benchmark=benchmark://cbench-v1/gsm pass=-dse (8/20)
+2026-07-16 17:02:58,070 | INFO | neurocompiler.generate_dataset | Running 149/460 benchmark=benchmark://cbench-v1/gsm pass=-early-cse (9/20)
+2026-07-16 17:02:59,464 | INFO | neurocompiler.generate_dataset | Running 150/460 benchmark=benchmark://cbench-v1/gsm pass=-globaldce (10/20)
+2026-07-16 17:03:00,564 | INFO | neurocompiler.generate_dataset | Running 151/460 benchmark=benchmark://cbench-v1/gsm pass=-globalopt (11/20)
+2026-07-16 17:03:02,163 | INFO | neurocompiler.generate_dataset | Running 152/460 benchmark=benchmark://cbench-v1/gsm pass=-gvn (12/20)
+2026-07-16 17:03:03,658 | INFO | neurocompiler.generate_dataset | Running 153/460 benchmark=benchmark://cbench-v1/gsm pass=-indvars (13/20)
+2026-07-16 17:03:05,259 | INFO | neurocompiler.generate_dataset | Running 154/460 benchmark=benchmark://cbench-v1/gsm pass=-inline (14/20)
+2026-07-16 17:03:06,799 | INFO | neurocompiler.generate_dataset | Running 155/460 benchmark=benchmark://cbench-v1/gsm pass=-instcombine (15/20)
+2026-07-16 17:03:08,335 | INFO | neurocompiler.generate_dataset | Running 156/460 benchmark=benchmark://cbench-v1/gsm pass=-jump-threading (16/20)
+2026-07-16 17:03:09,868 | INFO | neurocompiler.generate_dataset | Running 157/460 benchmark=benchmark://cbench-v1/gsm pass=-licm (17/20)
+2026-07-16 17:03:11,637 | INFO | neurocompiler.generate_dataset | Running 158/460 benchmark=benchmark://cbench-v1/gsm pass=-loop-unroll (18/20)
+2026-07-16 17:03:13,208 | INFO | neurocompiler.generate_dataset | Running 159/460 benchmark=benchmark://cbench-v1/gsm pass=-loop-vectorize (19/20)
+2026-07-16 17:03:14,755 | INFO | neurocompiler.generate_dataset | Running 160/460 benchmark=benchmark://cbench-v1/gsm pass=-sroa (20/20)
+2026-07-16 17:03:16,162 | INFO | neurocompiler.generate_dataset | Benchmark 9/23: benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,053 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,053 | INFO | neurocompiler.generate_dataset | Running 161/460 benchmark=benchmark://cbench-v1/ispell pass=-adce (1/20)
+2026-07-16 17:03:21,139 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,148 | INFO | neurocompiler.generate_dataset | Running 162/460 benchmark=benchmark://cbench-v1/ispell pass=-aggressive-instcombine (2/20)
+2026-07-16 17:03:21,225 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,230 | INFO | neurocompiler.generate_dataset | Running 163/460 benchmark=benchmark://cbench-v1/ispell pass=-argpromotion (3/20)
+2026-07-16 17:03:21,297 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,303 | INFO | neurocompiler.generate_dataset | Running 164/460 benchmark=benchmark://cbench-v1/ispell pass=-constmerge (4/20)
+2026-07-16 17:03:21,376 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,382 | INFO | neurocompiler.generate_dataset | Running 165/460 benchmark=benchmark://cbench-v1/ispell pass=-correlated-propagation (5/20)
+2026-07-16 17:03:21,463 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,468 | INFO | neurocompiler.generate_dataset | Running 166/460 benchmark=benchmark://cbench-v1/ispell pass=-dce (6/20)
+2026-07-16 17:03:21,547 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,552 | INFO | neurocompiler.generate_dataset | Running 167/460 benchmark=benchmark://cbench-v1/ispell pass=-deadargelim (7/20)
+2026-07-16 17:03:21,628 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,634 | INFO | neurocompiler.generate_dataset | Running 168/460 benchmark=benchmark://cbench-v1/ispell pass=-dse (8/20)
+2026-07-16 17:03:21,719 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,725 | INFO | neurocompiler.generate_dataset | Running 169/460 benchmark=benchmark://cbench-v1/ispell pass=-early-cse (9/20)
+2026-07-16 17:03:21,815 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,821 | INFO | neurocompiler.generate_dataset | Running 170/460 benchmark=benchmark://cbench-v1/ispell pass=-globaldce (10/20)
+2026-07-16 17:03:21,891 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,896 | INFO | neurocompiler.generate_dataset | Running 171/460 benchmark=benchmark://cbench-v1/ispell pass=-globalopt (11/20)
+2026-07-16 17:03:21,976 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:21,981 | INFO | neurocompiler.generate_dataset | Running 172/460 benchmark=benchmark://cbench-v1/ispell pass=-gvn (12/20)
+2026-07-16 17:03:22,153 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,159 | INFO | neurocompiler.generate_dataset | Running 173/460 benchmark=benchmark://cbench-v1/ispell pass=-indvars (13/20)
+2026-07-16 17:03:22,245 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,250 | INFO | neurocompiler.generate_dataset | Running 174/460 benchmark=benchmark://cbench-v1/ispell pass=-inline (14/20)
+2026-07-16 17:03:22,357 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,362 | INFO | neurocompiler.generate_dataset | Running 175/460 benchmark=benchmark://cbench-v1/ispell pass=-instcombine (15/20)
+2026-07-16 17:03:22,490 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,496 | INFO | neurocompiler.generate_dataset | Running 176/460 benchmark=benchmark://cbench-v1/ispell pass=-jump-threading (16/20)
+2026-07-16 17:03:22,588 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,593 | INFO | neurocompiler.generate_dataset | Running 177/460 benchmark=benchmark://cbench-v1/ispell pass=-licm (17/20)
+2026-07-16 17:03:22,724 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,730 | INFO | neurocompiler.generate_dataset | Running 178/460 benchmark=benchmark://cbench-v1/ispell pass=-loop-unroll (18/20)
+2026-07-16 17:03:22,821 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,827 | INFO | neurocompiler.generate_dataset | Running 179/460 benchmark=benchmark://cbench-v1/ispell pass=-loop-vectorize (19/20)
+2026-07-16 17:03:22,921 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:22,927 | INFO | neurocompiler.generate_dataset | Running 180/460 benchmark=benchmark://cbench-v1/ispell pass=-sroa (20/20)
+2026-07-16 17:03:23,018 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/ispell
+2026-07-16 17:03:23,024 | INFO | neurocompiler.generate_dataset | Benchmark 10/23: benchmark://cbench-v1/jpeg-c
+2026-07-16 17:03:38,122 | INFO | neurocompiler.generate_dataset | Running 181/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-adce (1/20)
+2026-07-16 17:03:39,649 | INFO | neurocompiler.generate_dataset | Running 182/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-aggressive-instcombine (2/20)
+2026-07-16 17:03:41,190 | INFO | neurocompiler.generate_dataset | Running 183/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-argpromotion (3/20)
+2026-07-16 17:03:42,659 | INFO | neurocompiler.generate_dataset | Running 184/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-constmerge (4/20)
+2026-07-16 17:03:44,231 | INFO | neurocompiler.generate_dataset | Running 185/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-correlated-propagation (5/20)
+2026-07-16 17:03:45,774 | INFO | neurocompiler.generate_dataset | Running 186/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-dce (6/20)
+2026-07-16 17:03:47,277 | INFO | neurocompiler.generate_dataset | Running 187/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-deadargelim (7/20)
+2026-07-16 17:03:48,719 | INFO | neurocompiler.generate_dataset | Running 188/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-dse (8/20)
+2026-07-16 17:03:50,397 | INFO | neurocompiler.generate_dataset | Running 189/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-early-cse (9/20)
+2026-07-16 17:03:51,945 | INFO | neurocompiler.generate_dataset | Running 190/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-globaldce (10/20)
+2026-07-16 17:03:53,484 | INFO | neurocompiler.generate_dataset | Running 191/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-globalopt (11/20)
+2026-07-16 17:03:55,125 | INFO | neurocompiler.generate_dataset | Running 192/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-gvn (12/20)
+2026-07-16 17:03:57,252 | INFO | neurocompiler.generate_dataset | Running 193/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-indvars (13/20)
+2026-07-16 17:03:58,977 | INFO | neurocompiler.generate_dataset | Running 194/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-inline (14/20)
+2026-07-16 17:04:00,643 | INFO | neurocompiler.generate_dataset | Running 195/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-instcombine (15/20)
+2026-07-16 17:04:05,043 | INFO | neurocompiler.generate_dataset | Running 196/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-jump-threading (16/20)
+2026-07-16 17:04:06,632 | INFO | neurocompiler.generate_dataset | Running 197/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-licm (17/20)
+2026-07-16 17:04:08,595 | INFO | neurocompiler.generate_dataset | Running 198/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-loop-unroll (18/20)
+2026-07-16 17:04:10,168 | INFO | neurocompiler.generate_dataset | Running 199/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-loop-vectorize (19/20)
+2026-07-16 17:04:11,838 | INFO | neurocompiler.generate_dataset | Running 200/460 benchmark=benchmark://cbench-v1/jpeg-c pass=-sroa (20/20)
+2026-07-16 17:04:13,410 | INFO | neurocompiler.generate_dataset | Benchmark 11/23: benchmark://cbench-v1/jpeg-d
+2026-07-16 17:04:25,962 | INFO | neurocompiler.generate_dataset | Running 201/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-adce (1/20)
+2026-07-16 17:04:27,450 | INFO | neurocompiler.generate_dataset | Running 202/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-aggressive-instcombine (2/20)
+2026-07-16 17:04:28,953 | INFO | neurocompiler.generate_dataset | Running 203/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-argpromotion (3/20)
+2026-07-16 17:04:30,423 | INFO | neurocompiler.generate_dataset | Running 204/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-constmerge (4/20)
+2026-07-16 17:04:31,959 | INFO | neurocompiler.generate_dataset | Running 205/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-correlated-propagation (5/20)
+2026-07-16 17:04:33,525 | INFO | neurocompiler.generate_dataset | Running 206/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-dce (6/20)
+2026-07-16 17:04:35,044 | INFO | neurocompiler.generate_dataset | Running 207/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-deadargelim (7/20)
+2026-07-16 17:04:36,569 | INFO | neurocompiler.generate_dataset | Running 208/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-dse (8/20)
+2026-07-16 17:04:40,785 | INFO | neurocompiler.generate_dataset | Running 209/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-early-cse (9/20)
+2026-07-16 17:04:42,358 | INFO | neurocompiler.generate_dataset | Running 210/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-globaldce (10/20)
+2026-07-16 17:04:43,858 | INFO | neurocompiler.generate_dataset | Running 211/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-globalopt (11/20)
+2026-07-16 17:04:45,439 | INFO | neurocompiler.generate_dataset | Running 212/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-gvn (12/20)
+2026-07-16 17:04:47,333 | INFO | neurocompiler.generate_dataset | Running 213/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-indvars (13/20)
+2026-07-16 17:04:48,889 | INFO | neurocompiler.generate_dataset | Running 214/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-inline (14/20)
+2026-07-16 17:04:50,533 | INFO | neurocompiler.generate_dataset | Running 215/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-instcombine (15/20)
+2026-07-16 17:04:52,278 | INFO | neurocompiler.generate_dataset | Running 216/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-jump-threading (16/20)
+2026-07-16 17:04:53,785 | INFO | neurocompiler.generate_dataset | Running 217/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-licm (17/20)
+2026-07-16 17:04:55,738 | INFO | neurocompiler.generate_dataset | Running 218/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-loop-unroll (18/20)
+2026-07-16 17:04:57,491 | INFO | neurocompiler.generate_dataset | Running 219/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-loop-vectorize (19/20)
+2026-07-16 17:04:59,136 | INFO | neurocompiler.generate_dataset | Running 220/460 benchmark=benchmark://cbench-v1/jpeg-d pass=-sroa (20/20)
+2026-07-16 17:05:00,854 | INFO | neurocompiler.generate_dataset | Benchmark 12/23: benchmark://cbench-v1/lame
+2026-07-16 17:05:14,060 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:14,061 | INFO | neurocompiler.generate_dataset | Running 221/460 benchmark=benchmark://cbench-v1/lame pass=-adce (1/20)
+2026-07-16 17:05:14,308 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:14,322 | INFO | neurocompiler.generate_dataset | Running 222/460 benchmark=benchmark://cbench-v1/lame pass=-aggressive-instcombine (2/20)
+2026-07-16 17:05:14,522 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:14,526 | INFO | neurocompiler.generate_dataset | Running 223/460 benchmark=benchmark://cbench-v1/lame pass=-argpromotion (3/20)
+2026-07-16 17:05:14,680 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:14,685 | INFO | neurocompiler.generate_dataset | Running 224/460 benchmark=benchmark://cbench-v1/lame pass=-constmerge (4/20)
+2026-07-16 17:05:14,867 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:14,874 | INFO | neurocompiler.generate_dataset | Running 225/460 benchmark=benchmark://cbench-v1/lame pass=-correlated-propagation (5/20)
+2026-07-16 17:05:15,088 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:15,093 | INFO | neurocompiler.generate_dataset | Running 226/460 benchmark=benchmark://cbench-v1/lame pass=-dce (6/20)
+2026-07-16 17:05:15,278 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:15,283 | INFO | neurocompiler.generate_dataset | Running 227/460 benchmark=benchmark://cbench-v1/lame pass=-deadargelim (7/20)
+2026-07-16 17:05:15,464 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:15,469 | INFO | neurocompiler.generate_dataset | Running 228/460 benchmark=benchmark://cbench-v1/lame pass=-dse (8/20)
+2026-07-16 17:05:15,717 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:15,722 | INFO | neurocompiler.generate_dataset | Running 229/460 benchmark=benchmark://cbench-v1/lame pass=-early-cse (9/20)
+2026-07-16 17:05:15,918 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:15,933 | INFO | neurocompiler.generate_dataset | Running 230/460 benchmark=benchmark://cbench-v1/lame pass=-globaldce (10/20)
+2026-07-16 17:05:16,088 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:16,101 | INFO | neurocompiler.generate_dataset | Running 231/460 benchmark=benchmark://cbench-v1/lame pass=-globalopt (11/20)
+2026-07-16 17:05:16,299 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:16,312 | INFO | neurocompiler.generate_dataset | Running 232/460 benchmark=benchmark://cbench-v1/lame pass=-gvn (12/20)
+2026-07-16 17:05:16,849 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:16,854 | INFO | neurocompiler.generate_dataset | Running 233/460 benchmark=benchmark://cbench-v1/lame pass=-indvars (13/20)
+2026-07-16 17:05:17,093 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:17,098 | INFO | neurocompiler.generate_dataset | Running 234/460 benchmark=benchmark://cbench-v1/lame pass=-inline (14/20)
+2026-07-16 17:05:17,358 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:17,364 | INFO | neurocompiler.generate_dataset | Running 235/460 benchmark=benchmark://cbench-v1/lame pass=-instcombine (15/20)
+2026-07-16 17:05:17,705 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:17,711 | INFO | neurocompiler.generate_dataset | Running 236/460 benchmark=benchmark://cbench-v1/lame pass=-jump-threading (16/20)
+2026-07-16 17:05:17,917 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:17,921 | INFO | neurocompiler.generate_dataset | Running 237/460 benchmark=benchmark://cbench-v1/lame pass=-licm (17/20)
+2026-07-16 17:05:18,302 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:18,307 | INFO | neurocompiler.generate_dataset | Running 238/460 benchmark=benchmark://cbench-v1/lame pass=-loop-unroll (18/20)
+2026-07-16 17:05:18,513 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:18,518 | INFO | neurocompiler.generate_dataset | Running 239/460 benchmark=benchmark://cbench-v1/lame pass=-loop-vectorize (19/20)
+2026-07-16 17:05:18,718 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:18,724 | INFO | neurocompiler.generate_dataset | Running 240/460 benchmark=benchmark://cbench-v1/lame pass=-sroa (20/20)
+2026-07-16 17:05:18,949 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/lame
+2026-07-16 17:05:18,954 | INFO | neurocompiler.generate_dataset | Benchmark 13/23: benchmark://cbench-v1/patricia
+2026-07-16 17:05:22,275 | INFO | neurocompiler.generate_dataset | Running 241/460 benchmark=benchmark://cbench-v1/patricia pass=-adce (1/20)
+2026-07-16 17:05:23,130 | INFO | neurocompiler.generate_dataset | Running 242/460 benchmark=benchmark://cbench-v1/patricia pass=-aggressive-instcombine (2/20)
+2026-07-16 17:05:23,984 | INFO | neurocompiler.generate_dataset | Running 243/460 benchmark=benchmark://cbench-v1/patricia pass=-argpromotion (3/20)
+2026-07-16 17:05:24,855 | INFO | neurocompiler.generate_dataset | Running 244/460 benchmark=benchmark://cbench-v1/patricia pass=-constmerge (4/20)
+2026-07-16 17:05:25,719 | INFO | neurocompiler.generate_dataset | Running 245/460 benchmark=benchmark://cbench-v1/patricia pass=-correlated-propagation (5/20)
+2026-07-16 17:05:26,614 | INFO | neurocompiler.generate_dataset | Running 246/460 benchmark=benchmark://cbench-v1/patricia pass=-dce (6/20)
+2026-07-16 17:05:27,504 | INFO | neurocompiler.generate_dataset | Running 247/460 benchmark=benchmark://cbench-v1/patricia pass=-deadargelim (7/20)
+2026-07-16 17:05:28,493 | INFO | neurocompiler.generate_dataset | Running 248/460 benchmark=benchmark://cbench-v1/patricia pass=-dse (8/20)
+2026-07-16 17:05:29,394 | INFO | neurocompiler.generate_dataset | Running 249/460 benchmark=benchmark://cbench-v1/patricia pass=-early-cse (9/20)
+2026-07-16 17:05:30,271 | INFO | neurocompiler.generate_dataset | Running 250/460 benchmark=benchmark://cbench-v1/patricia pass=-globaldce (10/20)
+2026-07-16 17:05:31,274 | INFO | neurocompiler.generate_dataset | Running 251/460 benchmark=benchmark://cbench-v1/patricia pass=-globalopt (11/20)
+2026-07-16 17:05:32,208 | INFO | neurocompiler.generate_dataset | Running 252/460 benchmark=benchmark://cbench-v1/patricia pass=-gvn (12/20)
+2026-07-16 17:05:33,063 | INFO | neurocompiler.generate_dataset | Running 253/460 benchmark=benchmark://cbench-v1/patricia pass=-indvars (13/20)
+2026-07-16 17:05:33,923 | INFO | neurocompiler.generate_dataset | Running 254/460 benchmark=benchmark://cbench-v1/patricia pass=-inline (14/20)
+2026-07-16 17:05:34,812 | INFO | neurocompiler.generate_dataset | Running 255/460 benchmark=benchmark://cbench-v1/patricia pass=-instcombine (15/20)
+2026-07-16 17:05:35,673 | INFO | neurocompiler.generate_dataset | Running 256/460 benchmark=benchmark://cbench-v1/patricia pass=-jump-threading (16/20)
+2026-07-16 17:05:36,538 | INFO | neurocompiler.generate_dataset | Running 257/460 benchmark=benchmark://cbench-v1/patricia pass=-licm (17/20)
+2026-07-16 17:05:37,399 | INFO | neurocompiler.generate_dataset | Running 258/460 benchmark=benchmark://cbench-v1/patricia pass=-loop-unroll (18/20)
+2026-07-16 17:05:38,264 | INFO | neurocompiler.generate_dataset | Running 259/460 benchmark=benchmark://cbench-v1/patricia pass=-loop-vectorize (19/20)
+2026-07-16 17:05:39,024 | INFO | neurocompiler.generate_dataset | Running 260/460 benchmark=benchmark://cbench-v1/patricia pass=-sroa (20/20)
+2026-07-16 17:05:39,791 | INFO | neurocompiler.generate_dataset | Benchmark 14/23: benchmark://cbench-v1/qsort
+2026-07-16 17:05:43,896 | INFO | neurocompiler.generate_dataset | Running 261/460 benchmark=benchmark://cbench-v1/qsort pass=-adce (1/20)
+2026-07-16 17:05:45,401 | INFO | neurocompiler.generate_dataset | Running 262/460 benchmark=benchmark://cbench-v1/qsort pass=-aggressive-instcombine (2/20)
+2026-07-16 17:05:50,014 | INFO | neurocompiler.generate_dataset | Running 263/460 benchmark=benchmark://cbench-v1/qsort pass=-argpromotion (3/20)
+2026-07-16 17:05:51,693 | INFO | neurocompiler.generate_dataset | Running 264/460 benchmark=benchmark://cbench-v1/qsort pass=-constmerge (4/20)
+2026-07-16 17:05:53,216 | INFO | neurocompiler.generate_dataset | Running 265/460 benchmark=benchmark://cbench-v1/qsort pass=-correlated-propagation (5/20)
+2026-07-16 17:05:54,771 | INFO | neurocompiler.generate_dataset | Running 266/460 benchmark=benchmark://cbench-v1/qsort pass=-dce (6/20)
+2026-07-16 17:05:56,323 | INFO | neurocompiler.generate_dataset | Running 267/460 benchmark=benchmark://cbench-v1/qsort pass=-deadargelim (7/20)
+2026-07-16 17:05:57,928 | INFO | neurocompiler.generate_dataset | Running 268/460 benchmark=benchmark://cbench-v1/qsort pass=-dse (8/20)
+2026-07-16 17:05:59,351 | INFO | neurocompiler.generate_dataset | Running 269/460 benchmark=benchmark://cbench-v1/qsort pass=-early-cse (9/20)
+2026-07-16 17:06:00,907 | INFO | neurocompiler.generate_dataset | Running 270/460 benchmark=benchmark://cbench-v1/qsort pass=-globaldce (10/20)
+2026-07-16 17:06:02,295 | INFO | neurocompiler.generate_dataset | Running 271/460 benchmark=benchmark://cbench-v1/qsort pass=-globalopt (11/20)
+2026-07-16 17:06:03,593 | INFO | neurocompiler.generate_dataset | Running 272/460 benchmark=benchmark://cbench-v1/qsort pass=-gvn (12/20)
+2026-07-16 17:06:05,116 | INFO | neurocompiler.generate_dataset | Running 273/460 benchmark=benchmark://cbench-v1/qsort pass=-indvars (13/20)
+2026-07-16 17:06:06,496 | INFO | neurocompiler.generate_dataset | Running 274/460 benchmark=benchmark://cbench-v1/qsort pass=-inline (14/20)
+2026-07-16 17:06:07,918 | INFO | neurocompiler.generate_dataset | Running 275/460 benchmark=benchmark://cbench-v1/qsort pass=-instcombine (15/20)
+2026-07-16 17:06:09,218 | INFO | neurocompiler.generate_dataset | Running 276/460 benchmark=benchmark://cbench-v1/qsort pass=-jump-threading (16/20)
+2026-07-16 17:06:10,713 | INFO | neurocompiler.generate_dataset | Running 277/460 benchmark=benchmark://cbench-v1/qsort pass=-licm (17/20)
+2026-07-16 17:06:12,242 | INFO | neurocompiler.generate_dataset | Running 278/460 benchmark=benchmark://cbench-v1/qsort pass=-loop-unroll (18/20)
+2026-07-16 17:06:13,615 | INFO | neurocompiler.generate_dataset | Running 279/460 benchmark=benchmark://cbench-v1/qsort pass=-loop-vectorize (19/20)
+2026-07-16 17:06:14,987 | INFO | neurocompiler.generate_dataset | Running 280/460 benchmark=benchmark://cbench-v1/qsort pass=-sroa (20/20)
+2026-07-16 17:06:16,358 | INFO | neurocompiler.generate_dataset | Benchmark 15/23: benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,565 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,565 | INFO | neurocompiler.generate_dataset | Running 281/460 benchmark=benchmark://cbench-v1/rijndael pass=-adce (1/20)
+2026-07-16 17:06:18,601 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,615 | INFO | neurocompiler.generate_dataset | Running 282/460 benchmark=benchmark://cbench-v1/rijndael pass=-aggressive-instcombine (2/20)
+2026-07-16 17:06:18,648 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,653 | INFO | neurocompiler.generate_dataset | Running 283/460 benchmark=benchmark://cbench-v1/rijndael pass=-argpromotion (3/20)
+2026-07-16 17:06:18,684 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,704 | INFO | neurocompiler.generate_dataset | Running 284/460 benchmark=benchmark://cbench-v1/rijndael pass=-constmerge (4/20)
+2026-07-16 17:06:18,732 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,745 | INFO | neurocompiler.generate_dataset | Running 285/460 benchmark=benchmark://cbench-v1/rijndael pass=-correlated-propagation (5/20)
+2026-07-16 17:06:18,778 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,795 | INFO | neurocompiler.generate_dataset | Running 286/460 benchmark=benchmark://cbench-v1/rijndael pass=-dce (6/20)
+2026-07-16 17:06:18,826 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,844 | INFO | neurocompiler.generate_dataset | Running 287/460 benchmark=benchmark://cbench-v1/rijndael pass=-deadargelim (7/20)
+2026-07-16 17:06:18,872 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,884 | INFO | neurocompiler.generate_dataset | Running 288/460 benchmark=benchmark://cbench-v1/rijndael pass=-dse (8/20)
+2026-07-16 17:06:18,918 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,934 | INFO | neurocompiler.generate_dataset | Running 289/460 benchmark=benchmark://cbench-v1/rijndael pass=-early-cse (9/20)
+2026-07-16 17:06:18,968 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:18,983 | INFO | neurocompiler.generate_dataset | Running 290/460 benchmark=benchmark://cbench-v1/rijndael pass=-globaldce (10/20)
+2026-07-16 17:06:19,014 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,033 | INFO | neurocompiler.generate_dataset | Running 291/460 benchmark=benchmark://cbench-v1/rijndael pass=-globalopt (11/20)
+2026-07-16 17:06:19,064 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,082 | INFO | neurocompiler.generate_dataset | Running 292/460 benchmark=benchmark://cbench-v1/rijndael pass=-gvn (12/20)
+2026-07-16 17:06:19,184 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,203 | INFO | neurocompiler.generate_dataset | Running 293/460 benchmark=benchmark://cbench-v1/rijndael pass=-indvars (13/20)
+2026-07-16 17:06:19,236 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,253 | INFO | neurocompiler.generate_dataset | Running 294/460 benchmark=benchmark://cbench-v1/rijndael pass=-inline (14/20)
+2026-07-16 17:06:19,288 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,303 | INFO | neurocompiler.generate_dataset | Running 295/460 benchmark=benchmark://cbench-v1/rijndael pass=-instcombine (15/20)
+2026-07-16 17:06:19,353 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,371 | INFO | neurocompiler.generate_dataset | Running 296/460 benchmark=benchmark://cbench-v1/rijndael pass=-jump-threading (16/20)
+2026-07-16 17:06:19,403 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,408 | INFO | neurocompiler.generate_dataset | Running 297/460 benchmark=benchmark://cbench-v1/rijndael pass=-licm (17/20)
+2026-07-16 17:06:19,453 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,467 | INFO | neurocompiler.generate_dataset | Running 298/460 benchmark=benchmark://cbench-v1/rijndael pass=-loop-unroll (18/20)
+2026-07-16 17:06:19,497 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,517 | INFO | neurocompiler.generate_dataset | Running 299/460 benchmark=benchmark://cbench-v1/rijndael pass=-loop-vectorize (19/20)
+2026-07-16 17:06:19,548 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,552 | INFO | neurocompiler.generate_dataset | Running 300/460 benchmark=benchmark://cbench-v1/rijndael pass=-sroa (20/20)
+2026-07-16 17:06:19,585 | INFO | extract_features | Skipping runtime for non-runnable benchmark benchmark://cbench-v1/rijndael
+2026-07-16 17:06:19,605 | INFO | neurocompiler.generate_dataset | Benchmark 16/23: benchmark://cbench-v1/sha
+2026-07-16 17:06:24,976 | INFO | neurocompiler.generate_dataset | Running 301/460 benchmark=benchmark://cbench-v1/sha pass=-adce (1/20)
+2026-07-16 17:06:25,795 | INFO | neurocompiler.generate_dataset | Running 302/460 benchmark=benchmark://cbench-v1/sha pass=-aggressive-instcombine (2/20)
+2026-07-16 17:06:26,791 | INFO | neurocompiler.generate_dataset | Running 303/460 benchmark=benchmark://cbench-v1/sha pass=-argpromotion (3/20)
+2026-07-16 17:06:27,636 | INFO | neurocompiler.generate_dataset | Running 304/460 benchmark=benchmark://cbench-v1/sha pass=-constmerge (4/20)
+2026-07-16 17:06:28,466 | INFO | neurocompiler.generate_dataset | Running 305/460 benchmark=benchmark://cbench-v1/sha pass=-correlated-propagation (5/20)
+2026-07-16 17:06:29,289 | INFO | neurocompiler.generate_dataset | Running 306/460 benchmark=benchmark://cbench-v1/sha pass=-dce (6/20)
+2026-07-16 17:06:30,102 | INFO | neurocompiler.generate_dataset | Running 307/460 benchmark=benchmark://cbench-v1/sha pass=-deadargelim (7/20)
+2026-07-16 17:06:31,021 | INFO | neurocompiler.generate_dataset | Running 308/460 benchmark=benchmark://cbench-v1/sha pass=-dse (8/20)
+2026-07-16 17:06:31,866 | INFO | neurocompiler.generate_dataset | Running 309/460 benchmark=benchmark://cbench-v1/sha pass=-early-cse (9/20)
+2026-07-16 17:06:32,689 | INFO | neurocompiler.generate_dataset | Running 310/460 benchmark=benchmark://cbench-v1/sha pass=-globaldce (10/20)
+2026-07-16 17:06:33,519 | INFO | neurocompiler.generate_dataset | Running 311/460 benchmark=benchmark://cbench-v1/sha pass=-globalopt (11/20)
+2026-07-16 17:06:34,352 | INFO | neurocompiler.generate_dataset | Running 312/460 benchmark=benchmark://cbench-v1/sha pass=-gvn (12/20)
+2026-07-16 17:06:35,179 | INFO | neurocompiler.generate_dataset | Running 313/460 benchmark=benchmark://cbench-v1/sha pass=-indvars (13/20)
+2026-07-16 17:06:36,001 | INFO | neurocompiler.generate_dataset | Running 314/460 benchmark=benchmark://cbench-v1/sha pass=-inline (14/20)
+2026-07-16 17:06:36,813 | INFO | neurocompiler.generate_dataset | Running 315/460 benchmark=benchmark://cbench-v1/sha pass=-instcombine (15/20)
+2026-07-16 17:06:37,649 | INFO | neurocompiler.generate_dataset | Running 316/460 benchmark=benchmark://cbench-v1/sha pass=-jump-threading (16/20)
+2026-07-16 17:06:38,463 | INFO | neurocompiler.generate_dataset | Running 317/460 benchmark=benchmark://cbench-v1/sha pass=-licm (17/20)
+2026-07-16 17:06:39,290 | INFO | neurocompiler.generate_dataset | Running 318/460 benchmark=benchmark://cbench-v1/sha pass=-loop-unroll (18/20)
+2026-07-16 17:06:40,121 | INFO | neurocompiler.generate_dataset | Running 319/460 benchmark=benchmark://cbench-v1/sha pass=-loop-vectorize (19/20)
+2026-07-16 17:06:40,949 | INFO | neurocompiler.generate_dataset | Running 320/460 benchmark=benchmark://cbench-v1/sha pass=-sroa (20/20)
+2026-07-16 17:06:41,762 | INFO | neurocompiler.generate_dataset | Benchmark 17/23: benchmark://cbench-v1/stringsearch
+2026-07-16 17:06:45,089 | INFO | neurocompiler.generate_dataset | Running 321/460 benchmark=benchmark://cbench-v1/stringsearch pass=-adce (1/20)
+2026-07-16 17:06:45,934 | INFO | neurocompiler.generate_dataset | Running 322/460 benchmark=benchmark://cbench-v1/stringsearch pass=-aggressive-instcombine (2/20)
+2026-07-16 17:06:46,784 | INFO | neurocompiler.generate_dataset | Running 323/460 benchmark=benchmark://cbench-v1/stringsearch pass=-argpromotion (3/20)
+2026-07-16 17:06:47,627 | INFO | neurocompiler.generate_dataset | Running 324/460 benchmark=benchmark://cbench-v1/stringsearch pass=-constmerge (4/20)
+2026-07-16 17:06:48,473 | INFO | neurocompiler.generate_dataset | Running 325/460 benchmark=benchmark://cbench-v1/stringsearch pass=-correlated-propagation (5/20)
+2026-07-16 17:06:49,318 | INFO | neurocompiler.generate_dataset | Running 326/460 benchmark=benchmark://cbench-v1/stringsearch pass=-dce (6/20)
+2026-07-16 17:06:50,181 | INFO | neurocompiler.generate_dataset | Running 327/460 benchmark=benchmark://cbench-v1/stringsearch pass=-deadargelim (7/20)
+2026-07-16 17:06:51,031 | INFO | neurocompiler.generate_dataset | Running 328/460 benchmark=benchmark://cbench-v1/stringsearch pass=-dse (8/20)
+2026-07-16 17:06:51,913 | INFO | neurocompiler.generate_dataset | Running 329/460 benchmark=benchmark://cbench-v1/stringsearch pass=-early-cse (9/20)
+2026-07-16 17:06:52,784 | INFO | neurocompiler.generate_dataset | Running 330/460 benchmark=benchmark://cbench-v1/stringsearch pass=-globaldce (10/20)
+2026-07-16 17:06:53,632 | INFO | neurocompiler.generate_dataset | Running 331/460 benchmark=benchmark://cbench-v1/stringsearch pass=-globalopt (11/20)
+2026-07-16 17:06:54,471 | INFO | neurocompiler.generate_dataset | Running 332/460 benchmark=benchmark://cbench-v1/stringsearch pass=-gvn (12/20)
+2026-07-16 17:06:55,382 | INFO | neurocompiler.generate_dataset | Running 333/460 benchmark=benchmark://cbench-v1/stringsearch pass=-indvars (13/20)
+2026-07-16 17:06:59,125 | INFO | neurocompiler.generate_dataset | Running 334/460 benchmark=benchmark://cbench-v1/stringsearch pass=-inline (14/20)
+2026-07-16 17:07:00,065 | INFO | neurocompiler.generate_dataset | Running 335/460 benchmark=benchmark://cbench-v1/stringsearch pass=-instcombine (15/20)
+2026-07-16 17:07:01,059 | INFO | neurocompiler.generate_dataset | Running 336/460 benchmark=benchmark://cbench-v1/stringsearch pass=-jump-threading (16/20)
+2026-07-16 17:07:04,366 | INFO | neurocompiler.generate_dataset | Running 337/460 benchmark=benchmark://cbench-v1/stringsearch pass=-licm (17/20)
+2026-07-16 17:07:05,723 | INFO | neurocompiler.generate_dataset | Running 338/460 benchmark=benchmark://cbench-v1/stringsearch pass=-loop-unroll (18/20)
+2026-07-16 17:07:06,860 | INFO | neurocompiler.generate_dataset | Running 339/460 benchmark=benchmark://cbench-v1/stringsearch pass=-loop-vectorize (19/20)
+2026-07-16 17:07:08,006 | INFO | neurocompiler.generate_dataset | Running 340/460 benchmark=benchmark://cbench-v1/stringsearch pass=-sroa (20/20)
+2026-07-16 17:07:09,162 | INFO | neurocompiler.generate_dataset | Benchmark 18/23: benchmark://cbench-v1/stringsearch2
+2026-07-16 17:07:13,745 | INFO | neurocompiler.generate_dataset | Running 341/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-adce (1/20)
+2026-07-16 17:07:14,931 | INFO | neurocompiler.generate_dataset | Running 342/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-aggressive-instcombine (2/20)
+2026-07-16 17:07:16,104 | INFO | neurocompiler.generate_dataset | Running 343/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-argpromotion (3/20)
+2026-07-16 17:07:17,259 | INFO | neurocompiler.generate_dataset | Running 344/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-constmerge (4/20)
+2026-07-16 17:07:18,428 | INFO | neurocompiler.generate_dataset | Running 345/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-correlated-propagation (5/20)
+2026-07-16 17:07:19,591 | INFO | neurocompiler.generate_dataset | Running 346/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-dce (6/20)
+2026-07-16 17:07:20,749 | INFO | neurocompiler.generate_dataset | Running 347/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-deadargelim (7/20)
+2026-07-16 17:07:21,920 | INFO | neurocompiler.generate_dataset | Running 348/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-dse (8/20)
+2026-07-16 17:07:23,125 | INFO | neurocompiler.generate_dataset | Running 349/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-early-cse (9/20)
+2026-07-16 17:07:24,283 | INFO | neurocompiler.generate_dataset | Running 350/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-globaldce (10/20)
+2026-07-16 17:07:25,439 | INFO | neurocompiler.generate_dataset | Running 351/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-globalopt (11/20)
+2026-07-16 17:07:26,605 | INFO | neurocompiler.generate_dataset | Running 352/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-gvn (12/20)
+2026-07-16 17:07:27,774 | INFO | neurocompiler.generate_dataset | Running 353/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-indvars (13/20)
+2026-07-16 17:07:28,930 | INFO | neurocompiler.generate_dataset | Running 354/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-inline (14/20)
+2026-07-16 17:07:30,069 | INFO | neurocompiler.generate_dataset | Running 355/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-instcombine (15/20)
+2026-07-16 17:07:31,253 | INFO | neurocompiler.generate_dataset | Running 356/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-jump-threading (16/20)
+2026-07-16 17:07:34,902 | INFO | neurocompiler.generate_dataset | Running 357/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-licm (17/20)
+2026-07-16 17:07:36,014 | INFO | neurocompiler.generate_dataset | Running 358/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-loop-unroll (18/20)
+2026-07-16 17:07:37,195 | INFO | neurocompiler.generate_dataset | Running 359/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-loop-vectorize (19/20)
+2026-07-16 17:07:38,453 | INFO | neurocompiler.generate_dataset | Running 360/460 benchmark=benchmark://cbench-v1/stringsearch2 pass=-sroa (20/20)
+2026-07-16 17:07:39,698 | INFO | neurocompiler.generate_dataset | Benchmark 19/23: benchmark://cbench-v1/susan
+2026-07-16 17:07:46,215 | INFO | neurocompiler.generate_dataset | Running 361/460 benchmark=benchmark://cbench-v1/susan pass=-adce (1/20)
+2026-07-16 17:07:47,826 | INFO | neurocompiler.generate_dataset | Running 362/460 benchmark=benchmark://cbench-v1/susan pass=-aggressive-instcombine (2/20)
+2026-07-16 17:07:49,551 | INFO | neurocompiler.generate_dataset | Running 363/460 benchmark=benchmark://cbench-v1/susan pass=-argpromotion (3/20)
+2026-07-16 17:07:51,144 | INFO | neurocompiler.generate_dataset | Running 364/460 benchmark=benchmark://cbench-v1/susan pass=-constmerge (4/20)
+2026-07-16 17:07:52,665 | INFO | neurocompiler.generate_dataset | Running 365/460 benchmark=benchmark://cbench-v1/susan pass=-correlated-propagation (5/20)
+2026-07-16 17:07:54,266 | INFO | neurocompiler.generate_dataset | Running 366/460 benchmark=benchmark://cbench-v1/susan pass=-dce (6/20)
+2026-07-16 17:07:55,828 | INFO | neurocompiler.generate_dataset | Running 367/460 benchmark=benchmark://cbench-v1/susan pass=-deadargelim (7/20)
+2026-07-16 17:07:57,442 | INFO | neurocompiler.generate_dataset | Running 368/460 benchmark=benchmark://cbench-v1/susan pass=-dse (8/20)
+2026-07-16 17:07:59,027 | INFO | neurocompiler.generate_dataset | Running 369/460 benchmark=benchmark://cbench-v1/susan pass=-early-cse (9/20)
+2026-07-16 17:08:00,558 | INFO | neurocompiler.generate_dataset | Running 370/460 benchmark=benchmark://cbench-v1/susan pass=-globaldce (10/20)
+2026-07-16 17:08:02,148 | INFO | neurocompiler.generate_dataset | Running 371/460 benchmark=benchmark://cbench-v1/susan pass=-globalopt (11/20)
+2026-07-16 17:08:03,781 | INFO | neurocompiler.generate_dataset | Running 372/460 benchmark=benchmark://cbench-v1/susan pass=-gvn (12/20)
+2026-07-16 17:08:05,351 | INFO | neurocompiler.generate_dataset | Running 373/460 benchmark=benchmark://cbench-v1/susan pass=-indvars (13/20)
+2026-07-16 17:08:09,599 | INFO | neurocompiler.generate_dataset | Running 374/460 benchmark=benchmark://cbench-v1/susan pass=-inline (14/20)
+2026-07-16 17:08:11,255 | INFO | neurocompiler.generate_dataset | Running 375/460 benchmark=benchmark://cbench-v1/susan pass=-instcombine (15/20)
+2026-07-16 17:08:13,083 | INFO | neurocompiler.generate_dataset | Running 376/460 benchmark=benchmark://cbench-v1/susan pass=-jump-threading (16/20)
+2026-07-16 17:08:14,817 | INFO | neurocompiler.generate_dataset | Running 377/460 benchmark=benchmark://cbench-v1/susan pass=-licm (17/20)
+2026-07-16 17:08:16,443 | INFO | neurocompiler.generate_dataset | Running 378/460 benchmark=benchmark://cbench-v1/susan pass=-loop-unroll (18/20)
+2026-07-16 17:08:18,011 | INFO | neurocompiler.generate_dataset | Running 379/460 benchmark=benchmark://cbench-v1/susan pass=-loop-vectorize (19/20)
+2026-07-16 17:08:19,605 | INFO | neurocompiler.generate_dataset | Running 380/460 benchmark=benchmark://cbench-v1/susan pass=-sroa (20/20)
+2026-07-16 17:08:21,021 | INFO | neurocompiler.generate_dataset | Benchmark 20/23: benchmark://cbench-v1/tiff2bw
+2026-07-16 17:08:34,949 | INFO | neurocompiler.generate_dataset | Running 381/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-adce (1/20)
+2026-07-16 17:08:36,857 | INFO | neurocompiler.generate_dataset | Running 382/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-aggressive-instcombine (2/20)
+2026-07-16 17:08:38,780 | INFO | neurocompiler.generate_dataset | Running 383/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-argpromotion (3/20)
+2026-07-16 17:08:40,651 | INFO | neurocompiler.generate_dataset | Running 384/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-constmerge (4/20)
+2026-07-16 17:08:45,093 | INFO | neurocompiler.generate_dataset | Running 385/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-correlated-propagation (5/20)
+2026-07-16 17:08:46,993 | INFO | neurocompiler.generate_dataset | Running 386/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-dce (6/20)
+2026-07-16 17:08:48,979 | INFO | neurocompiler.generate_dataset | Running 387/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-deadargelim (7/20)
+2026-07-16 17:08:50,872 | INFO | neurocompiler.generate_dataset | Running 388/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-dse (8/20)
+2026-07-16 17:08:52,780 | INFO | neurocompiler.generate_dataset | Running 389/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-early-cse (9/20)
+2026-07-16 17:08:54,840 | INFO | neurocompiler.generate_dataset | Running 390/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-globaldce (10/20)
+2026-07-16 17:08:56,639 | INFO | neurocompiler.generate_dataset | Running 391/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-globalopt (11/20)
+2026-07-16 17:08:58,533 | INFO | neurocompiler.generate_dataset | Running 392/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-gvn (12/20)
+2026-07-16 17:09:00,828 | INFO | neurocompiler.generate_dataset | Running 393/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-indvars (13/20)
+2026-07-16 17:09:02,753 | INFO | neurocompiler.generate_dataset | Running 394/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-inline (14/20)
+2026-07-16 17:09:04,725 | INFO | neurocompiler.generate_dataset | Running 395/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-instcombine (15/20)
+2026-07-16 17:09:06,738 | INFO | neurocompiler.generate_dataset | Running 396/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-jump-threading (16/20)
+2026-07-16 17:09:08,555 | INFO | neurocompiler.generate_dataset | Running 397/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-licm (17/20)
+2026-07-16 17:09:10,651 | INFO | neurocompiler.generate_dataset | Running 398/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-loop-unroll (18/20)
+2026-07-16 17:09:12,499 | INFO | neurocompiler.generate_dataset | Running 399/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-loop-vectorize (19/20)
+2026-07-16 17:09:14,395 | INFO | neurocompiler.generate_dataset | Running 400/460 benchmark=benchmark://cbench-v1/tiff2bw pass=-sroa (20/20)
+2026-07-16 17:09:16,262 | INFO | neurocompiler.generate_dataset | Benchmark 21/23: benchmark://cbench-v1/tiff2rgba
+2026-07-16 17:09:33,268 | INFO | neurocompiler.generate_dataset | Running 401/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-adce (1/20)
+2026-07-16 17:09:35,171 | INFO | neurocompiler.generate_dataset | Running 402/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-aggressive-instcombine (2/20)
+2026-07-16 17:09:37,082 | INFO | neurocompiler.generate_dataset | Running 403/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-argpromotion (3/20)
+2026-07-16 17:09:38,913 | INFO | neurocompiler.generate_dataset | Running 404/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-constmerge (4/20)
+2026-07-16 17:09:40,890 | INFO | neurocompiler.generate_dataset | Running 405/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-correlated-propagation (5/20)
+2026-07-16 17:09:42,854 | INFO | neurocompiler.generate_dataset | Running 406/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-dce (6/20)
+2026-07-16 17:09:44,762 | INFO | neurocompiler.generate_dataset | Running 407/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-deadargelim (7/20)
+2026-07-16 17:09:46,625 | INFO | neurocompiler.generate_dataset | Running 408/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-dse (8/20)
+2026-07-16 17:09:48,619 | INFO | neurocompiler.generate_dataset | Running 409/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-early-cse (9/20)
+2026-07-16 17:09:50,529 | INFO | neurocompiler.generate_dataset | Running 410/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-globaldce (10/20)
+2026-07-16 17:09:54,934 | INFO | neurocompiler.generate_dataset | Running 411/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-globalopt (11/20)
+2026-07-16 17:09:56,847 | INFO | neurocompiler.generate_dataset | Running 412/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-gvn (12/20)
+2026-07-16 17:09:59,382 | INFO | neurocompiler.generate_dataset | Running 413/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-indvars (13/20)
+2026-07-16 17:10:01,259 | INFO | neurocompiler.generate_dataset | Running 414/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-inline (14/20)
+2026-07-16 17:10:03,278 | INFO | neurocompiler.generate_dataset | Running 415/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-instcombine (15/20)
+2026-07-16 17:10:05,364 | INFO | neurocompiler.generate_dataset | Running 416/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-jump-threading (16/20)
+2026-07-16 17:10:07,265 | INFO | neurocompiler.generate_dataset | Running 417/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-licm (17/20)
+2026-07-16 17:10:09,404 | INFO | neurocompiler.generate_dataset | Running 418/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-loop-unroll (18/20)
+2026-07-16 17:10:11,302 | INFO | neurocompiler.generate_dataset | Running 419/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-loop-vectorize (19/20)
+2026-07-16 17:10:13,214 | INFO | neurocompiler.generate_dataset | Running 420/460 benchmark=benchmark://cbench-v1/tiff2rgba pass=-sroa (20/20)
+2026-07-16 17:10:15,148 | INFO | neurocompiler.generate_dataset | Benchmark 22/23: benchmark://cbench-v1/tiffdither
+2026-07-16 17:10:31,864 | INFO | neurocompiler.generate_dataset | Running 421/460 benchmark=benchmark://cbench-v1/tiffdither pass=-adce (1/20)
+2026-07-16 17:10:33,908 | INFO | neurocompiler.generate_dataset | Running 422/460 benchmark=benchmark://cbench-v1/tiffdither pass=-aggressive-instcombine (2/20)
+2026-07-16 17:10:35,845 | INFO | neurocompiler.generate_dataset | Running 423/460 benchmark=benchmark://cbench-v1/tiffdither pass=-argpromotion (3/20)
+2026-07-16 17:10:37,623 | INFO | neurocompiler.generate_dataset | Running 424/460 benchmark=benchmark://cbench-v1/tiffdither pass=-constmerge (4/20)
+2026-07-16 17:10:39,519 | INFO | neurocompiler.generate_dataset | Running 425/460 benchmark=benchmark://cbench-v1/tiffdither pass=-correlated-propagation (5/20)
+2026-07-16 17:10:41,385 | INFO | neurocompiler.generate_dataset | Running 426/460 benchmark=benchmark://cbench-v1/tiffdither pass=-dce (6/20)
+2026-07-16 17:10:43,212 | INFO | neurocompiler.generate_dataset | Running 427/460 benchmark=benchmark://cbench-v1/tiffdither pass=-deadargelim (7/20)
+2026-07-16 17:10:45,100 | INFO | neurocompiler.generate_dataset | Running 428/460 benchmark=benchmark://cbench-v1/tiffdither pass=-dse (8/20)
+2026-07-16 17:10:47,000 | INFO | neurocompiler.generate_dataset | Running 429/460 benchmark=benchmark://cbench-v1/tiffdither pass=-early-cse (9/20)
+2026-07-16 17:10:48,855 | INFO | neurocompiler.generate_dataset | Running 430/460 benchmark=benchmark://cbench-v1/tiffdither pass=-globaldce (10/20)
+2026-07-16 17:10:50,858 | INFO | neurocompiler.generate_dataset | Running 431/460 benchmark=benchmark://cbench-v1/tiffdither pass=-globalopt (11/20)
+2026-07-16 17:10:52,894 | INFO | neurocompiler.generate_dataset | Running 432/460 benchmark=benchmark://cbench-v1/tiffdither pass=-gvn (12/20)
+2026-07-16 17:10:55,162 | INFO | neurocompiler.generate_dataset | Running 433/460 benchmark=benchmark://cbench-v1/tiffdither pass=-indvars (13/20)
+2026-07-16 17:10:57,003 | INFO | neurocompiler.generate_dataset | Running 434/460 benchmark=benchmark://cbench-v1/tiffdither pass=-inline (14/20)
+2026-07-16 17:10:58,980 | INFO | neurocompiler.generate_dataset | Running 435/460 benchmark=benchmark://cbench-v1/tiffdither pass=-instcombine (15/20)
+2026-07-16 17:11:01,019 | INFO | neurocompiler.generate_dataset | Running 436/460 benchmark=benchmark://cbench-v1/tiffdither pass=-jump-threading (16/20)
+2026-07-16 17:11:05,465 | INFO | neurocompiler.generate_dataset | Running 437/460 benchmark=benchmark://cbench-v1/tiffdither pass=-licm (17/20)
+2026-07-16 17:11:07,603 | INFO | neurocompiler.generate_dataset | Running 438/460 benchmark=benchmark://cbench-v1/tiffdither pass=-loop-unroll (18/20)
+2026-07-16 17:11:09,560 | INFO | neurocompiler.generate_dataset | Running 439/460 benchmark=benchmark://cbench-v1/tiffdither pass=-loop-vectorize (19/20)
+2026-07-16 17:11:11,475 | INFO | neurocompiler.generate_dataset | Running 440/460 benchmark=benchmark://cbench-v1/tiffdither pass=-sroa (20/20)
+2026-07-16 17:11:13,282 | INFO | neurocompiler.generate_dataset | Benchmark 23/23: benchmark://cbench-v1/tiffmedian
+2026-07-16 17:11:28,044 | INFO | neurocompiler.generate_dataset | Running 441/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-adce (1/20)
+2026-07-16 17:11:29,943 | INFO | neurocompiler.generate_dataset | Running 442/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-aggressive-instcombine (2/20)
+2026-07-16 17:11:32,135 | INFO | neurocompiler.generate_dataset | Running 443/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-argpromotion (3/20)
+2026-07-16 17:11:34,058 | INFO | neurocompiler.generate_dataset | Running 444/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-constmerge (4/20)
+2026-07-16 17:11:36,007 | INFO | neurocompiler.generate_dataset | Running 445/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-correlated-propagation (5/20)
+2026-07-16 17:11:40,806 | INFO | neurocompiler.generate_dataset | Running 446/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-dce (6/20)
+2026-07-16 17:11:43,064 | INFO | neurocompiler.generate_dataset | Running 447/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-deadargelim (7/20)
+2026-07-16 17:11:45,020 | INFO | neurocompiler.generate_dataset | Running 448/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-dse (8/20)
+2026-07-16 17:11:46,974 | INFO | neurocompiler.generate_dataset | Running 449/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-early-cse (9/20)
+2026-07-16 17:11:48,938 | INFO | neurocompiler.generate_dataset | Running 450/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-globaldce (10/20)
+2026-07-16 17:11:50,861 | INFO | neurocompiler.generate_dataset | Running 451/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-globalopt (11/20)
+2026-07-16 17:11:52,782 | INFO | neurocompiler.generate_dataset | Running 452/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-gvn (12/20)
+2026-07-16 17:11:55,069 | INFO | neurocompiler.generate_dataset | Running 453/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-indvars (13/20)
+2026-07-16 17:11:57,024 | INFO | neurocompiler.generate_dataset | Running 454/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-inline (14/20)
+2026-07-16 17:11:59,095 | INFO | neurocompiler.generate_dataset | Running 455/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-instcombine (15/20)
+2026-07-16 17:12:01,227 | INFO | neurocompiler.generate_dataset | Running 456/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-jump-threading (16/20)
+2026-07-16 17:12:03,194 | INFO | neurocompiler.generate_dataset | Running 457/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-licm (17/20)
+2026-07-16 17:12:05,549 | INFO | neurocompiler.generate_dataset | Running 458/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-loop-unroll (18/20)
+2026-07-16 17:12:07,491 | INFO | neurocompiler.generate_dataset | Running 459/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-loop-vectorize (19/20)
+2026-07-16 17:12:09,456 | INFO | neurocompiler.generate_dataset | Running 460/460 benchmark=benchmark://cbench-v1/tiffmedian pass=-sroa (20/20)
+2026-07-16 17:12:11,490 | INFO | neurocompiler.generate_dataset | Raw generation complete: new=460 resumed=0 failed=0 elapsed=804.7s output=/home/dhanush/NeuroCompiler/datasets/raw/cbench_runtime_dataset_v2.csv
