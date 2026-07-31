@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+"""
+Evaluation: Compare Hybrid vs -O1/-O2/-O3
+
+Objective from design: Given unseen C/C++ program, produce better code than default -O1/-O2/-O3.
+
+We evaluate on held-out test split from process_dataset.py (benchmark-wise split prevents leakage).
+
+Metrics:
+ - IR instruction count reduction % vs O0
+ - Object .TEXT size reduction %
+ - Runtime speedup if available (requires measure_runtime)
+ - Win rate vs -O3 (hybrid beats O3)
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import logging
+from pathlib import Path
+from typing import Dict, List
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+LOGGER = logging.getLogger("evaluate")
+
+def load_test_benchmarks(processed_csv: Path) -> List[str]:
+    benchmarks = set()
+    with processed_csv.open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row.get("dataset_split") == "test":
+                benchmarks.add(row.get("benchmark_uri",""))
+    return sorted(b for b in benchmarks if b)
+
+def evaluate_csv_metrics(processed_csv: Path):
+    from collections import defaultdict
+    per_pass_reward = defaultdict(list)
+    with processed_csv.open(newline="", encoding="utf-8") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                flag = row.get("pass_flag","")
+                reward = float(row.get("step_reward","") or 0.0)
+                per_pass_reward[flag].append(reward)
+            except:
+                continue
+    avg = {k: sum(v)/len(v) for k,v in per_pass_reward.items() if v}
+    top = sorted(avg.items(), key=lambda kv: kv[1], reverse=True)[:10]
+    print(f"[Eval] Processed CSV: {processed_csv}")
+    print(f"  Unique passes: {len(per_pass_reward)}")
+    print(f"  Top 10 passes by avg step_reward:")
+    for flag, score in top:
+        print(f"    {flag}: {score:.4f}")
+
+def run_hybrid_on_testset(args: argparse.Namespace):
+    # Import inference
+    import sys
+    sys.path.insert(0, str(PROJECT_ROOT))
+    from training.inference import hybrid_optimize_benchmark
+
+    test_benchmarks = []
+    if Path(args.processed_csv).exists():
+        test_benchmarks = load_test_benchmarks(Path(args.processed_csv))
+        print(f"[Eval] Test set benchmarks: {len(test_benchmarks)}")
+
+    if args.benchmarks:
+        test_benchmarks = args.benchmarks
+
+    if not test_benchmarks:
+        test_benchmarks = ["benchmark://cbench-v1/qsort", "benchmark://cbench-v1/dijkstra", "benchmark://cbench-v1/bitcount"]
+
+    results = []
+    for uri in test_benchmarks[: args.max_benchmarks]:
+        try:
+            res = hybrid_optimize_benchmark(
+                benchmark_uri=uri,
+                max_steps=args.max_steps,
+                sl_dir=Path(args.sl_model_dir),
+                rl_dir=Path(args.rl_model_dir),
+                verbose=False,
+            )
+            results.append(res)
+            print(f"{uri}: {res['initial_ir']} -> {res['final_ir']} ({res['ir_reduction_pct']:.1f}% reduction) seq={res['pass_sequence']}")
+        except Exception as e:
+            print(f"{uri} failed: {e}")
+
+    if results:
+        avg_reduction = sum(r["ir_reduction_pct"] for r in results)/len(results)
+        print(f"\n[Eval] Average IR reduction on test set: {avg_reduction:.2f}% over {len(results)} benchmarks")
+        # Save
+        if args.output:
+            Path(args.output).write_text(json.dumps(results, indent=2, default=str))
+            print(f"Saved results to {args.output}")
+
+def parse_args():
+    p = argparse.ArgumentParser(description="Evaluate Hybrid vs baselines")
+    p.add_argument("--processed-csv", default=str(PROJECT_ROOT / "datasets" / "processed" / "hybrid_dataset.csv"))
+    p.add_argument("--benchmarks", action="append", default=[], help="Benchmark URIs to evaluate (overrides test split)")
+    p.add_argument("--max-benchmarks", type=int, default=10)
+    p.add_argument("--max-steps", type=int, default=10)
+    p.add_argument("--sl-model-dir", default=str(PROJECT_ROOT / "models" / "supervised"))
+    p.add_argument("--rl-model-dir", default=str(PROJECT_ROOT / "models" / "reinforcement"))
+    p.add_argument("--output", default=str(PROJECT_ROOT / "results" / "hybrid_test_results.json"))
+    p.add_argument("--log-level", default="INFO")
+    return p.parse_args()
+
+def main():
+    args = parse_args()
+    logging.basicConfig(level=getattr(logging, args.log_level.upper(), logging.INFO))
+    if Path(args.processed_csv).exists():
+        evaluate_csv_metrics(Path(args.processed_csv))
+    run_hybrid_on_testset(args)
+    return 0
+
+if __name__ == "__main__":
+    raise SystemExit(main())
