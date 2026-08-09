@@ -95,17 +95,19 @@ def load_sl_model(model_dir: Path):
     except Exception as e:
         LOGGER.warning(f"Failed to load SL model: {e}")
 
+    feature_meta = {}
     try:
         if vocab_path.exists():
             action_vocab = json.loads(vocab_path.read_text())
         if feature_path.exists():
-            feature_cols = json.loads(feature_path.read_text()).get("feature_cols")
+            feature_meta = json.loads(feature_path.read_text())
+            feature_cols = feature_meta.get("feature_cols")
         if pass_list_path.exists():
             pass_list = json.loads(pass_list_path.read_text())
     except Exception as e:
         LOGGER.warning(f"Failed to load SL meta: {e}")
 
-    return model, feature_cols, action_vocab, pass_list
+    return model, feature_cols, action_vocab, pass_list, feature_meta
 
 def load_rl_agent(model_dir: Path):
     model_dir = Path(model_dir)
@@ -126,30 +128,43 @@ def load_rl_agent(model_dir: Path):
         LOGGER.warning(f"Failed to load RL agent: {e}")
     return agent, config
 
-def featurize_for_sl(pre_state, feature_cols, action_vocab, action_flag):
-    # Map ProgramFeatures object to dict compatible with training
-    # training expects pre_* columns flat
-    row = pre_state.flattened("pre_")  # contains pre_*
+def featurize_for_sl(
+    pre_state, feature_cols, action_vocab, action_flag, feature_meta=None
+):
+    """Encode inference inputs exactly as train_sl.py encoded them."""
+    row = pre_state.flattened("pre_")
     feats = []
     for col in feature_cols:
+        # Runtime SL training defaults to raw pre_* features. If a model was
+        # trained with normalized features, refuse silent all-zero inference.
+        if col.startswith("norm_"):
+            raise RuntimeError(
+                "This model expects normalized features, but online inference "
+                "has no normalization parameters. Retrain without --use-normalized."
+            )
         v = row.get(col, 0)
-        if v is None:
-            v = 0
         try:
-            v = float(v)
-        except:
-            v = 0.0
-        feats.append(v)
-    # action encoding
-    try:
-        # try to get pass_id from vocab or from flag mapping
-        aid = action_vocab.get(action_flag, 0) if action_vocab else 0
-        feats.append(float(aid))
-    except:
-        feats.append(0.0)
+            feats.append(float(v) if v is not None else 0.0)
+        except (TypeError, ValueError):
+            feats.append(0.0)
+
+    encoding = (feature_meta or {}).get("action_encoding", "one_hot")
+    if encoding == "one_hot":
+        if action_flag not in action_vocab:
+            raise ValueError(f"Pass {action_flag!r} was not present during training")
+        one_hot = [0.0] * len(action_vocab)
+        one_hot[action_vocab[action_flag]] = 1.0
+        feats.extend(one_hot)
+    else:
+        # Legacy models only. New models always use one-hot encoding.
+        feats.append(float(action_vocab.get(action_flag, 0)))
     return feats
 
-def predict_sl_distribution(sl_model, feature_cols, action_vocab, pre_state, candidate_flags, temperature=1.0):
+
+def predict_sl_distribution(
+    sl_model, feature_cols, action_vocab, pre_state, candidate_flags,
+    temperature=1.0, feature_meta=None
+):
     """
     Returns list of (flag, expected_reward, prob) sorted descending by reward.
     """
@@ -162,10 +177,13 @@ def predict_sl_distribution(sl_model, feature_cols, action_vocab, pre_state, can
     scores = []
     for flag in candidate_flags:
         try:
-            feats = featurize_for_sl(pre_state, feature_cols, action_vocab, flag)
+            feats = featurize_for_sl(
+                pre_state, feature_cols, action_vocab, flag, feature_meta
+            )
             score = float(sl_model.predict([feats])[0])
         except Exception as e:
-            score = random.random()
+            LOGGER.warning("SL scoring failed for %s: %s", flag, e)
+            score = float("-inf")
         scores.append(score)
 
     probs = softmax(scores, temperature)
@@ -190,8 +208,12 @@ def hybrid_optimize_benchmark(
     except ImportError:
         raise SystemExit("CompilerGym not available. Activate neurocompiler env.")
 
-    sl_model, sl_feature_cols, sl_vocab, sl_pass_list = load_sl_model(sl_dir)
+    sl_model, sl_feature_cols, sl_vocab, sl_pass_list, sl_feature_meta = load_sl_model(sl_dir)
     rl_agent, rl_config = load_rl_agent(rl_dir)
+    if sl_model is None:
+        raise FileNotFoundError(
+            f"No trained SL model found in {sl_dir}. Run training/train_sl.py first."
+        )
 
     # Choose candidate action set: use curated 27 or from SL pass list if available
     candidate_flags = sl_pass_list or get_curated_flags()
@@ -210,6 +232,14 @@ def hybrid_optimize_benchmark(
         env.reset(benchmark=benchmark_uri, reward_space=reward_space)
         initial_state = extract_features(env, measurement)
         current_state = initial_state
+        # CompilerGym provides deterministic -O3 baseline cost observations.
+        # Runtime -O3 is not exposed directly, so only IR comparison is exact here.
+        try:
+            raw_o3_ir = env.observation["IrInstructionCountO3"]
+            o3_ir_instruction_count = int(raw_o3_ir.reshape(-1)[0]) if hasattr(raw_o3_ir, "reshape") else int(raw_o3_ir[0])
+        except Exception as error:
+            LOGGER.warning("Could not read IrInstructionCountO3: %s", error)
+            o3_ir_instruction_count = None
 
         pass_sequence = []
         step_details = []
@@ -224,7 +254,15 @@ def hybrid_optimize_benchmark(
 
         for step in range(max_steps):
             # Step 2: SL predicts distribution
-            sl_ranked = predict_sl_distribution(sl_model, sl_feature_cols or [], sl_vocab or {}, current_state, candidate_flags, temperature=0.8)
+            sl_ranked = predict_sl_distribution(
+                sl_model,
+                sl_feature_cols or [],
+                sl_vocab or {},
+                current_state,
+                candidate_flags,
+                temperature=5.0,
+                feature_meta=sl_feature_meta,
+            )
 
             if verbose:
                 top5 = sl_ranked[:5]
@@ -326,10 +364,38 @@ def hybrid_optimize_benchmark(
         final_state = current_state
         ir_reduction = initial_state.ir_instruction_count - final_state.ir_instruction_count
         ir_reduction_pct = (ir_reduction / initial_state.ir_instruction_count * 100) if initial_state.ir_instruction_count else 0
+        initial_runtime = initial_state.runtime_median_sec
+        final_runtime = final_state.runtime_median_sec
+        runtime_speedup = (
+            initial_runtime / final_runtime
+            if initial_runtime is not None and final_runtime is not None and final_runtime > 0
+            else None
+        )
+        runtime_improvement_pct = (
+            100.0 * (initial_runtime - final_runtime) / initial_runtime
+            if initial_runtime is not None and final_runtime is not None and initial_runtime > 0
+            else None
+        )
+        hybrid_vs_o3_ir_pct = (
+            100.0 * (o3_ir_instruction_count - final_state.ir_instruction_count)
+            / o3_ir_instruction_count
+            if o3_ir_instruction_count is not None and o3_ir_instruction_count > 0
+            else None
+        )
 
         if verbose:
             print(f"\n[Hybrid] Final sequence ({len(pass_sequence)}): {' -> '.join(pass_sequence)}")
             print(f"  Initial IR: {initial_state.ir_instruction_count} -> Final IR: {final_state.ir_instruction_count} (reduction {ir_reduction} = {ir_reduction_pct:.2f}%)")
+            if o3_ir_instruction_count is not None:
+                print(
+                    f"  -O3 IR baseline: {o3_ir_instruction_count}; hybrid vs -O3: "
+                    f"{hybrid_vs_o3_ir_pct:+.2f}% (positive means fewer instructions)"
+                )
+            if runtime_speedup is not None:
+                print(
+                    f"  Runtime: {initial_runtime:.6f}s -> {final_runtime:.6f}s "
+                    f"(speedup {runtime_speedup:.4f}x, improvement {runtime_improvement_pct:.2f}%)"
+                )
             print(f"  Cum hybrid reward: {cumulative_hybrid:.3f}")
 
         return {
@@ -338,6 +404,13 @@ def hybrid_optimize_benchmark(
             "final_ir": final_state.ir_instruction_count,
             "ir_reduction": ir_reduction,
             "ir_reduction_pct": ir_reduction_pct,
+            "initial_runtime_median_sec": initial_runtime,
+            "final_runtime_median_sec": final_runtime,
+            "runtime_speedup": runtime_speedup,
+            "runtime_improvement_pct": runtime_improvement_pct,
+            "o3_ir_instruction_count": o3_ir_instruction_count,
+            "hybrid_vs_o3_ir_pct": hybrid_vs_o3_ir_pct,
+            "sl_target": sl_feature_meta.get("target"),
             "pass_sequence": pass_sequence,
             "steps": step_details,
             "cumulative_hybrid": cumulative_hybrid,

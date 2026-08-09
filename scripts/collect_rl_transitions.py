@@ -182,6 +182,7 @@ def collect_rl(args: argparse.Namespace) -> Path:
         code_size=args.reward_weight_size,
     )
 
+    random.seed(args.seed)
     run_id = uuid.uuid4().hex
     dataset_uri = _dataset_uri(args.dataset)
     generated_at = _utc_now()
@@ -212,7 +213,12 @@ def collect_rl(args: argparse.Namespace) -> Path:
                 LOGGER.info(f"Benchmark {bench_idx}/{len(benchmarks)}: {benchmark_uri}")
 
                 for ep_idx in range(args.episodes_per_benchmark):
-                    episode_id = f"{benchmark_uri.replace('://','_').replace('/','_')}_{ep_idx}_{uuid.uuid4().hex[:6]}"
+                    # Deterministic ID makes --resume effective across reruns.
+                    episode_payload = (
+                        f"{benchmark_uri}|{ep_idx}|{args.seed}|"
+                        f"{args.max_steps_per_episode}|{','.join(a.flag for a in actions)}"
+                    )
+                    episode_id = hashlib.sha256(episode_payload.encode()).hexdigest()[:24]
                     if episode_id in resume_episodes:
                         skipped_episodes += 1
                         continue
@@ -390,6 +396,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--reward-space", default="IrInstructionCountO3")
     p.add_argument("--episodes-per-benchmark", type=int, default=20, help="200 recommended for full 1M transitions")
     p.add_argument("--max-steps-per-episode", type=int, default=10, help="Episode length 10-20")
+    p.add_argument("--seed", type=int, default=42)
     p.add_argument("--measure-runtime", action="store_true")
     p.add_argument("--runtime-count", type=int, default=3)
     p.add_argument("--runtime-warmup-count", type=int, default=1)
