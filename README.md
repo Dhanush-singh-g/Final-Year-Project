@@ -51,6 +51,55 @@ Hybrid Optimization System (training/inference.py)
 Optimize Any New Program (beats -O3)
 ```
 
+## Current Measured Results (scaled run, Aug 2026)
+
+A 10–20× scale-up of the SL and RL datasets was generated with the new parallel driver
+`scripts/scale_census.py` (sharded workers + resume + merge).
+
+| Stage | Artifact | Size |
+|---|---|---|
+| SL census, 6 suites × 31 curated passes, runtime labeled | `datasets/raw/scale_sl/` → `scale_sl_combined.csv` | **4,441 transitions** (cBench 23, CHStone 12, BLAS 30, CLgen 30, POJ104 30, csmith 30) |
+| Processed (benchmark-wise 70/15/15 split) | `datasets/processed/hybrid_dataset_scaled.csv` | 4,432 rows, **146 benchmarks** (train 3,134 / val 652 / test 646) |
+| SL pass scorer (HistGB, target `step_reward` over all rows) | `models/supervised/` | 31 actions, 62 features |
+| SL runtime-target reference model | `models/supervised_runtime/` | 31 actions |
+| RL replay buffer (102 train-split benchmarks × 24 episodes) | `datasets/replay_buffer/rl_experiences_scaled.csv` | **3,324 transitions** |
+| RL fitted-Q agent (vectorized Bellman, 3 iterations) | `models/reinforcement/` | 31 actions |
+
+Held-out test evaluation — **all 22 test-split benchmarks, never seen in training**
+(`results/hybrid_test_results_scaled_all.json`):
+
+| Group | n | Mean IR reduction | vs exact -O3 IR | Runtime vs initial |
+|---|---|---|---|---|
+| cBench (real-world) | 10 | **33.6%** | **+3.8% (beats -O3 in 8/10)** | 1.20× (5/8 wins) |
+| CHStone (embedded) | 3 | 21.0% | −14.1% (1/3) | n/a |
+| csmith (synthetic) | 9 | 32.3% | −101.6% (2/9) | 1.80× (7/9 wins) |
+| **All** | 22 | **31.4%** | wins **11/22** | **1.49×** (12/17 wins) |
+
+Highlights on real-world programs: jpeg-c 62,452 → 36,229 IR (**+18.8% vs -O3**),
+lame 49,131 → 29,747 (**+16.4% vs -O3**), gsm +32.4% IR, bzip2 +34.4% IR,
+tiff2rgba 58,661 → 37,131 (**+5.4% vs -O3**).
+
+Learned sequences are short and sensible, e.g. `-sroa → -simplifycfg`, `-newgvn → -newgvn`,
+and `-sroa ×7 → -loop-distribute` (lame).
+
+Honest caveats:
+
+1. On small/synthetic programs (CHStone, csmith) `-O3` still wins the IR-count race — its full
+   fixed pipeline removes trivially dead synthetic code that our short learned sequences do not.
+2. The `vs -O3` comparison is instruction-count only. CompilerGym does not expose an `-O3`
+   *runtime* observation; runtime numbers are vs the initial no-pass state. A controlled external
+   O3 executable baseline harness (runbook §10) is required before claiming runtime superiority
+   over `-O3`.
+3. Cross-program runtime prediction remains noisy (single-pass runtime deltas are dominated by
+   process overhead), so the canonical SL scorer uses the deterministic IR `step_reward`;
+   `models/supervised_runtime/` is kept as the runtime-target reference.
+
+### Pilot history (cBench-only, 460 runtime-labeled rows)
+
+The earlier pilot (`datasets/raw/cbench_runtime_dataset_v2.csv`, `models/` artifacts from 14:10)
+achieved 20.0% mean IR reduction and a 1/2 IR win rate vs -O3 on 2 test benchmarks. It remains
+available for regression comparison; the scaled artifacts above supersede it.
+
 ## Repository Structure
 
 ```
@@ -70,6 +119,7 @@ NeuroCompiler/
 │   ├── run_passes.py                # Stage 2: Transition recording
 │   ├── generate_dataset.py          # Stage 3 base (generic)
 │   ├── generate_sl_dataset.py       # Phase 3 wrapper with curated 27 passes
+│   ├── scale_census.py              # NEW: parallel/resumable SL+RL scale-up driver
 │   ├── curated_passes.py            # Phase 2 pass selection (25-30 passes)
 │   ├── reward.py                    # Hybrid reward: 0.6*RT + 0.3*IR + 0.1*Size
 │   ├── collect_rl_transitions.py    # Phase 5: RL episodes -> replay buffer
@@ -185,6 +235,52 @@ pip install -r requirements.txt  # compiler_gym, torch, sklearn, lightgbm, panda
 # Compile CompilerGym service (first run will download)
 python scripts/extract_features.py --benchmark benchmark://cbench-v1/qsort
 ```
+
+## Scaled Dataset Run (what generated the numbers above)
+
+`scripts/scale_census.py` shards benchmark URIs across worker processes, reuses the
+existing generation functions per shard, and merges + processes. It is resumable:
+rerunning skips completed work (transition keys / deterministic episode IDs), and
+`--resume-from` seeds a canonical merged CSV so re-runs skip finished rows instantly.
+
+```bash
+# 1. Scaled SL census: 155 benchmarks x 31 curated passes, runtime labeled
+python scripts/scale_census.py sl \
+  --workdir datasets/raw/scale_sl \
+  --datasets cbench-v1,chstone-v0,blas-v0,clgen-v0,poj104-v1 \
+  --csmith-count 30 --sample 30 \
+  --workers 32 --shards 155 --measure-runtime \
+  --runtime-warmup-count 1 --runtime-count 3 --skip-object-text-size
+
+# 2. Merge + process
+python scripts/scale_census.py merge-sl --workdir datasets/raw/scale_sl \
+  --output datasets/raw/scale_sl_combined.csv --process \
+  --processed-output datasets/processed/hybrid_dataset_scaled.csv
+
+# 3. Scaled RL replay buffer (episodes only from train-split benchmarks, no leakage)
+python scripts/scale_census.py rl --workdir datasets/raw/scale_rl \
+  --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
+  --workers 32 --episodes-per-benchmark 24 --max-steps-per-episode 8 --seed 42 \
+  --skip-object-text-size
+
+python scripts/scale_census.py merge-rl --workdir datasets/raw/scale_rl \
+  --output datasets/replay_buffer/rl_experiences_scaled.csv
+
+# 4. Retrain on the scaled data
+python training/train_sl.py --input datasets/processed/hybrid_dataset_scaled.csv \
+  --output-dir models/supervised --target step_reward
+python training/train_rl.py --input datasets/replay_buffer/rl_experiences_scaled.csv \
+  --output-dir models/reinforcement --gamma 0.90 --q-iterations 3
+
+# 5. Evaluate on the held-out test split
+python evaluation/evaluate_benchmarks.py \
+  --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
+  --max-steps 8 --measure-runtime --output results/hybrid_test_results_scaled.json
+```
+
+For the full design targets (AnghaBench 5k × 31, 100k RL episodes), run the same commands
+on a bigger machine with `--datasets anghabench-v1 --sample 5000` and higher
+`--episodes-per-benchmark`; the driver parallelizes and resumes automatically.
 
 ## Quickstart
 

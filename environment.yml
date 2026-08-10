@@ -1,0 +1,35 @@
+# NeuroCompiler conda environment (referenced by README.md).
+#
+#   conda env create -f environment.yml
+#   conda activate neurocompiler
+#
+# NOTE: NumPy is pinned to 1.26.4. CompilerGym 0.2.5 uses np.NINF, which was
+# removed in NumPy 2.0, so the pipeline requires NumPy < 2 (see
+# EXECUTION_RUNBOOK_RUNTIME.md).
+
+name: neurocompiler
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy=1.26.4
+  - pandas>=2.0
+  - scikit-learn>=1.3
+  - joblib>=1.3
+  - tqdm
+  - matplotlib
+  - seaborn
+  - pip
+  - pip:
+      - compiler_gym==0.2.5
+      # Optional but recommended for SL
+      # - lightgbm
+      # - xgboost
+      # - catboost
+      # Optional for RL (torch DQN / PPO branches; CPU-only sklearn fallback works without them)
+      # - torch
+      # - stable-baselines3
+      # - gymnasium
+      # Tests
+      - pytest

@@ -1,0 +1,77 @@
+{
+  "benchmark_uri": "benchmark://cbench-v1/bitcount",
+  "initial_ir": 857,
+  "final_ir": 856,
+  "ir_reduction": 1,
+  "ir_reduction_pct": 0.11668611435239205,
+  "initial_runtime_median_sec": 0.085901,
+  "final_runtime_median_sec": 0.08464,
+  "runtime_speedup": 1.0148983931947069,
+  "runtime_improvement_pct": 1.4679689409902075,
+  "o3_ir_instruction_count": 607,
+  "hybrid_vs_o3_ir_pct": -41.02141680395387,
+  "sl_target": "runtime_improvement_pct",
+  "pass_sequence": [
+    "-adce",
+    "-adce"
+  ],
+  "steps": [
+    {
+      "step": 0,
+      "pre_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+      "post_state_id": "b494f1225ad8a418c29fb68ef653c104372c8410",
+      "chosen_pass": "-adce",
+      "delta_ir": -1,
+      "ir_improvement": 0.0011668611435239206,
+      "hybrid_reward": 0.08751458576429404,
+      "sl_top3": [
+        [
+          "-adce",
+          -18.909139176212385,
+          0.05
+        ],
+        [
+          "-aggressive-instcombine",
+          -18.909139176212385,
+          0.05
+        ],
+        [
+          "-argpromotion",
+          -18.909139176212385,
+          0.05
+        ]
+      ],
+      "q_values_top3": []
+    },
+    {
+      "step": 1,
+      "pre_state_id": "b494f1225ad8a418c29fb68ef653c104372c8410",
+      "post_state_id": "b494f1225ad8a418c29fb68ef653c104372c8410",
+      "chosen_pass": "-adce",
+      "delta_ir": 0,
+      "ir_improvement": 0.0,
+      "hybrid_reward": 0.0,
+      "sl_top3": [
+        [
+          "-adce",
+          -18.909139176212385,
+          0.05
+        ],
+        [
+          "-aggressive-instcombine",
+          -18.909139176212385,
+          0.05
+        ],
+        [
+          "-argpromotion",
+          -18.909139176212385,
+          0.05
+        ]
+      ],
+      "q_values_top3": []
+    }
+  ],
+  "cumulative_hybrid": 0.08751458576429404,
+  "initial_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+  "final_state_id": "b494f1225ad8a418c29fb68ef653c104372c8410"
+}
