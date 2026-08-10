@@ -1,0 +1,3539 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bitcount",
+    "initial_ir": 857,
+    "final_ir": 490,
+    "ir_reduction": 367,
+    "ir_reduction_pct": 42.82380396732789,
+    "initial_runtime_median_sec": 1.398629,
+    "final_runtime_median_sec": 1.090054,
+    "runtime_speedup": 1.2830823060141974,
+    "runtime_improvement_pct": 22.062677093067556,
+    "o3_ir_instruction_count": 607,
+    "hybrid_vs_o3_ir_pct": 19.27512355848435,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-simplifycfg",
+      "-simplifycfg"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+        "post_state_id": "766e78d795f3a34f0db5faf142c00bcab97f32ec",
+        "chosen_pass": "-sroa",
+        "delta_ir": -349,
+        "ir_improvement": 0.4072345390898483,
+        "hybrid_reward": 31.223124586849043,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.8184263328305001,
+            0.04784706126035982
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04697079711216209
+          ],
+          [
+            "-instcombine",
+            0.6067514509094306,
+            0.0375500505330263
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.45012299321879
+          ],
+          [
+            "-newgvn",
+            41.72872832116216
+          ],
+          [
+            "-gvn",
+            39.53095946889412
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "766e78d795f3a34f0db5faf142c00bcab97f32ec",
+        "post_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "chosen_pass": "-simplifycfg",
+        "delta_ir": -18,
+        "ir_improvement": 0.03543307086614173,
+        "hybrid_reward": 3.6606482135878733,
+        "sl_top3": [
+          [
+            "-gvn",
+            3.4968562060934825,
+            0.06487263507547143
+          ],
+          [
+            "-newgvn",
+            2.3293438384625245,
+            0.05136327452812774
+          ],
+          [
+            "-early-cse",
+            2.0391095613690577,
+            0.04846668032884668
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-simplifycfg",
+            16.82540730662874
+          ],
+          [
+            "-newgvn",
+            14.530974190040826
+          ],
+          [
+            "-gvn",
+            14.197297996470583
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "post_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "chosen_pass": "-simplifycfg",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-gvn",
+            3.5018556298968146,
+            0.0646769360632668
+          ],
+          [
+            "-early-cse",
+            2.349648195467207,
+            0.051365316888866606
+          ],
+          [
+            "-newgvn",
+            2.3343432622658566,
+            0.05120832873199882
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-simplifycfg",
+            16.349998811780775
+          ],
+          [
+            "-gvn",
+            14.280103147453447
+          ],
+          [
+            "-newgvn",
+            14.114689834619975
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 34.883772800436915,
+    "initial_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+    "final_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bzip2",
+    "initial_ir": 28748,
+    "final_ir": 18846,
+    "ir_reduction": 9902,
+    "ir_reduction_pct": 34.444135244190896,
+    "initial_runtime_median_sec": 1.200945,
+    "final_runtime_median_sec": 1.601797,
+    "runtime_speedup": 0.7497485636444569,
+    "runtime_improvement_pct": -33.37804812043849,
+    "o3_ir_instruction_count": 19169,
+    "hybrid_vs_o3_ir_pct": 1.6850122593771193,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "49deb7a721cce9d543a7e756ae05d08d4437e266",
+        "post_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "chosen_pass": "-sroa",
+        "delta_ir": -9902,
+        "ir_improvement": 0.344441352441909,
+        "hybrid_reward": 17.724662686843836,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.737347436581598,
+            0.10265952172919474
+          ],
+          [
+            "-early-cse",
+            3.4841919755556274,
+            0.06541730370625112
+          ],
+          [
+            "-gvn",
+            2.6868770366850163,
+            0.05577489280272849
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.554431788246625
+          ],
+          [
+            "-simplifycfg",
+            33.20296180404769
+          ],
+          [
+            "-gvn",
+            33.12771001984191
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "post_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            38.88145551387372
+          ],
+          [
+            "-simplifycfg",
+            33.83266245491422
+          ],
+          [
+            "-dse",
+            33.45280834589336
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 17.724662686843836,
+    "initial_state_id": "49deb7a721cce9d543a7e756ae05d08d4437e266",
+    "final_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/dijkstra",
+    "initial_ir": 450,
+    "final_ir": 358,
+    "ir_reduction": 92,
+    "ir_reduction_pct": 20.444444444444446,
+    "initial_runtime_median_sec": 0.003017,
+    "final_runtime_median_sec": 0.001903,
+    "runtime_speedup": 1.5853914871255912,
+    "runtime_improvement_pct": 36.92409678488565,
+    "o3_ir_instruction_count": 366,
+    "hybrid_vs_o3_ir_pct": 2.185792349726776,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "b1b9b90ddcac83c49e410f2f702617643afc902c",
+        "post_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -92,
+        "ir_improvement": 0.20444444444444446,
+        "hybrid_reward": 12.95047390201575,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.574093270079854,
+            0.05475155665392219
+          ],
+          [
+            "-gvn",
+            1.5761111534370844,
+            0.04484487790647041
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.03709617951475961
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            45.62100881351841
+          ],
+          [
+            "-gvn",
+            39.96053831137486
+          ],
+          [
+            "-instcombine",
+            39.709927342750085
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "post_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.6062734499096787,
+            0.05508560222420986
+          ],
+          [
+            "-gvn",
+            1.5761111534370844,
+            0.04482902997472275
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.037083069930153874
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            43.53864964663209
+          ],
+          [
+            "-gvn",
+            39.18510822696905
+          ],
+          [
+            "-instcombine",
+            38.78621888508534
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 12.95047390201575,
+    "initial_state_id": "b1b9b90ddcac83c49e410f2f702617643afc902c",
+    "final_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/gsm",
+    "initial_ir": 14902,
+    "final_ir": 10067,
+    "ir_reduction": 4835,
+    "ir_reduction_pct": 32.445309354449066,
+    "initial_runtime_median_sec": 0.296958,
+    "final_runtime_median_sec": 0.205819,
+    "runtime_speedup": 1.4428114022514928,
+    "runtime_improvement_pct": 30.690872109860653,
+    "o3_ir_instruction_count": 10028,
+    "hybrid_vs_o3_ir_pct": -0.38891104906262464,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "849bd8495db8bd4123b2999675d1ad62ccb9fe6c",
+        "post_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "chosen_pass": "-sroa",
+        "delta_ir": -4835,
+        "ir_improvement": 0.32445309354449064,
+        "hybrid_reward": 26.28508329738313,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.550140854033468,
+            0.10683033601664313
+          ],
+          [
+            "-early-cse",
+            4.759933671311937,
+            0.07467911699448258
+          ],
+          [
+            "-gvn",
+            4.223095286399561,
+            0.06707643685942405
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.512119960919016
+          ],
+          [
+            "-gvn",
+            44.84200239427558
+          ],
+          [
+            "-dse",
+            42.04152219596987
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "post_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.503850178879009,
+            0.12523556571584818
+          ],
+          [
+            "-early-cse",
+            5.7741743092556,
+            0.08861147072149725
+          ],
+          [
+            "-gvn",
+            4.18053462734236,
+            0.06442703732417679
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            52.801103180457794
+          ],
+          [
+            "-gvn",
+            47.70627015269757
+          ],
+          [
+            "-simplifycfg",
+            47.44419292835732
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 26.28508329738313,
+    "initial_state_id": "849bd8495db8bd4123b2999675d1ad62ccb9fe6c",
+    "final_state_id": "884770c15a2a248e1cb311c1905536f3f642739a"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/ispell",
+    "initial_ir": 15184,
+    "final_ir": 10778,
+    "ir_reduction": 4406,
+    "ir_reduction_pct": 29.017386722866174,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 12848,
+    "hybrid_vs_o3_ir_pct": 16.11145703611457,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "7e76a62b0e3ab0d0e6ca16fe29183e9623382337",
+        "post_state_id": "8d0cbce7d3ab1a8cce4f23bc85363e51bd2f99fa",
+        "chosen_pass": "-sroa",
+        "delta_ir": -4406,
+        "ir_improvement": 0.29017386722866173,
+        "hybrid_reward": 19.906253654443145,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.5346145163425025,
+            0.10667511696309535
+          ],
+          [
+            "-early-cse",
+            4.7444073336209724,
+            0.07457061202958329
+          ],
+          [
+            "-gvn",
+            4.207568948708595,
+            0.06697897820270828
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            49.369026353300285
+          ],
+          [
+            "-dse",
+            43.07833449438597
+          ],
+          [
+            "-gvn",
+            42.29323879244055
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "8d0cbce7d3ab1a8cce4f23bc85363e51bd2f99fa",
+        "post_state_id": "8d0cbce7d3ab1a8cce4f23bc85363e51bd2f99fa",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.483805624312076,
+            0.12506078524525832
+          ],
+          [
+            "-early-cse",
+            5.754129754688666,
+            0.08848780333944137
+          ],
+          [
+            "-gvn",
+            4.160490072775427,
+            0.06433712206857137
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            53.694523167876284
+          ],
+          [
+            "-dse",
+            49.539573176475855
+          ],
+          [
+            "-jump-threading",
+            47.785208218880804
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 19.906253654443145,
+    "initial_state_id": "7e76a62b0e3ab0d0e6ca16fe29183e9623382337",
+    "final_state_id": "8d0cbce7d3ab1a8cce4f23bc85363e51bd2f99fa"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/jpeg-c",
+    "initial_ir": 62452,
+    "final_ir": 36229,
+    "ir_reduction": 26223,
+    "ir_reduction_pct": 41.989047588548004,
+    "initial_runtime_median_sec": 0.196596,
+    "final_runtime_median_sec": 0.09983,
+    "runtime_speedup": 1.9693078232996093,
+    "runtime_improvement_pct": 49.22073694276587,
+    "o3_ir_instruction_count": 46186,
+    "hybrid_vs_o3_ir_pct": 21.558480924955614,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "47993927b0d3228a0682d09b4759d051b2af737e",
+        "post_state_id": "39d67383eac74b80c3d4bd4c630fd8bacad9ba20",
+        "chosen_pass": "-sroa",
+        "delta_ir": -26223,
+        "ir_improvement": 0.41989047588548006,
+        "hybrid_reward": 31.30429489854815,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.491063622613607,
+            0.10642174514523876
+          ],
+          [
+            "-early-cse",
+            4.700856439892077,
+            0.07439349395306737
+          ],
+          [
+            "-gvn",
+            4.1640180549797,
+            0.0668198915670567
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            47.343722434570154
+          ],
+          [
+            "-newgvn",
+            42.71812094371411
+          ],
+          [
+            "-gvn",
+            40.67784912763443
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "39d67383eac74b80c3d4bd4c630fd8bacad9ba20",
+        "post_state_id": "39d67383eac74b80c3d4bd4c630fd8bacad9ba20",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            45.88604749180876
+          ],
+          [
+            "-simplifycfg",
+            40.8372544328492
+          ],
+          [
+            "-gvn",
+            40.18967309104632
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 31.30429489854815,
+    "initial_state_id": "47993927b0d3228a0682d09b4759d051b2af737e",
+    "final_state_id": "39d67383eac74b80c3d4bd4c630fd8bacad9ba20"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/lame",
+    "initial_ir": 49131,
+    "final_ir": 29747,
+    "ir_reduction": 19384,
+    "ir_reduction_pct": 39.45370539984938,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 35594,
+    "hybrid_vs_o3_ir_pct": 16.426925886385344,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-loop-distribute"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "33d26254eede99af038150589970766f1f6c4bf5",
+        "post_state_id": "de5455157ad35fd8edf7c25ae13c6d333df2d848",
+        "chosen_pass": "-sroa",
+        "delta_ir": -19384,
+        "ir_improvement": 0.3945370539984938,
+        "hybrid_reward": 28.315599797078416,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            42.873823813126364
+          ],
+          [
+            "-dse",
+            37.433705016153546
+          ],
+          [
+            "-gvn",
+            35.67205595913137
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "de5455157ad35fd8edf7c25ae13c6d333df2d848",
+        "post_state_id": "5deeaf7cd9a698da5c290b60809efb00ca5fe0b5",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "5deeaf7cd9a698da5c290b60809efb00ca5fe0b5",
+        "post_state_id": "066a85940382936916c0a79524891f0f270a4b99",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "066a85940382936916c0a79524891f0f270a4b99",
+        "post_state_id": "cc5660a1bdde170a567da7fc9ce8618e176932fe",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "pre_state_id": "cc5660a1bdde170a567da7fc9ce8618e176932fe",
+        "post_state_id": "0ab4a40b698dc9e4dd761274a4abc392ea8dc2c9",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "pre_state_id": "0ab4a40b698dc9e4dd761274a4abc392ea8dc2c9",
+        "post_state_id": "0f183bff379711de448c5c0384de7e04ecf77420",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "pre_state_id": "0f183bff379711de448c5c0384de7e04ecf77420",
+        "post_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "pre_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "post_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "chosen_pass": "-loop-distribute",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 28.315599797078416,
+    "initial_state_id": "33d26254eede99af038150589970766f1f6c4bf5",
+    "final_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/stringsearch",
+    "initial_ir": 1348,
+    "final_ir": 1047,
+    "ir_reduction": 301,
+    "ir_reduction_pct": 22.329376854599406,
+    "initial_runtime_median_sec": 0.095889,
+    "final_runtime_median_sec": 0.097751,
+    "runtime_speedup": 0.980951601518143,
+    "runtime_improvement_pct": -1.9418285726204283,
+    "o3_ir_instruction_count": 697,
+    "hybrid_vs_o3_ir_pct": -50.21520803443329,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "8b08b223c7916d0c347728138ba50240e3a76c62",
+        "post_state_id": "85257d1044770845e0c7ec233ce15231e5af125d",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -300,
+        "ir_improvement": 0.22255192878338279,
+        "hybrid_reward": 12.867715796965088,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.07205053066696
+          ],
+          [
+            "-instcombine",
+            36.232873935105275
+          ],
+          [
+            "-simplifycfg",
+            34.96564071746844
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "85257d1044770845e0c7ec233ce15231e5af125d",
+        "post_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -1,
+        "ir_improvement": 0.0009541984732824427,
+        "hybrid_reward": 0.0715648854961832,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.52611861969486
+          ],
+          [
+            "-instcombine",
+            36.51143806187366
+          ],
+          [
+            "-simplifycfg",
+            35.40744920245219
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "post_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.52611861969486
+          ],
+          [
+            "-instcombine",
+            36.51143806187366
+          ],
+          [
+            "-simplifycfg",
+            35.40744920245219
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 12.939280682461272,
+    "initial_state_id": "8b08b223c7916d0c347728138ba50240e3a76c62",
+    "final_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2bw",
+    "initial_ir": 58797,
+    "final_ir": 37222,
+    "ir_reduction": 21575,
+    "ir_reduction_pct": 36.69404901610626,
+    "initial_runtime_median_sec": 0.100679,
+    "final_runtime_median_sec": 0.102073,
+    "runtime_speedup": 0.9863431073839312,
+    "runtime_improvement_pct": -1.3845985756711852,
+    "o3_ir_instruction_count": 39537,
+    "hybrid_vs_o3_ir_pct": 5.855274805878039,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "22d998d830dd6fd78846c31fc2a5bcf2a38dbe3c",
+        "post_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "chosen_pass": "-sroa",
+        "delta_ir": -21575,
+        "ir_improvement": 0.3669404901610626,
+        "hybrid_reward": 24.847984993934034,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.218368933036615
+          ],
+          [
+            "-dse",
+            34.85532464188303
+          ],
+          [
+            "-gvn",
+            32.652423573501764
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "post_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            37.39304291683052
+          ],
+          [
+            "-dse",
+            34.15651600709501
+          ],
+          [
+            "-gvn",
+            31.61132031488666
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 24.847984993934034,
+    "initial_state_id": "22d998d830dd6fd78846c31fc2a5bcf2a38dbe3c",
+    "final_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2rgba",
+    "initial_ir": 58661,
+    "final_ir": 37131,
+    "ir_reduction": 21530,
+    "ir_reduction_pct": 36.70240875539115,
+    "initial_runtime_median_sec": 0.105741,
+    "final_runtime_median_sec": 0.102493,
+    "runtime_speedup": 1.0316899690710586,
+    "runtime_improvement_pct": 3.0716562166047234,
+    "o3_ir_instruction_count": 39243,
+    "hybrid_vs_o3_ir_pct": 5.38185154040211,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "d21b863319d45e776470916aff6cc7086b289460",
+        "post_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "chosen_pass": "-sroa",
+        "delta_ir": -21530,
+        "ir_improvement": 0.36702408755391147,
+        "hybrid_reward": 24.839259448276835,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.218368933036615
+          ],
+          [
+            "-dse",
+            34.85532464188303
+          ],
+          [
+            "-gvn",
+            33.452058226434254
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "post_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            37.39304291683052
+          ],
+          [
+            "-dse",
+            34.15651600709501
+          ],
+          [
+            "-gvn",
+            32.41095496781915
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 24.839259448276835,
+    "initial_state_id": "d21b863319d45e776470916aff6cc7086b289460",
+    "final_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068"
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/adpcm",
+    "initial_ir": 1474,
+    "final_ir": 1217,
+    "ir_reduction": 257,
+    "ir_reduction_pct": 17.435549525101766,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 1440,
+    "hybrid_vs_o3_ir_pct": 15.48611111111111,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "605b6402a220812d1715e750c0e4186e622c6442",
+        "post_state_id": "5241443e611a5d1c231ff76959a4eaf58dbe16e3",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -257,
+        "ir_improvement": 0.17435549525101765,
+        "hybrid_reward": 12.532347861492871,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.8704118869495803,
+            0.05716545522502137
+          ],
+          [
+            "-gvn",
+            2.8086322476439936,
+            0.05646346876209956
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.036502992695497616
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            43.44050205364755
+          ],
+          [
+            "-sroa",
+            41.481469014894124
+          ],
+          [
+            "-simplifycfg",
+            38.513636613069025
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "5241443e611a5d1c231ff76959a4eaf58dbe16e3",
+        "post_state_id": "5241443e611a5d1c231ff76959a4eaf58dbe16e3",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.8704118869495803,
+            0.05716545522502137
+          ],
+          [
+            "-gvn",
+            2.8086322476439936,
+            0.05646346876209956
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.036502992695497616
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            45.29212457525778
+          ],
+          [
+            "-sroa",
+            42.33747529304586
+          ],
+          [
+            "-simplifycfg",
+            39.36964289122076
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 12.532347861492871,
+    "initial_state_id": "605b6402a220812d1715e750c0e4186e622c6442",
+    "final_state_id": "5241443e611a5d1c231ff76959a4eaf58dbe16e3"
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/aes",
+    "initial_ir": 4048,
+    "final_ir": 2993,
+    "ir_reduction": 1055,
+    "ir_reduction_pct": 26.06225296442688,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 2328,
+    "hybrid_vs_o3_ir_pct": -28.56529209621993,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "75dc5892eb162098165380fafc8294e147e292bc",
+        "post_state_id": "662794e38951cba80bc147532a989f216d4194cd",
+        "chosen_pass": "-sroa",
+        "delta_ir": -1055,
+        "ir_improvement": 0.2606225296442688,
+        "hybrid_reward": 22.484494673058563,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9682445303589065,
+            0.0688531588929742
+          ],
+          [
+            "-gvn",
+            3.1847056731002477,
+            0.05886627426084102
+          ],
+          [
+            "-early-cse",
+            2.547714634245661,
+            0.05182486874693483
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            46.36162601148528
+          ],
+          [
+            "-newgvn",
+            44.727891555993075
+          ],
+          [
+            "-gvn",
+            42.56961977260477
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "662794e38951cba80bc147532a989f216d4194cd",
+        "post_state_id": "662794e38951cba80bc147532a989f216d4194cd",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9046495254119256,
+            0.07001013301464754
+          ],
+          [
+            "-gvn",
+            3.501843560268412,
+            0.06459123987198395
+          ],
+          [
+            "-early-cse",
+            2.438479090579805,
+            0.052216884579208984
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            31.25399567684291
+          ],
+          [
+            "-newgvn",
+            28.764121384989544
+          ],
+          [
+            "-early-cse",
+            25.713590799112346
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 22.484494673058563,
+    "initial_state_id": "75dc5892eb162098165380fafc8294e147e292bc",
+    "final_state_id": "662794e38951cba80bc147532a989f216d4194cd"
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/sha",
+    "initial_ir": 642,
+    "final_ir": 517,
+    "ir_reduction": 125,
+    "ir_reduction_pct": 19.470404984423677,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 400,
+    "hybrid_vs_o3_ir_pct": -29.25,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "e90a627bb1ff314d16814800a51d78e8fb2bfaad",
+        "post_state_id": "f563c9f1f20e4e5819c53808fc45ed58a74515d4",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -125,
+        "ir_improvement": 0.19470404984423675,
+        "hybrid_reward": 14.571419702330726,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.8096568654688931,
+            0.04720286016177357
+          ],
+          [
+            "-gvn",
+            1.1183273351207772,
+            0.04110741756834273
+          ],
+          [
+            "-newgvn",
+            0.9792973517768535,
+            0.03998013015880763
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            46.87642396395372
+          ],
+          [
+            "-sroa",
+            45.055403702290334
+          ],
+          [
+            "-gvn",
+            41.25942999606268
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "f563c9f1f20e4e5819c53808fc45ed58a74515d4",
+        "post_state_id": "f563c9f1f20e4e5819c53808fc45ed58a74515d4",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.8096568654688931,
+            0.04720286016177357
+          ],
+          [
+            "-gvn",
+            1.1183273351207772,
+            0.04110741756834273
+          ],
+          [
+            "-newgvn",
+            0.9792973517768535,
+            0.03998013015880763
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            46.11092699697115
+          ],
+          [
+            "-sroa",
+            43.88339798451936
+          ],
+          [
+            "-gvn",
+            40.81146979484734
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 14.571419702330726,
+    "initial_state_id": "e90a627bb1ff314d16814800a51d78e8fb2bfaad",
+    "final_state_id": "f563c9f1f20e4e5819c53808fc45ed58a74515d4"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/4",
+    "initial_ir": 10904,
+    "final_ir": 7147,
+    "ir_reduction": 3757,
+    "ir_reduction_pct": 34.45524578136464,
+    "initial_runtime_median_sec": 0.003429,
+    "final_runtime_median_sec": 0.092109,
+    "runtime_speedup": 0.03722763247891086,
+    "runtime_improvement_pct": -2586.1767279090113,
+    "o3_ir_instruction_count": 4521,
+    "hybrid_vs_o3_ir_pct": -58.08449458084495,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "874d92201bf85b060aab93a10057c674d062aeae",
+        "post_state_id": "17f9f90fae7a9e7f6d3422c309fcfe0d5411b594",
+        "chosen_pass": "-sroa",
+        "delta_ir": -3757,
+        "ir_improvement": 0.34455245781364635,
+        "hybrid_reward": 24.177755350915913,
+        "sl_top3": [
+          [
+            "-newgvn",
+            4.343898372402287,
+            0.07477335119401887
+          ],
+          [
+            "-gvn",
+            3.4236082410780715,
+            0.06220301851686133
+          ],
+          [
+            "-early-cse",
+            2.79491260432114,
+            0.05485341252787079
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.396899992326745
+          ],
+          [
+            "-gvn",
+            34.282542419768305
+          ],
+          [
+            "-dse",
+            33.633952251163244
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "17f9f90fae7a9e7f6d3422c309fcfe0d5411b594",
+        "post_state_id": "6ed2b0f3730fd1e25a27f9a4ced5a2d49e8495b0",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "6ed2b0f3730fd1e25a27f9a4ced5a2d49e8495b0",
+        "post_state_id": "c8ed070b6825b7793a477b1ac33394afd77db848",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "c8ed070b6825b7793a477b1ac33394afd77db848",
+        "post_state_id": "a58453217e4c5770bfc8501173c65aea514ee785",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "pre_state_id": "a58453217e4c5770bfc8501173c65aea514ee785",
+        "post_state_id": "e5a8fda30de855591126391b5b8fba08e440ee20",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "pre_state_id": "e5a8fda30de855591126391b5b8fba08e440ee20",
+        "post_state_id": "ea8bc8f21ed059f66918530f9ea11fd964dc2b51",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "pre_state_id": "ea8bc8f21ed059f66918530f9ea11fd964dc2b51",
+        "post_state_id": "0aed75cd1d2b2878064832dbe54612715d3fc2da",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "pre_state_id": "0aed75cd1d2b2878064832dbe54612715d3fc2da",
+        "post_state_id": "4f06929b90c92b37895a8e9ecd58459441f5869d",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08866253873763635
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.0658346682341993
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060432403350124154
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            36.93484622106312
+          ],
+          [
+            "-gvn",
+            32.692823042273844
+          ],
+          [
+            "-newgvn",
+            30.98874012902251
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 24.177755350915913,
+    "initial_state_id": "874d92201bf85b060aab93a10057c674d062aeae",
+    "final_state_id": "4f06929b90c92b37895a8e9ecd58459441f5869d"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/6",
+    "initial_ir": 1246,
+    "final_ir": 1144,
+    "ir_reduction": 102,
+    "ir_reduction_pct": 8.186195826645266,
+    "initial_runtime_median_sec": 0.003372,
+    "final_runtime_median_sec": 0.002841,
+    "runtime_speedup": 1.1869060190073917,
+    "runtime_improvement_pct": 15.747330960854086,
+    "o3_ir_instruction_count": 727,
+    "hybrid_vs_o3_ir_pct": -57.35900962861073,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "3b6b7f6414166bf1860d54b6027a504c224d8a42",
+        "post_state_id": "7cca723fd24ed9899eb0a4693de5846bdaf6e2c1",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -102,
+        "ir_improvement": 0.08186195826645265,
+        "hybrid_reward": 3.0629716122519883,
+        "sl_top3": [
+          [
+            "-newgvn",
+            2.987053422559716,
+            0.05813399905114537
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04876056664421139
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.04825911903387227
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            47.538862390867536
+          ],
+          [
+            "-sroa",
+            43.11408265155159
+          ],
+          [
+            "-instcombine",
+            39.930299230778665
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "7cca723fd24ed9899eb0a4693de5846bdaf6e2c1",
+        "post_state_id": "7cca723fd24ed9899eb0a4693de5846bdaf6e2c1",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            2.987053422559716,
+            0.05813399905114537
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04876056664421139
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.04825911903387227
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            48.31611584180442
+          ],
+          [
+            "-sroa",
+            43.62550772271996
+          ],
+          [
+            "-instcombine",
+            40.41187858317735
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 3.0629716122519883,
+    "initial_state_id": "3b6b7f6414166bf1860d54b6027a504c224d8a42",
+    "final_state_id": "7cca723fd24ed9899eb0a4693de5846bdaf6e2c1"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/8",
+    "initial_ir": 2565,
+    "final_ir": 1112,
+    "ir_reduction": 1453,
+    "ir_reduction_pct": 56.64717348927876,
+    "initial_runtime_median_sec": 0.095829,
+    "final_runtime_median_sec": 0.002846,
+    "runtime_speedup": 33.67146872803935,
+    "runtime_improvement_pct": 97.03012657963664,
+    "o3_ir_instruction_count": 1010,
+    "hybrid_vs_o3_ir_pct": -10.099009900990099,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "34ffd307b700099f57ee54dfc38bca8f920492cc",
+        "post_state_id": "1e3e735ac4b9636101e6134d55ce12a7e294d954",
+        "chosen_pass": "-sroa",
+        "delta_ir": -1095,
+        "ir_improvement": 0.4269005847953216,
+        "hybrid_reward": 33.60401526829626,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.663644617060572,
+            0.06661994283184484
+          ],
+          [
+            "-early-cse",
+            2.2444431124076014,
+            0.050157280267462696
+          ],
+          [
+            "-gvn",
+            1.717670922029182,
+            0.0451418265930419
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            47.86532401524761
+          ],
+          [
+            "-newgvn",
+            47.809650463541665
+          ],
+          [
+            "-gvn",
+            40.66550079441174
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "1e3e735ac4b9636101e6134d55ce12a7e294d954",
+        "post_state_id": "a7c2fc67f9f3d134b0e3ac5592c3cdab32a166f9",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -344,
+        "ir_improvement": 0.23401360544217686,
+        "hybrid_reward": 20.966880423055294,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.8434336718149744,
+            0.0708172168787325
+          ],
+          [
+            "-gvn",
+            1.8449835828946435,
+            0.047484917276996
+          ],
+          [
+            "-early-cse",
+            1.4276330304840346,
+            0.04368225777654209
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            44.280474940118744
+          ],
+          [
+            "-sroa",
+            36.96182739644006
+          ],
+          [
+            "-instcombine",
+            35.847215337954744
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "a7c2fc67f9f3d134b0e3ac5592c3cdab32a166f9",
+        "post_state_id": "720a16abb0cd115bc886c2031395e3e5238c4c42",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -14,
+        "ir_improvement": 0.012433392539964476,
+        "hybrid_reward": 1.4499688648181634,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.511174043111688,
+            0.0663212246211368
+          ],
+          [
+            "-gvn",
+            2.458714788510961,
+            0.053732504968855226
+          ],
+          [
+            "-early-cse",
+            1.9922557675321277,
+            0.048946424426146516
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.382592535676395
+          ],
+          [
+            "-sroa",
+            35.63337296294446
+          ],
+          [
+            "-instcombine",
+            35.09876661898526
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "720a16abb0cd115bc886c2031395e3e5238c4c42",
+        "post_state_id": "720a16abb0cd115bc886c2031395e3e5238c4c42",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.511174043111688,
+            0.0652261992525647
+          ],
+          [
+            "-gvn",
+            2.458714788510961,
+            0.05284533112075545
+          ],
+          [
+            "-early-cse",
+            1.9922557675321277,
+            0.048138273238442934
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            23.381866764309986
+          ],
+          [
+            "-simplifycfg",
+            18.280662032401192
+          ],
+          [
+            "-sroa",
+            18.089213901927003
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 56.02086455616971,
+    "initial_state_id": "34ffd307b700099f57ee54dfc38bca8f920492cc",
+    "final_state_id": "720a16abb0cd115bc886c2031395e3e5238c4c42"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/9",
+    "initial_ir": 14866,
+    "final_ir": 8041,
+    "ir_reduction": 6825,
+    "ir_reduction_pct": 45.91013049912552,
+    "initial_runtime_median_sec": 0.003267,
+    "final_runtime_median_sec": 0.00399,
+    "runtime_speedup": 0.8187969924812031,
+    "runtime_improvement_pct": -22.13039485766758,
+    "o3_ir_instruction_count": 1288,
+    "hybrid_vs_o3_ir_pct": -524.3012422360248,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "5b79fd4cf4a23301d9a0d176fef1179f6a0c73ce",
+        "post_state_id": "ec2e1097cc49517305df266933d03e8587cfc4f0",
+        "chosen_pass": "-sroa",
+        "delta_ir": -6825,
+        "ir_improvement": 0.45910130499125523,
+        "hybrid_reward": 37.66843328909371,
+        "sl_top3": [
+          [
+            "-newgvn",
+            4.390977248335456,
+            0.07451492909685938
+          ],
+          [
+            "-gvn",
+            3.47068711701124,
+            0.061988040396473654
+          ],
+          [
+            "-early-cse",
+            2.8419914802543085,
+            0.05466383517610779
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            47.64294269575874
+          ],
+          [
+            "-gvn",
+            41.10725163142581
+          ],
+          [
+            "-dse",
+            40.72178885763452
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "ec2e1097cc49517305df266933d03e8587cfc4f0",
+        "post_state_id": "03d0f15cf2eba4ba42c93c527a8009758f3bd7b8",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "03d0f15cf2eba4ba42c93c527a8009758f3bd7b8",
+        "post_state_id": "3a9c8ebd8c436b0af28ea4dba3910a700b91684e",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "3a9c8ebd8c436b0af28ea4dba3910a700b91684e",
+        "post_state_id": "a15f30f7d94f8dc809deee0fe361be8f0b16095c",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "pre_state_id": "a15f30f7d94f8dc809deee0fe361be8f0b16095c",
+        "post_state_id": "bbfd6e6c31b107a3c6746eb4415124e2caee7923",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "pre_state_id": "bbfd6e6c31b107a3c6746eb4415124e2caee7923",
+        "post_state_id": "144ce317c2cd3dbd69c29de786fe7335eec79c2a",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "pre_state_id": "144ce317c2cd3dbd69c29de786fe7335eec79c2a",
+        "post_state_id": "fe2127443c3914f4c9f89cf60110b12f5ff7c4c4",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "pre_state_id": "fe2127443c3914f4c9f89cf60110b12f5ff7c4c4",
+        "post_state_id": "2514def03443dd9d42fb71e553b1f96671ff0d05",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.344686573181,
+            0.08836480854043804
+          ],
+          [
+            "-early-cse",
+            3.8562321181979713,
+            0.06561359438457882
+          ],
+          [
+            "-gvn",
+            3.4281264579540394,
+            0.060229470390807005
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.96725182104402
+          ],
+          [
+            "-gvn",
+            46.410485621972995
+          ],
+          [
+            "-dse",
+            46.24637935776816
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 37.66843328909371,
+    "initial_state_id": "5b79fd4cf4a23301d9a0d176fef1179f6a0c73ce",
+    "final_state_id": "2514def03443dd9d42fb71e553b1f96671ff0d05"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/12",
+    "initial_ir": 1181,
+    "final_ir": 1066,
+    "ir_reduction": 115,
+    "ir_reduction_pct": 9.737510584250634,
+    "initial_runtime_median_sec": 0.003796,
+    "final_runtime_median_sec": 0.003168,
+    "runtime_speedup": 1.1982323232323233,
+    "runtime_improvement_pct": 16.543730242360382,
+    "o3_ir_instruction_count": 1100,
+    "hybrid_vs_o3_ir_pct": 3.090909090909091,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "b82cfcd5d533393389e74d4e3591a170a5f84b08",
+        "post_state_id": "1e231a5c03a839ce37f367bda0c3a04dcb8f71e9",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -115,
+        "ir_improvement": 0.09737510584250635,
+        "hybrid_reward": 4.529821041081864,
+        "sl_top3": [
+          [
+            "-newgvn",
+            2.987053422559716,
+            0.05813399905114537
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04876056664421139
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.04825911903387227
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            48.05162240278377
+          ],
+          [
+            "-sroa",
+            42.94267095142882
+          ],
+          [
+            "-instcombine",
+            39.7588875306559
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "1e231a5c03a839ce37f367bda0c3a04dcb8f71e9",
+        "post_state_id": "1e231a5c03a839ce37f367bda0c3a04dcb8f71e9",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            2.987053422559716,
+            0.05813399905114537
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04876056664421139
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.04825911903387227
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            48.51992451222855
+          ],
+          [
+            "-sroa",
+            43.34694359595157
+          ],
+          [
+            "-instcombine",
+            40.13331445640896
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 4.529821041081864,
+    "initial_state_id": "b82cfcd5d533393389e74d4e3591a170a5f84b08",
+    "final_state_id": "1e231a5c03a839ce37f367bda0c3a04dcb8f71e9"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/17",
+    "initial_ir": 307,
+    "final_ir": 133,
+    "ir_reduction": 174,
+    "ir_reduction_pct": 56.67752442996743,
+    "initial_runtime_median_sec": 0.002947,
+    "final_runtime_median_sec": 0.001249,
+    "runtime_speedup": 2.359487590072058,
+    "runtime_improvement_pct": 57.617916525279945,
+    "o3_ir_instruction_count": 155,
+    "hybrid_vs_o3_ir_pct": 14.193548387096774,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-gvn",
+      "-instcombine",
+      "-gvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "269166bc162f80987e85fe8f81f5720980a5ae1f",
+        "post_state_id": "43d7a4313fbea6488e76e1ebe93f2a95083a23ae",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -60,
+        "ir_improvement": 0.19543973941368079,
+        "hybrid_reward": 13.94738614078058,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.3629356495243297,
+            0.043309862235969845
+          ],
+          [
+            "-gvn",
+            0.7618465403740478,
+            0.038404035779999346
+          ],
+          [
+            "-instcombine",
+            0.6657194044275695,
+            0.037672753913853864
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.93103371725872
+          ],
+          [
+            "-instcombine",
+            40.29007993415341
+          ],
+          [
+            "-gvn",
+            39.19707908356861
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "43d7a4313fbea6488e76e1ebe93f2a95083a23ae",
+        "post_state_id": "20441cc4673ddea4b65630a1f09e36719e7f5195",
+        "chosen_pass": "-gvn",
+        "delta_ir": 3,
+        "ir_improvement": -0.012145748987854251,
+        "hybrid_reward": -4.931031676601632,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.3629356495243297,
+            0.04344080887797951
+          ],
+          [
+            "-gvn",
+            0.7618465403740478,
+            0.03852014973800758
+          ],
+          [
+            "-instcombine",
+            0.6657194044275695,
+            0.037786656853406014
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-gvn",
+            39.8728904115812
+          ],
+          [
+            "-newgvn",
+            39.77964794043447
+          ],
+          [
+            "-instcombine",
+            39.70175577639018
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "20441cc4673ddea4b65630a1f09e36719e7f5195",
+        "post_state_id": "613fe706fd7fbc84e8363d1f6dfd72cf143f0e4b",
+        "chosen_pass": "-instcombine",
+        "delta_ir": -117,
+        "ir_improvement": 0.468,
+        "hybrid_reward": 41.336471861471864,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.4684016651182585,
+            0.0454396611060194
+          ],
+          [
+            "-instcombine",
+            0.6110086351432762,
+            0.03827920163112084
+          ],
+          [
+            "-newgvn",
+            0.42799647668940705,
+            0.036903421807036894
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-instcombine",
+            34.98582220087203
+          ],
+          [
+            "-gvn",
+            34.959682779469674
+          ],
+          [
+            "-newgvn",
+            34.50445968499986
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "613fe706fd7fbc84e8363d1f6dfd72cf143f0e4b",
+        "post_state_id": "613fe706fd7fbc84e8363d1f6dfd72cf143f0e4b",
+        "chosen_pass": "-gvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-gvn",
+            0.9461678677378461,
+            0.04093322806940283
+          ],
+          [
+            "-early-cse",
+            0.29000988795411486,
+            0.035899040190296286
+          ],
+          [
+            "-sroa",
+            0.26736711532610874,
+            0.03573683697962223
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-gvn",
+            21.48848495550539
+          ],
+          [
+            "-newgvn",
+            20.489713375771558
+          ],
+          [
+            "-simplifycfg",
+            18.893205673146824
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 50.35282632565081,
+    "initial_state_id": "269166bc162f80987e85fe8f81f5720980a5ae1f",
+    "final_state_id": "613fe706fd7fbc84e8363d1f6dfd72cf143f0e4b"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/24",
+    "initial_ir": 1289,
+    "final_ir": 924,
+    "ir_reduction": 365,
+    "ir_reduction_pct": 28.316524437548484,
+    "initial_runtime_median_sec": 0.095521,
+    "final_runtime_median_sec": 0.00276,
+    "runtime_speedup": 34.609057971014494,
+    "runtime_improvement_pct": 97.11058301315941,
+    "o3_ir_instruction_count": 414,
+    "hybrid_vs_o3_ir_pct": -123.18840579710145,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "fff628b375e1d460c0bb62192c8ce33f2e0210e1",
+        "post_state_id": "46a507f8bfbd7897c74e24169aa7211f58ee7db3",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -343,
+        "ir_improvement": 0.2660977501939488,
+        "hybrid_reward": 20.227947985810935,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.0658575563425003,
+            0.059710042601679836
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04929933778483911
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.03666620744164159
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            46.96379421081612
+          ],
+          [
+            "-sroa",
+            42.224329279702964
+          ],
+          [
+            "-instcombine",
+            41.438633052918874
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "46a507f8bfbd7897c74e24169aa7211f58ee7db3",
+        "post_state_id": "0240e533d69f6ed9dc0831d719b71fb63b521e6e",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -22,
+        "ir_improvement": 0.023255813953488372,
+        "hybrid_reward": 1.801781438880238,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.0658575563425003,
+            0.059710042601679836
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04929933778483911
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.03666620744164159
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            47.070191279661586
+          ],
+          [
+            "-sroa",
+            43.02765152887517
+          ],
+          [
+            "-instcombine",
+            42.62246054120369
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "0240e533d69f6ed9dc0831d719b71fb63b521e6e",
+        "post_state_id": "0240e533d69f6ed9dc0831d719b71fb63b521e6e",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.0658575563425003,
+            0.059710042601679836
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04929933778483911
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.03666620744164159
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            47.070191279661586
+          ],
+          [
+            "-sroa",
+            43.02765152887517
+          ],
+          [
+            "-instcombine",
+            42.62246054120369
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 22.029729424691173,
+    "initial_state_id": "fff628b375e1d460c0bb62192c8ce33f2e0210e1",
+    "final_state_id": "0240e533d69f6ed9dc0831d719b71fb63b521e6e"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/26",
+    "initial_ir": 4241,
+    "final_ir": 4157,
+    "ir_reduction": 84,
+    "ir_reduction_pct": 1.9806649375147372,
+    "initial_runtime_median_sec": 0.003448,
+    "final_runtime_median_sec": 0.003132,
+    "runtime_speedup": 1.1008939974457217,
+    "runtime_improvement_pct": 9.1647331786543,
+    "o3_ir_instruction_count": 3315,
+    "hybrid_vs_o3_ir_pct": -25.39969834087481,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "a124361bc93fdc9bac42cbf09518604c4fa445c9",
+        "post_state_id": "7d1fd292cfaafce7fcd7c37bf618b24fa3ee327d",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -84,
+        "ir_improvement": 0.01980664937514737,
+        "hybrid_reward": 1.036011056188168,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.489416224971545,
+            0.06388583486435699
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04846279310401129
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.047964407759770206
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            46.07286965586473
+          ],
+          [
+            "-sroa",
+            43.285134874071495
+          ],
+          [
+            "-gvn",
+            40.09253045381612
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "7d1fd292cfaafce7fcd7c37bf618b24fa3ee327d",
+        "post_state_id": "7d1fd292cfaafce7fcd7c37bf618b24fa3ee327d",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.489416224971545,
+            0.06388583486435699
+          ],
+          [
+            "-early-cse",
+            2.107909679178057,
+            0.04846279310401129
+          ],
+          [
+            "-gvn",
+            2.0562240782556747,
+            0.047964407759770206
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            46.07286965586473
+          ],
+          [
+            "-sroa",
+            43.285134874071495
+          ],
+          [
+            "-gvn",
+            40.09253045381612
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 1.036011056188168,
+    "initial_state_id": "a124361bc93fdc9bac42cbf09518604c4fa445c9",
+    "final_state_id": "7d1fd292cfaafce7fcd7c37bf618b24fa3ee327d"
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/29",
+    "initial_ir": 4405,
+    "final_ir": 2252,
+    "ir_reduction": 2153,
+    "ir_reduction_pct": 48.876276958002265,
+    "initial_runtime_median_sec": 0.002582,
+    "final_runtime_median_sec": 0.001732,
+    "runtime_speedup": 1.4907621247113165,
+    "runtime_improvement_pct": 32.92021688613478,
+    "o3_ir_instruction_count": 966,
+    "hybrid_vs_o3_ir_pct": -133.1262939958592,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn",
+      "-indvars",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "f8bdf189bd8a567a82421987f5c6a6c82329a94c",
+        "post_state_id": "60699cfe2a1071d514598d36531aa199d7263c10",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -2005,
+        "ir_improvement": 0.4551645856980704,
+        "hybrid_reward": 39.675742952141945,
+        "sl_top3": [
+          [
+            "-newgvn",
+            4.3087658847269825,
+            0.07497200303044514
+          ],
+          [
+            "-gvn",
+            3.388475753402768,
+            0.06236827450261446
+          ],
+          [
+            "-early-cse",
+            2.759780116645837,
+            0.054999142670480505
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            38.926913766283754
+          ],
+          [
+            "-gvn",
+            36.82618098603934
+          ],
+          [
+            "-simplifycfg",
+            34.51921013963164
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "60699cfe2a1071d514598d36531aa199d7263c10",
+        "post_state_id": "96061abf0c856a2ebc729d510d7c0d4b797e9c44",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -126,
+        "ir_improvement": 0.0525,
+        "hybrid_reward": 4.188048073911681,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            38.02343948649184
+          ],
+          [
+            "-gvn",
+            33.66096718571004
+          ],
+          [
+            "-simplifycfg",
+            32.30368787964479
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "96061abf0c856a2ebc729d510d7c0d4b797e9c44",
+        "post_state_id": "f8d4dfacbe338d1e4c38d917d47f34f53cfc82a4",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -13,
+        "ir_improvement": 0.005716798592788039,
+        "hybrid_reward": 0.4287598944591029,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            37.83429173341136
+          ],
+          [
+            "-gvn",
+            33.66096718571004
+          ],
+          [
+            "-simplifycfg",
+            32.30368787964479
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "f8d4dfacbe338d1e4c38d917d47f34f53cfc82a4",
+        "post_state_id": "15ef3fc73e556544e34321b6537f1c11b7ea8708",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -7,
+        "ir_improvement": 0.0030959752321981426,
+        "hybrid_reward": 0.27437888690500095,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            33.65338231212776
+          ],
+          [
+            "-simplifycfg",
+            30.8054124346354
+          ],
+          [
+            "-instcombine",
+            30.58320144521114
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "pre_state_id": "15ef3fc73e556544e34321b6537f1c11b7ea8708",
+        "post_state_id": "7dc03635aea92286cf2ab4e7bb0345802b502b12",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -5,
+        "ir_improvement": 0.0022182786157941437,
+        "hybrid_reward": 0.18749691287411394,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            33.65338231212776
+          ],
+          [
+            "-simplifycfg",
+            30.8054124346354
+          ],
+          [
+            "-instcombine",
+            30.58320144521114
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "pre_state_id": "7dc03635aea92286cf2ab4e7bb0345802b502b12",
+        "post_state_id": "034b83a204bfda2805034fa5bc7f4542130029fd",
+        "chosen_pass": "-indvars",
+        "delta_ir": 7,
+        "ir_improvement": -0.0031124944419742106,
+        "hybrid_reward": -0.3603003879371555,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            33.59855006665488
+          ],
+          [
+            "-simplifycfg",
+            30.71141907431557
+          ],
+          [
+            "-instcombine",
+            30.41038989260068
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "pre_state_id": "034b83a204bfda2805034fa5bc7f4542130029fd",
+        "post_state_id": "622346d4c9d54ff21eede09adb9aaf9cadf1faa3",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -2,
+        "ir_improvement": 0.0008865248226950354,
+        "hybrid_reward": 0.1085636227729176,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            33.65338231212776
+          ],
+          [
+            "-simplifycfg",
+            30.8054124346354
+          ],
+          [
+            "-instcombine",
+            30.58320144521114
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "pre_state_id": "622346d4c9d54ff21eede09adb9aaf9cadf1faa3",
+        "post_state_id": "24f9b21dab3df9beb0b9fbf8baefdd552532224f",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -2,
+        "ir_improvement": 0.0008873114463176575,
+        "hybrid_reward": 0.06654835847382432,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.9996508667265323,
+            0.07065101801458454
+          ],
+          [
+            "-gvn",
+            3.1873266627490784,
+            0.06005661360884167
+          ],
+          [
+            "-early-cse",
+            1.9600755877023024,
+            0.04698542571666397
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            33.59855006665488
+          ],
+          [
+            "-simplifycfg",
+            30.71141907431557
+          ],
+          [
+            "-instcombine",
+            30.41038989260068
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 44.56923831360143,
+    "initial_state_id": "f8bdf189bd8a567a82421987f5c6a6c82329a94c",
+    "final_state_id": "24f9b21dab3df9beb0b9fbf8baefdd552532224f"
+  }
+]

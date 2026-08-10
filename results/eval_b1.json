@@ -1,0 +1,351 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/lame",
+    "initial_ir": 49131,
+    "final_ir": 29747,
+    "ir_reduction": 19384,
+    "ir_reduction_pct": 39.45370539984938,
+    "initial_runtime_median_sec": null,
+    "final_runtime_median_sec": null,
+    "runtime_speedup": null,
+    "runtime_improvement_pct": null,
+    "o3_ir_instruction_count": 35594,
+    "hybrid_vs_o3_ir_pct": 16.426925886385344,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-sroa",
+      "-loop-distribute"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "33d26254eede99af038150589970766f1f6c4bf5",
+        "post_state_id": "de5455157ad35fd8edf7c25ae13c6d333df2d848",
+        "chosen_pass": "-sroa",
+        "delta_ir": -19384,
+        "ir_improvement": 0.3945370539984938,
+        "hybrid_reward": 28.315599797078416,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            42.873823813126364
+          ],
+          [
+            "-dse",
+            37.433705016153546
+          ],
+          [
+            "-gvn",
+            35.67205595913137
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "de5455157ad35fd8edf7c25ae13c6d333df2d848",
+        "post_state_id": "5deeaf7cd9a698da5c290b60809efb00ca5fe0b5",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "5deeaf7cd9a698da5c290b60809efb00ca5fe0b5",
+        "post_state_id": "066a85940382936916c0a79524891f0f270a4b99",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 3,
+        "pre_state_id": "066a85940382936916c0a79524891f0f270a4b99",
+        "post_state_id": "cc5660a1bdde170a567da7fc9ce8618e176932fe",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 4,
+        "pre_state_id": "cc5660a1bdde170a567da7fc9ce8618e176932fe",
+        "post_state_id": "0ab4a40b698dc9e4dd761274a4abc392ea8dc2c9",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 5,
+        "pre_state_id": "0ab4a40b698dc9e4dd761274a4abc392ea8dc2c9",
+        "post_state_id": "0f183bff379711de448c5c0384de7e04ecf77420",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 6,
+        "pre_state_id": "0f183bff379711de448c5c0384de7e04ecf77420",
+        "post_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      },
+      {
+        "step": 7,
+        "pre_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "post_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4",
+        "chosen_pass": "-loop-distribute",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.232916589853204
+          ],
+          [
+            "-dse",
+            39.996389680117694
+          ],
+          [
+            "-jump-threading",
+            37.32360164085771
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 28.315599797078416,
+    "initial_state_id": "33d26254eede99af038150589970766f1f6c4bf5",
+    "final_state_id": "7e3d6846be6bb393aee0fd351c793b1d496284b4"
+  }
+]
