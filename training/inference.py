@@ -218,7 +218,20 @@ def hybrid_optimize_benchmark(
     # Choose candidate action set: use curated 27 or from SL pass list if available
     candidate_flags = sl_pass_list or get_curated_flags()
 
+    # Per-step extraction deliberately runs WITHOUT the Runtime observation:
+    # measuring runtime rebuilds the executable and can transiently fail in a
+    # way that leaves the environment unusable, invalidating an otherwise good
+    # pass. The SL model only consumes static pre_* features and per-step
+    # rewards do not affect action selection, so runtime is measured once at
+    # the start and once at the end instead.
     measurement = MeasurementConfig(
+        measure_runtime=False,
+        runtime_count=3,
+        runtime_warmup_count=1,
+        measure_buildtime=False,
+        collect_object_text_size=True,
+    )
+    measurement_full = MeasurementConfig(
         measure_runtime=measure_runtime,
         runtime_count=3,
         runtime_warmup_count=1,
@@ -230,13 +243,28 @@ def hybrid_optimize_benchmark(
     env = compiler_gym.make("llvm-v0")
     try:
         env.reset(benchmark=benchmark_uri, reward_space=reward_space)
-        initial_state = extract_features(env, measurement)
+        try:
+            initial_state = extract_features(env, measurement_full)
+        except Exception as error:
+            # A failed runtime measurement can break the environment; recover
+            # by resetting and extracting without runtime.
+            LOGGER.warning(
+                "Initial runtime measurement failed (%s); continuing without runtime",
+                error,
+            )
+            env.reset(benchmark=benchmark_uri, reward_space=reward_space)
+            initial_state = extract_features(env, measurement)
         current_state = initial_state
         # CompilerGym provides deterministic -O3 baseline cost observations.
         # Runtime -O3 is not exposed directly, so only IR comparison is exact here.
         try:
             raw_o3_ir = env.observation["IrInstructionCountO3"]
-            o3_ir_instruction_count = int(raw_o3_ir.reshape(-1)[0]) if hasattr(raw_o3_ir, "reshape") else int(raw_o3_ir[0])
+            if isinstance(raw_o3_ir, int):
+                o3_ir_instruction_count = raw_o3_ir
+            elif hasattr(raw_o3_ir, "reshape"):
+                o3_ir_instruction_count = int(raw_o3_ir.reshape(-1)[0])
+            else:
+                o3_ir_instruction_count = int(raw_o3_ir[0])
         except Exception as error:
             LOGGER.warning("Could not read IrInstructionCountO3: %s", error)
             o3_ir_instruction_count = None
@@ -362,6 +390,14 @@ def hybrid_optimize_benchmark(
                 break
 
         final_state = current_state
+        if measure_runtime:
+            try:
+                final_state = extract_features(env, measurement_full)
+            except Exception as error:
+                LOGGER.warning(
+                    "Final runtime measurement failed (%s); reporting null runtime",
+                    error,
+                )
         ir_reduction = initial_state.ir_instruction_count - final_state.ir_instruction_count
         ir_reduction_pct = (ir_reduction / initial_state.ir_instruction_count * 100) if initial_state.ir_instruction_count else 0
         initial_runtime = initial_state.runtime_median_sec

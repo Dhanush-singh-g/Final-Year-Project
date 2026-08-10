@@ -191,8 +191,9 @@ def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action
             pre_to_post[col] = col  # fallback
 
     for iteration in range(args.q_iterations):
-        X_new = []
-        y_new = []
+        X_new: List[List[float]] = []
+        y_new: List[float] = []
+        non_done: List[Dict[str, str]] = []
         for r in rows:
             flag = r.get("pass_flag")
             if not flag:
@@ -200,34 +201,44 @@ def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action
             r_reward = safe_float(r.get("hybrid_reward"))
             if r_reward is None:
                 r_reward = safe_float(r.get("raw_step_reward")) or 0.0
-            done = r.get("done","").lower() in ("true","1","yes")
+            done = r.get("done", "").lower() in ("true", "1", "yes")
             if done:
-                target = r_reward
+                X_new.append(featurize_row(r, flag))
+                y_new.append(r_reward)
             else:
-                # Estimate max_a' Q(s', a')
-                # Build fake state row for s' using post_* columns as if they were pre_*
-                fake_next_state = {}
-                for pre_c, post_c in pre_to_post.items():
-                    fake_next_state[pre_c] = r.get(post_c, "")
-                # Evaluate all actions
-                best_next_q = -1e9
-                for cand_flag in action_vocab.keys():
-                    feats_next = featurize_row(fake_next_state, cand_flag)
-                    try:
-                        q_next = model.predict([feats_next])[0]
-                    except:
-                        q_next = 0.0
-                    if q_next > best_next_q:
-                        best_next_q = q_next
-                if best_next_q == -1e9:
-                    best_next_q = 0.0
-                target = r_reward + gamma * best_next_q
+                non_done.append(r)
 
-            X_new.append(featurize_row(r, flag))
-            y_new.append(target)
+        if non_done:
+            # Vectorized Bellman backup: V(s') = max_a' Q(s', a') via batched
+            # predictions (one batch per action) instead of per-row predict
+            # calls, which are dominated by sklearn call overhead.
+            next_q_max: Optional[np.ndarray] = None
+            for cand_flag in action_vocab.keys():
+                X_next: List[List[float]] = []
+                for r in non_done:
+                    fake_next_state = {}
+                    for pre_c, post_c in pre_to_post.items():
+                        fake_next_state[pre_c] = r.get(post_c, "")
+                    X_next.append(featurize_row(fake_next_state, cand_flag))
+                q_next = np.asarray(model.predict(X_next), dtype=float)
+                if next_q_max is None:
+                    next_q_max = q_next
+                else:
+                    next_q_max = np.maximum(next_q_max, q_next)
+
+            for r, qmax in zip(non_done, next_q_max):
+                r_reward = safe_float(r.get("hybrid_reward"))
+                if r_reward is None:
+                    r_reward = safe_float(r.get("raw_step_reward")) or 0.0
+                X_new.append(featurize_row(r, r.get("pass_flag", "")))
+                y_new.append(r_reward + gamma * float(qmax))
 
         model.fit(X_new, y_new)
-        LOGGER.info(f"[DQN] Iteration {iteration+1}/{args.q_iterations} avg target {sum(y_new)/len(y_new):.3f}")
+        avg_target = sum(y_new) / len(y_new) if y_new else 0.0
+        LOGGER.info(
+            f"[DQN] Iteration {iteration+1}/{args.q_iterations} "
+            f"samples={len(y_new)} avg target {avg_target:.3f}"
+        )
 
     return model
 

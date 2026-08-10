@@ -18,6 +18,7 @@ import json
 import logging
 import math
 import statistics
+import time
 from dataclasses import asdict, dataclass
 from typing import Any, Dict, Mapping, Optional, Sequence, Tuple
 
@@ -284,20 +285,40 @@ def _finite_float_samples(value: Any, observation_name: str) -> Tuple[float, ...
 
 
 def _measure_runtime(env: Any, config: MeasurementConfig) -> Tuple[float, ...]:
-    """Query Runtime while restoring the environment's measurement settings."""
+    """Query Runtime while restoring the environment's measurement settings.
+
+    The Runtime observation compiles and executes the benchmark executable. In
+    some sandboxes the first attempt can transiently fail (e.g. a freshly
+    rebuilt executable briefly reported as not executable). Retry briefly
+    before giving up so one flaky measurement does not invalidate a pass.
+    """
 
     old_count = getattr(env, "runtime_observation_count", None)
     old_warmups = getattr(env, "runtime_warmup_runs_count", None)
     try:
         env.runtime_observation_count = config.runtime_count
         env.runtime_warmup_runs_count = config.runtime_warmup_count
-        raw = _observation(env, "Runtime", required=True)
-        samples = _finite_float_samples(raw, "Runtime")
-        if not samples:
-            raise FeatureExtractionError(
-                "Runtime returned no samples for a benchmark marked runnable"
-            )
-        return samples
+        last_error: Optional[Exception] = None
+        for attempt in range(3):
+            try:
+                raw = _observation(env, "Runtime", required=True)
+                samples = _finite_float_samples(raw, "Runtime")
+                if not samples:
+                    raise FeatureExtractionError(
+                        "Runtime returned no samples for a benchmark marked runnable"
+                    )
+                return samples
+            except Exception as error:  # transient build/exec failure
+                last_error = error
+                LOGGER.warning(
+                    "Runtime observation attempt %d/3 failed, retrying: %s",
+                    attempt + 1,
+                    error,
+                )
+                time.sleep(1.0)
+        raise FeatureExtractionError(
+            f"Runtime observation failed after 3 attempts: {last_error}"
+        ) from last_error
     finally:
         if old_count is not None:
             env.runtime_observation_count = old_count

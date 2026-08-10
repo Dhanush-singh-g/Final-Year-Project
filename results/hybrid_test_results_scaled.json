@@ -1,0 +1,455 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bitcount",
+    "initial_ir": 857,
+    "final_ir": 490,
+    "ir_reduction": 367,
+    "ir_reduction_pct": 42.82380396732789,
+    "initial_runtime_median_sec": 1.398629,
+    "final_runtime_median_sec": 1.090054,
+    "runtime_speedup": 1.2830823060141974,
+    "runtime_improvement_pct": 22.062677093067556,
+    "o3_ir_instruction_count": 607,
+    "hybrid_vs_o3_ir_pct": 19.27512355848435,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-simplifycfg",
+      "-simplifycfg"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+        "post_state_id": "766e78d795f3a34f0db5faf142c00bcab97f32ec",
+        "chosen_pass": "-sroa",
+        "delta_ir": -349,
+        "ir_improvement": 0.4072345390898483,
+        "hybrid_reward": 31.223124586849043,
+        "sl_top3": [
+          [
+            "-early-cse",
+            1.8184263328305001,
+            0.04784706126035982
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04697079711216209
+          ],
+          [
+            "-instcombine",
+            0.6067514509094306,
+            0.0375500505330263
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            43.45012299321879
+          ],
+          [
+            "-newgvn",
+            41.72872832116216
+          ],
+          [
+            "-gvn",
+            39.53095946889412
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "766e78d795f3a34f0db5faf142c00bcab97f32ec",
+        "post_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "chosen_pass": "-simplifycfg",
+        "delta_ir": -18,
+        "ir_improvement": 0.03543307086614173,
+        "hybrid_reward": 3.6606482135878733,
+        "sl_top3": [
+          [
+            "-gvn",
+            3.4968562060934825,
+            0.06487263507547143
+          ],
+          [
+            "-newgvn",
+            2.3293438384625245,
+            0.05136327452812774
+          ],
+          [
+            "-early-cse",
+            2.0391095613690577,
+            0.04846668032884668
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-simplifycfg",
+            16.82540730662874
+          ],
+          [
+            "-newgvn",
+            14.530974190040826
+          ],
+          [
+            "-gvn",
+            14.197297996470583
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "post_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041",
+        "chosen_pass": "-simplifycfg",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-gvn",
+            3.5018556298968146,
+            0.0646769360632668
+          ],
+          [
+            "-early-cse",
+            2.349648195467207,
+            0.051365316888866606
+          ],
+          [
+            "-newgvn",
+            2.3343432622658566,
+            0.05120832873199882
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-simplifycfg",
+            16.349998811780775
+          ],
+          [
+            "-gvn",
+            14.280103147453447
+          ],
+          [
+            "-newgvn",
+            14.114689834619975
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 34.883772800436915,
+    "initial_state_id": "fddc97bdd0d0712a81a48d048c526f3c601f78ca",
+    "final_state_id": "7ab3c1e5725e2e1f45489f353de70300d96dd041"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bzip2",
+    "initial_ir": 28748,
+    "final_ir": 18846,
+    "ir_reduction": 9902,
+    "ir_reduction_pct": 34.444135244190896,
+    "initial_runtime_median_sec": 1.200945,
+    "final_runtime_median_sec": 1.601797,
+    "runtime_speedup": 0.7497485636444569,
+    "runtime_improvement_pct": -33.37804812043849,
+    "o3_ir_instruction_count": 19169,
+    "hybrid_vs_o3_ir_pct": 1.6850122593771193,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "49deb7a721cce9d543a7e756ae05d08d4437e266",
+        "post_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "chosen_pass": "-sroa",
+        "delta_ir": -9902,
+        "ir_improvement": 0.344441352441909,
+        "hybrid_reward": 17.724662686843836,
+        "sl_top3": [
+          [
+            "-newgvn",
+            5.737347436581598,
+            0.10265952172919474
+          ],
+          [
+            "-early-cse",
+            3.4841919755556274,
+            0.06541730370625112
+          ],
+          [
+            "-gvn",
+            2.6868770366850163,
+            0.05577489280272849
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.554431788246625
+          ],
+          [
+            "-simplifycfg",
+            33.20296180404769
+          ],
+          [
+            "-gvn",
+            33.12771001984191
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "post_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            38.88145551387372
+          ],
+          [
+            "-simplifycfg",
+            33.83266245491422
+          ],
+          [
+            "-dse",
+            33.45280834589336
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 17.724662686843836,
+    "initial_state_id": "49deb7a721cce9d543a7e756ae05d08d4437e266",
+    "final_state_id": "e24d74fad98e11e7e516307cf4cb2ce578cdb607"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/dijkstra",
+    "initial_ir": 450,
+    "final_ir": 358,
+    "ir_reduction": 92,
+    "ir_reduction_pct": 20.444444444444446,
+    "initial_runtime_median_sec": 0.003017,
+    "final_runtime_median_sec": 0.001903,
+    "runtime_speedup": 1.5853914871255912,
+    "runtime_improvement_pct": 36.92409678488565,
+    "o3_ir_instruction_count": 366,
+    "hybrid_vs_o3_ir_pct": 2.185792349726776,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "b1b9b90ddcac83c49e410f2f702617643afc902c",
+        "post_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -92,
+        "ir_improvement": 0.20444444444444446,
+        "hybrid_reward": 12.95047390201575,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.574093270079854,
+            0.05475155665392219
+          ],
+          [
+            "-gvn",
+            1.5761111534370844,
+            0.04484487790647041
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.03709617951475961
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            45.62100881351841
+          ],
+          [
+            "-gvn",
+            39.96053831137486
+          ],
+          [
+            "-instcombine",
+            39.709927342750085
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "post_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-early-cse",
+            2.6062734499096787,
+            0.05508560222420986
+          ],
+          [
+            "-gvn",
+            1.5761111534370844,
+            0.04482902997472275
+          ],
+          [
+            "-instcombine",
+            0.6276341998019876,
+            0.037083069930153874
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            43.53864964663209
+          ],
+          [
+            "-gvn",
+            39.18510822696905
+          ],
+          [
+            "-instcombine",
+            38.78621888508534
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 12.95047390201575,
+    "initial_state_id": "b1b9b90ddcac83c49e410f2f702617643afc902c",
+    "final_state_id": "f1d69bd8713dbfcc3d672d3f9486505506ffe185"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/gsm",
+    "initial_ir": 14902,
+    "final_ir": 10067,
+    "ir_reduction": 4835,
+    "ir_reduction_pct": 32.445309354449066,
+    "initial_runtime_median_sec": 0.296958,
+    "final_runtime_median_sec": 0.205819,
+    "runtime_speedup": 1.4428114022514928,
+    "runtime_improvement_pct": 30.690872109860653,
+    "o3_ir_instruction_count": 10028,
+    "hybrid_vs_o3_ir_pct": -0.38891104906262464,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "849bd8495db8bd4123b2999675d1ad62ccb9fe6c",
+        "post_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "chosen_pass": "-sroa",
+        "delta_ir": -4835,
+        "ir_improvement": 0.32445309354449064,
+        "hybrid_reward": 26.28508329738313,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.550140854033468,
+            0.10683033601664313
+          ],
+          [
+            "-early-cse",
+            4.759933671311937,
+            0.07467911699448258
+          ],
+          [
+            "-gvn",
+            4.223095286399561,
+            0.06707643685942405
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            50.512119960919016
+          ],
+          [
+            "-gvn",
+            44.84200239427558
+          ],
+          [
+            "-dse",
+            42.04152219596987
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "post_state_id": "884770c15a2a248e1cb311c1905536f3f642739a",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.503850178879009,
+            0.12523556571584818
+          ],
+          [
+            "-early-cse",
+            5.7741743092556,
+            0.08861147072149725
+          ],
+          [
+            "-gvn",
+            4.18053462734236,
+            0.06442703732417679
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            52.801103180457794
+          ],
+          [
+            "-gvn",
+            47.70627015269757
+          ],
+          [
+            "-simplifycfg",
+            47.44419292835732
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 26.28508329738313,
+    "initial_state_id": "849bd8495db8bd4123b2999675d1ad62ccb9fe6c",
+    "final_state_id": "884770c15a2a248e1cb311c1905536f3f642739a"
+  }
+]

@@ -1,0 +1,105 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2rgba",
+    "initial_ir": 58661,
+    "final_ir": 37131,
+    "ir_reduction": 21530,
+    "ir_reduction_pct": 36.70240875539115,
+    "initial_runtime_median_sec": 0.105741,
+    "final_runtime_median_sec": 0.102493,
+    "runtime_speedup": 1.0316899690710586,
+    "runtime_improvement_pct": 3.0716562166047234,
+    "o3_ir_instruction_count": 39243,
+    "hybrid_vs_o3_ir_pct": 5.38185154040211,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "d21b863319d45e776470916aff6cc7086b289460",
+        "post_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "chosen_pass": "-sroa",
+        "delta_ir": -21530,
+        "ir_improvement": 0.36702408755391147,
+        "hybrid_reward": 24.839259448276835,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.218368933036615
+          ],
+          [
+            "-dse",
+            34.85532464188303
+          ],
+          [
+            "-gvn",
+            33.452058226434254
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "post_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            37.39304291683052
+          ],
+          [
+            "-dse",
+            34.15651600709501
+          ],
+          [
+            "-gvn",
+            32.41095496781915
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 24.839259448276835,
+    "initial_state_id": "d21b863319d45e776470916aff6cc7086b289460",
+    "final_state_id": "f89a8e601e17cb2c31ccbc77c9d6d845beffc068"
+  }
+]

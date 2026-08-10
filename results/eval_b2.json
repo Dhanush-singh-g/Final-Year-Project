@@ -1,0 +1,249 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/stringsearch",
+    "initial_ir": 1348,
+    "final_ir": 1047,
+    "ir_reduction": 301,
+    "ir_reduction_pct": 22.329376854599406,
+    "initial_runtime_median_sec": 0.095889,
+    "final_runtime_median_sec": 0.097751,
+    "runtime_speedup": 0.980951601518143,
+    "runtime_improvement_pct": -1.9418285726204283,
+    "o3_ir_instruction_count": 697,
+    "hybrid_vs_o3_ir_pct": -50.21520803443329,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "8b08b223c7916d0c347728138ba50240e3a76c62",
+        "post_state_id": "85257d1044770845e0c7ec233ce15231e5af125d",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -300,
+        "ir_improvement": 0.22255192878338279,
+        "hybrid_reward": 12.867715796965088,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.07205053066696
+          ],
+          [
+            "-instcombine",
+            36.232873935105275
+          ],
+          [
+            "-simplifycfg",
+            34.96564071746844
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "85257d1044770845e0c7ec233ce15231e5af125d",
+        "post_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "chosen_pass": "-newgvn",
+        "delta_ir": -1,
+        "ir_improvement": 0.0009541984732824427,
+        "hybrid_reward": 0.0715648854961832,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.52611861969486
+          ],
+          [
+            "-instcombine",
+            36.51143806187366
+          ],
+          [
+            "-simplifycfg",
+            35.40744920245219
+          ]
+        ]
+      },
+      {
+        "step": 2,
+        "pre_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "post_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c",
+        "chosen_pass": "-newgvn",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            3.169619076520045,
+            0.06068840929362161
+          ],
+          [
+            "-early-cse",
+            1.9300831215749834,
+            0.047363199161700655
+          ],
+          [
+            "-gvn",
+            1.7260081839004835,
+            0.04546898979466202
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-newgvn",
+            41.52611861969486
+          ],
+          [
+            "-instcombine",
+            36.51143806187366
+          ],
+          [
+            "-simplifycfg",
+            35.40744920245219
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 12.939280682461272,
+    "initial_state_id": "8b08b223c7916d0c347728138ba50240e3a76c62",
+    "final_state_id": "c0f1d1efe7a6add99d5d21b9b6880e24168c323c"
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2bw",
+    "initial_ir": 58797,
+    "final_ir": 37222,
+    "ir_reduction": 21575,
+    "ir_reduction_pct": 36.69404901610626,
+    "initial_runtime_median_sec": 0.100679,
+    "final_runtime_median_sec": 0.102073,
+    "runtime_speedup": 0.9863431073839312,
+    "runtime_improvement_pct": -1.3845985756711852,
+    "o3_ir_instruction_count": 39537,
+    "hybrid_vs_o3_ir_pct": 5.855274805878039,
+    "sl_target": "step_reward",
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "steps": [
+      {
+        "step": 0,
+        "pre_state_id": "22d998d830dd6fd78846c31fc2a5bcf2a38dbe3c",
+        "post_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "chosen_pass": "-sroa",
+        "delta_ir": -21575,
+        "ir_improvement": 0.3669404901610626,
+        "hybrid_reward": 24.847984993934034,
+        "sl_top3": [
+          [
+            "-newgvn",
+            6.537285701919759,
+            0.10642175423744729
+          ],
+          [
+            "-early-cse",
+            4.74707851919823,
+            0.0743935003089222
+          ],
+          [
+            "-gvn",
+            4.210240134285854,
+            0.06681989727585606
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            40.218368933036615
+          ],
+          [
+            "-dse",
+            34.85532464188303
+          ],
+          [
+            "-gvn",
+            32.652423573501764
+          ]
+        ]
+      },
+      {
+        "step": 1,
+        "pre_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "post_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837",
+        "chosen_pass": "-sroa",
+        "delta_ir": 0,
+        "ir_improvement": 0.0,
+        "hybrid_reward": 0.0,
+        "sl_top3": [
+          [
+            "-newgvn",
+            7.545641206413209,
+            0.12509816522891024
+          ],
+          [
+            "-early-cse",
+            5.815965336789801,
+            0.08851425185914112
+          ],
+          [
+            "-gvn",
+            4.2223256548765615,
+            0.06435635208193183
+          ]
+        ],
+        "q_values_top3": [
+          [
+            "-sroa",
+            37.39304291683052
+          ],
+          [
+            "-dse",
+            34.15651600709501
+          ],
+          [
+            "-gvn",
+            31.61132031488666
+          ]
+        ]
+      }
+    ],
+    "cumulative_hybrid": 24.847984993934034,
+    "initial_state_id": "22d998d830dd6fd78846c31fc2a5bcf2a38dbe3c",
+    "final_state_id": "53ca00d839ebd9fe1731a69edaa6daf911e51837"
+  }
+]
