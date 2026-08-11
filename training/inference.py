@@ -198,6 +198,7 @@ def hybrid_optimize_benchmark(
     reward_space: str = "IrInstructionCountO3",
     measure_runtime: bool = False,
     verbose: bool = True,
+    dump_bitcode_to: Optional[Path] = None,
 ) -> Dict:
     """
     Run hybrid optimization on one benchmark URI.
@@ -418,6 +419,21 @@ def hybrid_optimize_benchmark(
             if o3_ir_instruction_count is not None and o3_ir_instruction_count > 0
             else None
         )
+
+        if dump_bitcode_to is not None:
+            try:
+                dump_bitcode_to = Path(dump_bitcode_to)
+                dump_bitcode_to.parent.mkdir(parents=True, exist_ok=True)
+                raw = env.observation["Bitcode"]
+                if hasattr(raw, "tobytes"):
+                    raw = raw.tobytes()
+                if isinstance(raw, bytes):
+                    dump_bitcode_to.write_bytes(raw)
+                else:
+                    dump_bitcode_to.write_text(str(raw))
+                LOGGER.info("Dumped final hybrid bitcode to %s", dump_bitcode_to)
+            except Exception as error:  # dumping is best-effort
+                LOGGER.warning("Failed to dump final bitcode to %s: %s", dump_bitcode_to, error)
 
         if verbose:
             print(f"\n[Hybrid] Final sequence ({len(pass_sequence)}): {' -> '.join(pass_sequence)}")

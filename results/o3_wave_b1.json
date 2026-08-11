@@ -1,0 +1,53 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/ispell",
+    "status": "failed",
+    "reason": "o3 run failed with rc=1: stdout=''",
+    "elapsed_sec": 3.44
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/jpeg-c",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out -dct int -progressive -outfile output.jpeg /home/daytona/.local/share/compiler_gym/llvm-v0/cbench-v1-runtime-data/runtime_data/consumer_jpeg_data/1.ppm",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "o0_ir_instruction_count": 62452,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.004935945384204388,
+      "mean_sec": 0.005234034918248654,
+      "std_sec": 0.0006562198406801326,
+      "min_sec": 0.0047364747151732445,
+      "max_sec": 0.00632329098880291,
+      "ci95_lo_sec": 0.0047364747151732445,
+      "ci95_hi_sec": 0.00632329098880291
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.005450338125228882,
+      "mean_sec": 0.005632124282419682,
+      "std_sec": 0.00038202575288949497,
+      "min_sec": 0.005293756723403931,
+      "max_sec": 0.006046108901500702,
+      "ci95_lo_sec": 0.005293756723403931,
+      "ci95_hi_sec": 0.006046108901500702
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 36229,
+    "o3_ir_instruction_count": 46186,
+    "hybrid_vs_o3_ir_pct": 21.558480924955614,
+    "speedup_hybrid_vs_o3": 0.9056218661658,
+    "elapsed_sec": 6.8
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/lame",
+    "status": "failed",
+    "reason": "o3 run failed with rc=1: stdout=''",
+    "elapsed_sec": 7.89
+  }
+]

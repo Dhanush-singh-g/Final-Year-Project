@@ -1,0 +1,197 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2bw",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out /home/daytona/.local/share/compiler_gym/llvm-v0/cbench-v1-runtime-data/runtime_data/consumer_tiff_data/1.tif output.tif",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -lm",
+    "o0_ir_instruction_count": 58797,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.003572210669517517,
+      "mean_sec": 0.003500821441411972,
+      "std_sec": 0.00012097137351097854,
+      "min_sec": 0.003322770819067955,
+      "max_sec": 0.003597412258386612,
+      "ci95_lo_sec": 0.003322770819067955,
+      "ci95_hi_sec": 0.003597412258386612
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.0035070301964879036,
+      "mean_sec": 0.0035917172208428383,
+      "std_sec": 0.0003476016763784202,
+      "min_sec": 0.003336271271109581,
+      "max_sec": 0.004187112674117088,
+      "ci95_lo_sec": 0.003336271271109581,
+      "ci95_hi_sec": 0.004187112674117088
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 37222,
+    "o3_ir_instruction_count": 39537,
+    "hybrid_vs_o3_ir_pct": 5.855274805878039,
+    "speedup_hybrid_vs_o3": 1.0185856606238772,
+    "elapsed_sec": 6.97
+  },
+  {
+    "benchmark_uri": "benchmark://cbench-v1/tiff2rgba",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out /home/daytona/.local/share/compiler_gym/llvm-v0/cbench-v1-runtime-data/runtime_data/consumer_tiff_data/1.tif output.tif",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include -lm",
+    "o0_ir_instruction_count": 58661,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.005920028313994408,
+      "mean_sec": 0.006089691445231438,
+      "std_sec": 0.000342988686791911,
+      "min_sec": 0.00579362828284502,
+      "max_sec": 0.006535750813782215,
+      "ci95_lo_sec": 0.00579362828284502,
+      "ci95_hi_sec": 0.006535750813782215
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.005491338670253754,
+      "mean_sec": 0.005429091863334179,
+      "std_sec": 0.00033838550557565856,
+      "min_sec": 0.005047316662967205,
+      "max_sec": 0.00581313855946064,
+      "ci95_lo_sec": 0.005047316662967205,
+      "ci95_hi_sec": 0.00581313855946064
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 37131,
+    "o3_ir_instruction_count": 39243,
+    "hybrid_vs_o3_ir_pct": 5.38185154040211,
+    "speedup_hybrid_vs_o3": 1.0780665097315596,
+    "elapsed_sec": 6.39
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/adpcm",
+    "suite": "chstone-v0",
+    "protocol": "fallback",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "",
+    "o0_ir_instruction_count": 1474,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.00239532720297575,
+      "mean_sec": 0.003526139259338379,
+      "std_sec": 0.001895106953074222,
+      "min_sec": 0.002041356638073921,
+      "max_sec": 0.005966438911855221,
+      "ci95_lo_sec": 0.002041356638073921,
+      "ci95_hi_sec": 0.005966438911855221
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.0020314957946538925,
+      "mean_sec": 0.0027520192787051203,
+      "std_sec": 0.0011635292921526495,
+      "min_sec": 0.001799856312572956,
+      "max_sec": 0.004438664764165878,
+      "ci95_lo_sec": 0.001799856312572956,
+      "ci95_hi_sec": 0.004438664764165878
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "final_ir": 1217,
+    "o3_ir_instruction_count": 1440,
+    "hybrid_vs_o3_ir_pct": 15.48611111111111,
+    "speedup_hybrid_vs_o3": 1.1790953293033244,
+    "elapsed_sec": 0.78
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/aes",
+    "suite": "chstone-v0",
+    "protocol": "fallback",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "",
+    "o0_ir_instruction_count": 4048,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.0018406864255666733,
+      "mean_sec": 0.0019336864352226257,
+      "std_sec": 0.00026643763722169274,
+      "min_sec": 0.0017065349966287613,
+      "max_sec": 0.0023933378979563713,
+      "ci95_lo_sec": 0.0017065349966287613,
+      "ci95_hi_sec": 0.0023933378979563713
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.0019388562068343163,
+      "mean_sec": 0.002005152590572834,
+      "std_sec": 0.0002362464950780748,
+      "min_sec": 0.0018521854653954506,
+      "max_sec": 0.0024197977036237717,
+      "ci95_lo_sec": 0.0018521854653954506,
+      "ci95_hi_sec": 0.0024197977036237717
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 2993,
+    "o3_ir_instruction_count": 2328,
+    "hybrid_vs_o3_ir_pct": -28.56529209621993,
+    "speedup_hybrid_vs_o3": 0.9493671676519372,
+    "elapsed_sec": 0.97
+  },
+  {
+    "benchmark_uri": "benchmark://chstone-v0/sha",
+    "suite": "chstone-v0",
+    "protocol": "fallback",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "",
+    "o0_ir_instruction_count": 642,
+    "o3": {
+      "n": 5,
+      "median_sec": 0.002277548424899578,
+      "mean_sec": 0.0022184934467077257,
+      "std_sec": 0.0002936203159178164,
+      "min_sec": 0.0017285561189055443,
+      "max_sec": 0.0025210976600646973,
+      "ci95_lo_sec": 0.0017285561189055443,
+      "ci95_hi_sec": 0.0025210976600646973
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.0022383471950888634,
+      "mean_sec": 0.0021722909063100816,
+      "std_sec": 0.00031038059822728067,
+      "min_sec": 0.0017765257507562637,
+      "max_sec": 0.002582687884569168,
+      "ci95_lo_sec": 0.0017765257507562637,
+      "ci95_hi_sec": 0.002582687884569168
+    },
+    "outputs_match": true,
+    "pass_sequence": [
+      "-newgvn",
+      "-newgvn"
+    ],
+    "final_ir": 517,
+    "o3_ir_instruction_count": 400,
+    "hybrid_vs_o3_ir_pct": -29.25,
+    "speedup_hybrid_vs_o3": 1.0175134715010816,
+    "elapsed_sec": 0.68
+  }
+]

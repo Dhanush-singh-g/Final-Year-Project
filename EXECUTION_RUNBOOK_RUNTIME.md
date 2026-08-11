@@ -15,17 +15,23 @@
 7. RL episode IDs are deterministic, making replay-buffer resume effective.
 8. Evaluation uses runtime targets rather than instruction-count reward.
 
-## Scientific boundary
+## Scientific boundary (guardrail — now active)
 
 CompilerGym exposes the exact `-O3` IR cost but does not directly expose an
-`-O3` runtime observation. The corrected evaluation reports:
+`-O3` runtime observation. The evaluation reports:
 
-- hybrid runtime vs initial no-pass runtime;
-- hybrid IR instruction count vs exact `-O3` IR instruction count.
+- hybrid runtime vs initial no-pass runtime (CompilerGym Runtime observation);
+- hybrid IR instruction count vs exact `-O3` IR instruction count;
+- hybrid runtime vs `opt -O3` runtime, measured ONLY by the external
+  executable O3 baseline harness (section 10, `evaluation/o3_runtime_harness.py`)
+  using identical inputs, warmups, CPU affinity, and repetitions.
 
-Do not claim runtime superiority over `-O3` until a separate executable O3
-baseline harness is implemented and measured using identical inputs, warmups,
-CPU affinity, and repetitions.
+Guardrail: never claim runtime superiority over `-O3` from CompilerGym
+Runtime-vs-initial numbers. Any such claim must cite the harness output
+(`results/o3_runtime_vs_o3_summary.json`). As of the Aug 2026 scaled run the
+measured result is a geometric-mean **0.93×** speedup vs `opt -O3` over 20
+runnable test benchmarks (wins 10/20, Wilcoxon p=0.88) — i.e. `-O3` is
+currently ahead on runtime; the harness is the instrument for closing that gap.
 
 ## 0. Install the correction
 
@@ -293,16 +299,61 @@ Report:
 6. Dataset size, benchmark split, runtime repetitions, CPU, LLVM, and
    CompilerGym versions.
 
-## 10. Required next research change
+## 10. External O3 executable runtime baseline — IMPLEMENTED
 
-To make the final claim "beats -O3 on runtime," add a controlled external O3
-baseline harness that:
+`evaluation/o3_runtime_harness.py` implements the controlled external O3
+baseline. It satisfies all five requirements:
 
-1. compiles the same benchmark and input with LLVM 10 `opt -O3`;
-2. preserves the cBench dynamic run configuration;
-3. pins execution to the same CPU core;
-4. uses identical warmups and repetitions;
-5. compares medians and confidence intervals.
+1. compiles the same benchmark and input with LLVM 10 `opt -O3` — the
+   benchmark's O0 bitcode (`Benchmark.proto.program.contents`, identical to the
+   environment's start state) is run through the bundled `opt -O3`;
+2. preserves the benchmark dynamic run configuration — native builds reuse the
+   benchmark's `build_cmd` template (`$CC` -> bundled clang, `$IN` -> bitcode)
+   and executions reuse `pre_run_cmd` / `run_cmd` (including cBench input setup
+   such as `echo 1 >_finfo_dataset`);
+3. pins execution to the same CPU core — every run goes through
+   `taskset -c <cpu> /bin/sh -c ...`, and O3/hybrid runs are interleaved to
+   cancel thermal/load drift;
+4. uses identical warmups and repetitions for both arms (`--warmup 1
+   --reps 5`);
+5. compares medians and 95% bootstrap confidence intervals, plus a paired
+   Wilcoxon signed-rank test and an output-hash equality check.
 
-Until then, the defensible claims are runtime improvement vs the initial state
-and IR instruction-count comparison vs exact -O3.
+The hybrid final IR is dumped to bitcode by `training/inference.py`
+(`hybrid_optimize_benchmark(..., dump_bitcode_to=...)`).
+
+Run (one process per wave, disjoint `--benchmarks` subsets for parallelism):
+
+```bash
+python evaluation/o3_runtime_harness.py measure \
+  --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
+  --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
+  --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 \
+  --workdir results/o3_harness_work --output results/o3_wave1.json
+python evaluation/o3_runtime_harness.py summarize \
+  --results results/o3_wave1.json results/o3_wave2.json \
+  --output results/o3_runtime_vs_o3_summary.json
+```
+
+Measured result (scaled run, Aug 2026, `results/o3_runtime_vs_o3_summary.json`):
+
+- 20 runnable held-out test benchmarks (ispell and lame are `IsRunnable=false`
+  in CompilerGym and are excluded by the protocol, not by choice).
+- Geo-mean speedup hybrid vs `opt -O3`: **0.93×**, wins 10/20,
+  Wilcoxon p = 0.88 (not significant).
+- Clear hybrid wins: bzip2 **1.33×**, CHStone adpcm 1.18×, csmith-8 1.12×.
+- All runs byte-identical between arms (`outputs_match=true`).
+
+Conclusion: with the current short IR-focused learned sequences and the default
+(small) benchmark inputs, the hybrid optimizer does NOT yet beat the full
+`-O3` pipeline on runtime; the IR-count advantage from section 8 does not
+carry over to runtime. The harness is the controlled, reproducible instrument
+for closing that gap (larger inputs, longer sequences, runtime-aware reward).
+
+Defensible claims as of this run:
+
+- runtime improvement vs the initial no-pass state (CompilerGym Runtime
+  observation);
+- IR instruction-count comparison vs exact -O3;
+- runtime-vs-O3 measured by the harness above (currently 0.93×, i.e. -O3
+  ahead on these inputs).

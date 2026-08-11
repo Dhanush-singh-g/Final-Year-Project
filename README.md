@@ -48,7 +48,7 @@ Train RL Optimization Agent (training/train_rl.py)
 Hybrid Optimization System (training/inference.py)
         │
         ▼
-Optimize Any New Program (beats -O3)
+Optimize Any New Program (beats -O3 on IR count; runtime-vs-O3 measured by the external baseline harness, see results)
 ```
 
 ## Current Measured Results (scaled run, Aug 2026)
@@ -82,14 +82,33 @@ tiff2rgba 58,661 → 37,131 (**+5.4% vs -O3**).
 Learned sequences are short and sensible, e.g. `-sroa → -simplifycfg`, `-newgvn → -newgvn`,
 and `-sroa ×7 → -loop-distribute` (lame).
 
+**External O3 runtime baseline (runbook §10, `evaluation/o3_runtime_harness.py`) — implemented.**
+CompilerGym exposes no `-O3` runtime observation, so runtime-vs-O3 is measured with a controlled
+harness: the same O0 bitcode is compiled with `opt -O3` (LLVM 10) and with the hybrid final IR,
+both with the benchmark's own clang build command, then executed with the benchmark's dynamic
+input configuration, identical warmups + repetitions, and `taskset` CPU pinning, reporting medians
+with 95% bootstrap CIs (interleaved to cancel drift).
+
+| Runtime comparison (executable baseline) | n | Geo-mean speedup | Wins |
+|---|---|---|---|
+| Hybrid vs `opt -O3` | 20 runnable test benchmarks | **0.93×** | 10/20 (Wilcoxon p=0.88, n.s.) |
+
+Honest interpretation: the learned IR-level advantage (above) does **not** yet translate into a
+runtime win over the full `-O3` pipeline on these default small inputs — `-O3` wins on 10 of the
+20 runnable benchmarks (e.g. bitcount 1.28×, gsm 1.96×) while hybrid's clear wins are
+compute-heavy bzip2 (**1.33×**), CHStone adpcm (1.18×), and csmith-8 (1.12×). All 20 runs produced
+byte-identical outputs on both sides (`outputs_match=true`), so the comparison is apples-to-apples.
+Runtimes below ~10 ms are dominated by process startup, so the trustworthy signal is on the
+heavier programs (bzip2 135 ms, bitcount 60 ms). Closing this gap (larger benchmark inputs,
+longer learned sequences, runtime-aware selection) is the next research step.
+
 Honest caveats:
 
 1. On small/synthetic programs (CHStone, csmith) `-O3` still wins the IR-count race — its full
    fixed pipeline removes trivially dead synthetic code that our short learned sequences do not.
-2. The `vs -O3` comparison is instruction-count only. CompilerGym does not expose an `-O3`
-   *runtime* observation; runtime numbers are vs the initial no-pass state. A controlled external
-   O3 executable baseline harness (runbook §10) is required before claiming runtime superiority
-   over `-O3`.
+2. Runtime-vs-O3 is now measured directly (table above). The comparison uses `opt -O3` on the
+   same O0 bitcode, so it is an IR-pipeline comparison, not a full frontend `clang -O3` build;
+   it also uses each benchmark's default (small) input sizes.
 3. Cross-program runtime prediction remains noisy (single-pass runtime deltas are dominated by
    process overhead), so the canonical SL scorer uses the deterministic IR `step_reward`;
    `models/supervised_runtime/` is kept as the runtime-target reference.
@@ -135,7 +154,8 @@ NeuroCompiler/
 │   ├── train_rl.py    # Phase 6: DQN/PPO with fitted Q iteration
 │   └── inference.py   # Phase 7: Hybrid SL-guided RL inference
 ├── evaluation/
-│   └── evaluate_benchmarks.py  # Test split evaluation vs baselines
+│   ├── evaluate_benchmarks.py  # Test split evaluation vs baselines
+│   └── o3_runtime_harness.py   # NEW: external opt -O3 executable runtime baseline (§10)
 └── results/
 ```
 
@@ -276,6 +296,16 @@ python training/train_rl.py --input datasets/replay_buffer/rl_experiences_scaled
 python evaluation/evaluate_benchmarks.py \
   --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
   --max-steps 8 --measure-runtime --output results/hybrid_test_results_scaled.json
+
+# 6. External O3 executable runtime baseline (runbook §10) — run in parallel waves
+python evaluation/o3_runtime_harness.py measure \
+  --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
+  --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
+  --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 \
+  --workdir results/o3_harness_work --output results/o3_wave1.json
+
+python evaluation/o3_runtime_harness.py summarize \
+  --results results/o3_wave*.json --output results/o3_runtime_vs_o3_summary.json
 ```
 
 For the full design targets (AnghaBench 5k × 31, 100k RL episodes), run the same commands
@@ -352,7 +382,10 @@ Standard "ML chooses an LLVM pass" predicts one pass → limited gain.
 This project:
 - SL provides **strong local heuristics** (which pass looks good now)
 - RL discovers **effective sequences and ordering** for long-term cumulative reward
-- Hybrid beats -O3 because it adapts to program features instead of using fixed pipeline
+- Hybrid beats -O3 **on IR count** because it adapts to program features instead
+  of using a fixed pipeline; runtime vs -O3 is measured separately by the
+  external O3 baseline harness (0.93× geo-mean on the scaled run — -O3 is
+  currently ahead, see results above).
 
 Easier to justify in research: supervised reward modeling + RL for sequential decision = principled division of labor.
 
