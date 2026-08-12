@@ -15,12 +15,13 @@ Design:
   - Reward: hybrid (0.6 RT + 0.3 IR + 0.1 Size) scaled x100
   - Episode terminates on no IR change / repeated state / max passes
 
-RL Algorithms supported:
-  1) DQN (if torch available): Q(s,a) approximator, experience replay, target network
-  2) PPO (if stable-baselines3 available): policy gradient with SL prior as initial policy
-  3) Fallback: imitation via supervised Q regression (sklearn HistGradientBoosting that predicts Q)
+RL algorithm implemented:
+  fitted-Q regression with sklearn HistGradientBoosting (works without GPU/CUDA).
 
-The fallback is sufficient for thesis/hackathon and runs without GPU/CUDA.
+Actions are ONE-HOT encoded (matching the SL encoding): a single numeric
+action id would impose an artificial ordinal relationship between unrelated
+LLVM passes (review fix). "dqn_torch" and "ppo" are NOT implemented and are
+rejected by the CLI rather than silently falling back.
 
 Saves:
   models/reinforcement/rl_agent.{pkl, joblib, pt}
@@ -54,36 +55,64 @@ DEFAULT_RL_INPUT = PROJECT_ROOT / "datasets" / "replay_buffer" / "rl_experiences
 DEFAULT_MODEL_DIR = PROJECT_ROOT / "models" / "reinforcement"
 
 # -------------------------
-# Fallback Q-learning with sklearn
+# Fitted Q-learning with sklearn
 # -------------------------
+def encode_state_action(
+    state_row: Dict,
+    action_flag: str,
+    feature_cols: List[str],
+    action_vocab: Dict[str, int],
+    action_encoding: str = "one_hot",
+) -> List[float]:
+    """Encode (state, action) identically for training and inference.
+
+    State features come from the raw ``pre_*`` columns; the action is one-hot
+    over the (deterministically sorted) action vocabulary. The old "ordinal"
+    encoding is kept for backward compatibility with pre-fix artifacts only.
+    """
+    feats: List[float] = []
+    for col in feature_cols:
+        v = safe_float(state_row.get(col, ""))
+        feats.append(v if v is not None else 0.0)
+    if action_encoding == "ordinal":
+        feats.append(float(action_vocab.get(action_flag, 0)))
+    else:  # one_hot
+        one_hot = [0.0] * len(action_vocab)
+        index = action_vocab.get(action_flag)
+        if index is not None:
+            one_hot[index] = 1.0
+        feats.extend(one_hot)
+    return feats
+
+
 class SklearnDQNAgent:
     """
-    Simplistic DQN-like agent using sklearn regressor for Q(s,a).
-    Input: state_features + action_id  -> Q-value
+    DQN-like agent using a sklearn regressor for Q(s,a).
+    Input: state features + one-hot action  -> Q-value
     At inference: evaluate all actions, pick argmax (with SL prior mixing).
     """
-    def __init__(self, feature_cols: List[str], action_vocab: Dict[str, int], model=None):
+    def __init__(
+        self,
+        feature_cols: List[str],
+        action_vocab: Dict[str, int],
+        model=None,
+        action_encoding: str = "one_hot",
+    ):
         self.feature_cols = feature_cols
         self.action_vocab = action_vocab
-        self.inv_vocab = {v:k for k,v in action_vocab.items()}
+        self.inv_vocab = {v: k for k, v in action_vocab.items()}
         self.model = model
+        self.action_encoding = action_encoding
         self.pass_flags = list(action_vocab.keys())
 
     def _encode_state_action(self, state_row: Dict, action_flag: str) -> List[float]:
-        feats = []
-        for col in self.feature_cols:
-            # Support both pre_ prefixed and raw col names in RL buffer
-            # RL buffer stores pre_* columns directly
-            v = safe_float(state_row.get(col, "") )
-            if v is None:
-                # Try without pre_? or try alt naming
-                # For RL we have pre_autophase_ etc, but feature_cols already contains those
-                v = 0.0
-            feats.append(v)
-        # action encoding
-        aid = self.action_vocab.get(action_flag, 0)
-        feats.append(float(aid))
-        return feats
+        return encode_state_action(
+            state_row,
+            action_flag,
+            self.feature_cols,
+            self.action_vocab,
+            self.action_encoding,
+        )
 
     def predict_q(self, state_row: Dict, action_flag: str) -> float:
         if self.model is None:
@@ -91,7 +120,7 @@ class SklearnDQNAgent:
         x = self._encode_state_action(state_row, action_flag)
         try:
             return float(self.model.predict([x])[0])
-        except:
+        except Exception:
             return 0.0
 
     def predict(self, state_row: Dict, sl_probs: Optional[Dict[str, float]] = None, epsilon: float = 0.0) -> Tuple[str, Dict[str, float]]:
@@ -123,14 +152,27 @@ class SklearnDQNAgent:
 
     def save(self, path: Path):
         import joblib
-        joblib.dump({"model": self.model, "feature_cols": self.feature_cols, "action_vocab": self.action_vocab}, path)
+        joblib.dump(
+            {
+                "model": self.model,
+                "feature_cols": self.feature_cols,
+                "action_vocab": self.action_vocab,
+                "action_encoding": self.action_encoding,
+            },
+            path,
+        )
 
     @staticmethod
     def load(path: Path) -> "SklearnDQNAgent":
         import joblib
         data = joblib.load(path)
-        agent = SklearnDQNAgent(data["feature_cols"], data["action_vocab"], data["model"])
-        return agent
+        # Legacy artifacts predate the one-hot encoding; treat them as ordinal.
+        return SklearnDQNAgent(
+            data["feature_cols"],
+            data["action_vocab"],
+            data["model"],
+            action_encoding=data.get("action_encoding", "ordinal"),
+        )
 
 def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action_vocab: Dict[str,int], args: argparse.Namespace):
     """Q-learning via fitted Q iteration using Bellman backups from replay buffer"""
@@ -146,14 +188,12 @@ def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action
     # First pass: gather rows with state and next state mapping
     # For simplicity, create arrays
 
+    action_encoding = getattr(args, "action_encoding", "one_hot")
+
     def featurize_row(r, action_flag):
-        feats = []
-        for col in feature_cols:
-            v = safe_float(r.get(col, ""))
-            feats.append(v if v is not None else 0.0)
-        aid = action_vocab.get(action_flag, 0)
-        feats.append(float(aid))
-        return feats
+        return encode_state_action(
+            r, action_flag, feature_cols, action_vocab, action_encoding
+        )
 
     # Initial dataset: immediate hybrid_reward
     X = []
@@ -246,7 +286,12 @@ def parse_args():
     p = argparse.ArgumentParser(description="Phase 6 - Train RL Optimization Agent")
     p.add_argument("--input", default=str(DEFAULT_RL_INPUT), help="RL replay buffer CSV")
     p.add_argument("--output-dir", default=str(DEFAULT_MODEL_DIR))
-    p.add_argument("--model-type", default="dqn_sklearn", choices=["dqn_sklearn", "dqn_torch", "ppo"], help="RL algorithm")
+    p.add_argument(
+        "--model-type",
+        default="dqn_sklearn",
+        choices=["dqn_sklearn", "dqn_torch", "ppo"],
+        help="RL algorithm. Only 'dqn_sklearn' is implemented; dqn_torch/ppo are rejected.",
+    )
     p.add_argument("--gamma", type=float, default=0.9, help="Discount factor")
     p.add_argument("--q-iterations", type=int, default=3, help="Fitted Q iterations")
     p.add_argument("--max-rows", type=int, default=None)
@@ -274,57 +319,54 @@ def main():
         pre_feature_cols = get_feature_cols(fieldnames, use_norm=False)
     LOGGER.info(f"Using {len(pre_feature_cols)} state features")
 
-    # Action vocab
+    # Action vocab: deterministically sorted so one-hot positions are stable
+    # across runs and match the SL vocabulary ordering convention.
     action_vocab = {}
     for r in rows:
         flag = r.get("pass_flag")
         if flag and flag not in action_vocab:
             action_vocab[flag] = len(action_vocab)
+    action_vocab = {flag: action_vocab[flag] for flag in sorted(action_vocab)}
     LOGGER.info(f"Action vocab size {len(action_vocab)}")
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    if args.model_type == "dqn_sklearn":
-        model = train_sklearn_dqn(rows, pre_feature_cols, action_vocab, args)
-        agent = SklearnDQNAgent(pre_feature_cols, action_vocab, model)
-        agent.save(output_dir / "rl_agent.joblib")
-        LOGGER.info(f"Saved agent to {output_dir / 'rl_agent.joblib'}")
+    if args.model_type != "dqn_sklearn":
+        # Review fix: these modes were advertised but only ever fell back to
+        # the sklearn implementation. Refuse loudly instead of silently
+        # training a different algorithm than requested.
+        raise SystemExit(
+            f"--model-type {args.model_type!r} is not implemented. "
+            f"Only 'dqn_sklearn' is available; implement torch/PPO before "
+            f"advertising them."
+        )
 
-        # Save config
-        config = {
-            "model_type": args.model_type,
-            "gamma": args.gamma,
-            "feature_cols": pre_feature_cols,
-            "action_vocab": action_vocab,
-            "q_iterations": args.q_iterations,
-        }
-        (output_dir / "rl_config.json").write_text(json.dumps(config, indent=2, sort_keys=True))
-        (output_dir / "rl_metrics.json").write_text(json.dumps({"transitions": len(rows), "actions": len(action_vocab)}, indent=2))
+    model = train_sklearn_dqn(rows, pre_feature_cols, action_vocab, args)
+    agent = SklearnDQNAgent(pre_feature_cols, action_vocab, model, action_encoding="one_hot")
+    agent.save(output_dir / "rl_agent.joblib")
+    LOGGER.info(f"Saved agent to {output_dir / 'rl_agent.joblib'}")
 
-    elif args.model_type == "dqn_torch":
-        # Placeholder: if torch not available, fallback
-        try:
-            import torch  # noqa
-            LOGGER.info("Torch DQN not fully implemented in this scaffold, falling back to sklearn")
-            model = train_sklearn_dqn(rows, pre_feature_cols, action_vocab, args)
-            agent = SklearnDQNAgent(pre_feature_cols, action_vocab, model)
-            agent.save(output_dir / "rl_agent.joblib")
-        except ImportError:
-            LOGGER.warning("Torch not available, using sklearn DQN")
-            model = train_sklearn_dqn(rows, pre_feature_cols, action_vocab, args)
-            agent = SklearnDQNAgent(pre_feature_cols, action_vocab, model)
-            agent.save(output_dir / "rl_agent.joblib")
-
-    else:  # ppo
-        try:
-            import stable_baselines3  # noqa
-            LOGGER.info("SB3 PPO path not fully scaffolded, using sklearn fallback for now")
-        except ImportError:
-            LOGGER.warning("stable_baselines3 not available, using sklearn DQN")
-        model = train_sklearn_dqn(rows, pre_feature_cols, action_vocab, args)
-        agent = SklearnDQNAgent(pre_feature_cols, action_vocab, model)
-        agent.save(output_dir / "rl_agent.joblib")
+    # Save config
+    config = {
+        "model_type": args.model_type,
+        "gamma": args.gamma,
+        "feature_cols": pre_feature_cols,
+        "action_vocab": action_vocab,
+        "action_encoding": "one_hot",
+        "q_iterations": args.q_iterations,
+    }
+    (output_dir / "rl_config.json").write_text(json.dumps(config, indent=2, sort_keys=True))
+    (output_dir / "rl_metrics.json").write_text(
+        json.dumps(
+            {
+                "transitions": len(rows),
+                "actions": len(action_vocab),
+                "action_encoding": "one_hot",
+            },
+            indent=2,
+        )
+    )
 
     print(f"[RL] Training complete. Output dir: {output_dir}")
     return 0

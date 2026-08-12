@@ -142,6 +142,38 @@ def _transition_key(benchmark_uri: str, pre_state_id: str, action_id: int, episo
     }
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()[:16]
 
+def _episode_payload(
+    benchmark_uri: str, ep_idx: int, seed: int, action_flags: Sequence[str], max_steps: int
+) -> str:
+    """Canonical episode identity string (also used for the resume key)."""
+    return (
+        f"{benchmark_uri}|{ep_idx}|{seed}|{max_steps}|{','.join(action_flags)}"
+    )
+
+
+def episode_id_for(
+    benchmark_uri: str, ep_idx: int, seed: int, action_flags: Sequence[str], max_steps: int
+) -> str:
+    """Deterministic episode resume key."""
+    payload = _episode_payload(benchmark_uri, ep_idx, seed, action_flags, max_steps)
+    return hashlib.sha256(payload.encode()).hexdigest()[:24]
+
+
+def episode_rng_for(
+    benchmark_uri: str, ep_idx: int, seed: int, action_flags: Sequence[str], max_steps: int
+) -> random.Random:
+    """Per-episode RNG (review fix): reproducible across resume.
+
+    The stream is derived ONLY from the episode identity, so a resumed run
+    regenerates the exact same episode content instead of shifting a single
+    global RNG position (which made the old resume silently produce different
+    data for all later episodes).
+    """
+    payload = _episode_payload(benchmark_uri, ep_idx, seed, action_flags, max_steps)
+    episode_id = hashlib.sha256(payload.encode()).hexdigest()[:24]
+    return random.Random(f"{payload}|{episode_id}")
+
+
 def _load_completed_episodes(path: Path) -> Set[str]:
     if not path.exists() or path.stat().st_size == 0:
         return set()
@@ -214,14 +246,22 @@ def collect_rl(args: argparse.Namespace) -> Path:
 
                 for ep_idx in range(args.episodes_per_benchmark):
                     # Deterministic ID makes --resume effective across reruns.
-                    episode_payload = (
-                        f"{benchmark_uri}|{ep_idx}|{args.seed}|"
-                        f"{args.max_steps_per_episode}|{','.join(a.flag for a in actions)}"
+                    action_flags = [a.flag for a in actions]
+                    episode_id = episode_id_for(
+                        benchmark_uri, ep_idx, args.seed, action_flags, args.max_steps_per_episode
                     )
-                    episode_id = hashlib.sha256(episode_payload.encode()).hexdigest()[:24]
                     if episode_id in resume_episodes:
                         skipped_episodes += 1
                         continue
+
+                    # Per-episode RNG (review fix): every episode draws from its
+                    # own stream derived from (benchmark, episode, seed, action
+                    # set), so a resumed run reproduces the SAME episode content
+                    # instead of shifting a single global RNG stream (which made
+                    # the old resume silently produce different data).
+                    episode_rng = episode_rng_for(
+                        benchmark_uri, ep_idx, args.seed, action_flags, args.max_steps_per_episode
+                    )
 
                     # For random episodes vs guided: random choices
                     # Could later use SL model as prior; for now pure random as per design
@@ -238,13 +278,14 @@ def collect_rl(args: argparse.Namespace) -> Path:
                     cumulative = 0.0
 
                     for step_idx in range(args.max_steps_per_episode):
-                        # Choose action: random or epsilon-guided
-                        # For base collection: pure random, but avoid immediate repetition
-                        if previous_passes and random.random() < 0.1:
-                            # 10% chance to try STOP (early termination)
+                        # Choose action from the episode's own RNG (deterministic
+                        # under the same seed / resume state). The 10% early-stop
+                        # branch is a crude stand-in for a real STOP action until
+                        # one is added to the action space (see runbook).
+                        if previous_passes and episode_rng.random() < 0.1:
                             break
 
-                        action = random.choice(actions)
+                        action = episode_rng.choice(actions)
                         # Avoid repeating same pass if previous had no effect? we will check after step
 
                         started = time.perf_counter()
@@ -291,11 +332,11 @@ def collect_rl(args: argparse.Namespace) -> Path:
                         if delta_ir == 0 and not args.allow_no_effect:
                             termination_reason = "no_ir_change"
                             done = True
-                        # Zero reward
+                        # Zero reward (review fix: the flag was parsed but never
+                        # set ``done``, so this was dead intent).
                         if hybrid == 0.0 and args.terminate_on_zero_reward:
                             termination_reason = termination_reason or "zero_reward"
-                            # not immediately done, but we can allow one more? We'll terminate after 2 zero rewards
-                            # For simplicity, if consecutive zero rewards >=2, stop
+                            done = True
                         # Repeated state
                         if post_state.state_id in visited_states:
                             termination_reason = "repeated_state"
@@ -409,7 +450,6 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--timeout", type=float, default=300.0)
     p.add_argument("--output", default=str(DEFAULT_RL_OUTPUT))
     p.add_argument("--no-resume", dest="resume", action="store_false")
-    p.add_argument("--resume", dest="resume", action="store_true")
     p.set_defaults(resume=True)
     p.add_argument("--log-level", default="INFO")
     return p.parse_args()

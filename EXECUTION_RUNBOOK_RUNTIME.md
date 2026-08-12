@@ -241,7 +241,11 @@ wc -l datasets/replay_buffer/rl_experiences.csv
 
 The current implemented algorithm is fitted-Q regression using sklearn. It is
 not PPO or a neural DQN. PPO and Torch branches in the original repository were
-placeholders.
+placeholders and are now REJECTED by the CLI ("--model-type dqn_torch/ppo are
+not implemented") instead of silently training a different algorithm. Actions
+are one-hot encoded (a single numeric action id imposed an artificial ordinal
+relationship between unrelated passes); the committed rl_agent.joblib was
+retrained with this encoding.
 
 ```bash
 /usr/bin/time -v python ./training/train_rl.py \
@@ -272,7 +276,10 @@ python ./training/inference.py \
 
 Expected output includes:
 
-- selected ordered pass sequence;
+- selected ordered pass sequence (no-op actions are masked per state, so a
+  pass is never repeated in an unchanged state);
+- termination reason (`max_steps`, `repeated_state`, `no_effect`,
+  `all_actions_tried`, `stop`, `zero_ir`);
 - initial and final runtime;
 - runtime speedup and improvement percentage;
 - initial and final IR count;

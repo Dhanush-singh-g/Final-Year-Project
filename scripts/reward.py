@@ -109,38 +109,3 @@ def compute_hybrid_reward(
         },
     }
 
-def compute_step_reward_from_row(pre_row: dict, post_row: dict, weights: RewardWeights = DEFAULT_WEIGHTS) -> float:
-    """Helper to compute from flattened rows (from CSV)."""
-    def _f(key):
-        v = pre_row.get(key) if isinstance(pre_row, dict) else None
-        try:
-            return float(v) if v not in (None, "") else None
-        except:
-            return None
-
-    # Support both wrapped dicts and raw values
-    if isinstance(pre_row, dict) and "pre_ir_instruction_count" in pre_row:
-        pre_ir = pre_row.get("pre_ir_instruction_count")
-        post_ir = pre_row.get("post_ir_instruction_count")
-        pre_size = pre_row.get("pre_object_text_size_bytes")
-        post_size = pre_row.get("post_object_text_size_bytes")
-        pre_rt = pre_row.get("pre_runtime_median_sec")
-        post_rt = pre_row.get("post_runtime_median_sec")
-        # try parsing
-        try:
-            pre_ir = int(float(pre_ir)) if pre_ir not in (None,"") else None
-            post_ir = int(float(post_ir)) if post_ir not in (None,"") else None
-        except:
-            pre_ir = post_ir = None
-        try:
-            pre_rt = float(pre_rt) if pre_rt not in (None,"") else None
-            post_rt = float(post_rt) if post_rt not in (None,"") else None
-        except:
-            pre_rt = post_rt = None
-    else:
-        pre_ir = pre_row
-        post_ir = post_row
-        pre_size = post_size = pre_rt = post_rt = None
-
-    res = compute_hybrid_reward(pre_ir, post_ir, pre_size, post_size, pre_rt, post_rt, weights)
-    return res["hybrid_reward_scaled"]

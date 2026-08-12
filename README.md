@@ -156,16 +156,16 @@ NeuroCompiler/
 │   └── anghabench/
 ├── datasets/
 │   ├── raw/                  # SL raw: pass_runtime_dataset.csv
-│   ├── processed/            # SL processed: hybrid_dataset.csv + splits + normalization
+│   ├── processed/            # SL processed: hybrid_dataset_scaled.csv (canonical) + pilot hybrid_dataset.csv
 │   ├── supervised/           # train-ready splits (optional)
-│   └── replay_buffer/        # RL experiences: rl_experiences.csv
+│   └── replay_buffer/        # RL experiences: rl_experiences_scaled.csv (canonical) + pilot rl_experiences.csv
 ├── scripts/
 │   ├── extract_features.py          # Stage 1: 56 Autophase + IR stats + object size
 │   ├── run_passes.py                # Stage 2: Transition recording
 │   ├── generate_dataset.py          # Stage 3 base (generic)
-│   ├── generate_sl_dataset.py       # Phase 3 wrapper with curated 27 passes
+│   ├── generate_sl_dataset.py       # Phase 3 wrapper with the curated pass set
 │   ├── scale_census.py              # NEW: parallel/resumable SL+RL scale-up driver
-│   ├── curated_passes.py            # Phase 2 pass selection (25-30 passes)
+│   ├── curated_passes.py            # Phase 2 pass selection (31 curated passes)
 │   ├── reward.py                    # Hybrid reward: 0.6*RT + 0.3*IR + 0.1*Size
 │   ├── collect_rl_transitions.py    # Phase 5: RL episodes -> replay buffer
 │   ├── process_dataset.py           # Stage 4: clean, benchmark-split, normalize
@@ -188,7 +188,7 @@ NeuroCompiler/
 ## Phase Details
 
 ### Phase 2 — LLVM Pass Selection
-Do NOT use all 100+ passes. Use 27 that mutate IR:
+Do NOT use all 100+ passes. Use the 31 curated passes in `scripts/curated_passes.py` that actually mutate IR:
 
 **Scalar:** ADCE, DCE, EarlyCSE, GVN, NewGVN, InstCombine, AggressiveInstCombine, SROA, Reassociate, SimplifyCFG, ConstMerge, CorrelatedPropagation
 
@@ -349,12 +349,14 @@ python scripts/generate_sl_dataset.py \
   --skip-object-text-size --no-resume --process
 ```
 
-### 2. Full cBench census with curated 27 passes
+### 2. Full cBench census with the curated pass set (pilot, ~690 rows)
 
 ```bash
 python scripts/generate_sl_dataset.py \
   --dataset cbench-v1 --reward-space IrInstructionCountO3 --process
-# -> datasets/processed/hybrid_dataset.csv (~690 rows)
+# -> datasets/processed/hybrid_dataset.csv (pilot)
+# The canonical scaled dataset is datasets/processed/hybrid_dataset_scaled.csv;
+# see "Scaled Dataset Run" below for how it is produced.
 ```
 
 ### 3. Train SL reward predictor
