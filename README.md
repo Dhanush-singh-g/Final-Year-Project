@@ -129,8 +129,30 @@ benchmarks, so the pass sequences are essentially unchanged. `opt -O3` ≈ `clan
 ~1%), validating both baselines, and all runs produced byte-identical outputs across the three
 arms (`outputs_match=true`). The research conclusion matches the plan's hypothesis: Phase-1
 IR-count gains do not yet translate to runtime wins over a properly measured `-O3`; the next
-steps are a runtime-aware (z-scored) reward and longer learned sequences with STOP, trained
-against the `-O3` codegen target.
+steps are a runtime-aware (z-scored) reward trained against the `-O3` codegen target.
+
+### STOP is now a learned RL action (longer horizons)
+
+The RL agent's action vocabulary now includes a real `-stop` action
+(`training/train_rl.py::synthesize_stop_transitions`): fitted-Q learns
+Q(state, STOP) from synthetic terminal transitions (reward 0, done=True) so
+the agent stops exactly when every available pass is expected to be
+net-negative — no more fixed 10%-chance or stop-prior hacks. Inference's
+`select_action` uses the learned Q(STOP) by default when the agent is loaded
+(`--stop-prior` remains only as an SL-only fallback). The harness's
+`--max-steps` default is 15. Verified: the retrained agent (32 actions,
+2,227 synthetic STOP transitions) predicts Q(STOP) < 0 on normal states and
+stops cleanly when continuation is worse.
+
+**Measured result (Aug 2026): longer horizons do not help with the current
+scorer.** An experiment relaxed the first-no-op termination
+(`no_op_limit=max_steps`) so the STOP/longer-horizon policy could act.
+Sequences grew (dijkstra 4 → 15 passes, IR 450→264) but the tail was wasted
+no-op budget, and runtime vs `clang -O3` got *worse* (0.957× vs 0.984× for the
+short sequence) — the backend re-optimizes the extra IR away. First-no-op
+termination therefore remains the harness's measured configuration; the
+longer-horizon machinery is in place and can be re-enabled once the scorer is
+trained on data that justifies continuing past a no-op.
 
 ### Z-scored runtime reward (why raw runtime targets fail)
 
@@ -340,13 +362,13 @@ python training/train_rl.py --input datasets/replay_buffer/rl_experiences_scaled
 # 5. Evaluate on the held-out test split
 python evaluation/evaluate_benchmarks.py \
   --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
-  --max-steps 8 --measure-runtime --output results/hybrid_test_results_scaled.json
+  --max-steps 15 --measure-runtime --output results/hybrid_test_results_scaled.json
 
 # 6. External O3 executable runtime baseline (runbook §10) — run in parallel waves
 python evaluation/o3_runtime_harness.py measure \
   --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
   --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
-  --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 --inputs 0,largest \
+  --max-steps 15 --warmup 1 --reps 5 --cpu 4 --timeout 120 --inputs 0,largest \
   --workdir results/o3_harness_work --output results/o3_wave1.json
 
 python evaluation/o3_runtime_harness.py summarize \

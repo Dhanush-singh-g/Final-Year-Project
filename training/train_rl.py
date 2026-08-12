@@ -54,6 +54,12 @@ LOGGER = logging.getLogger("train_rl")
 DEFAULT_RL_INPUT = PROJECT_ROOT / "datasets" / "replay_buffer" / "rl_experiences.csv"
 DEFAULT_MODEL_DIR = PROJECT_ROOT / "models" / "reinforcement"
 
+# Sentinel flag for the learned STOP action. It is a real member of the RL
+# agent's action vocabulary: fitted-Q learns Q(state, STOP) from synthetic
+# terminal transitions (reward 0, done=True), so the agent stops exactly when
+# every available pass is expected to hurt more than stopping.
+STOP_FLAG = "-stop"
+
 # -------------------------
 # Fitted Q-learning with sklearn
 # -------------------------
@@ -173,6 +179,37 @@ class SklearnDQNAgent:
             data["model"],
             action_encoding=data.get("action_encoding", "ordinal"),
         )
+
+def synthesize_stop_transitions(rows: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    """Append one synthetic STOP transition per terminal state of the replay
+    buffer.
+
+    A fitted-Q agent can only learn Q(STOP) if STOP appears in the training
+    data. Real episodes terminate on no-op / repeated-state / max-steps; the
+    final transition of each episode is that terminal state. For every such
+    row we add a ``-stop`` row with reward 0.0 and done=True, so the agent
+    learns that stopping is worth ~0 (i.e. stop when all candidate passes are
+    expected to be net-negative).
+    """
+    out: List[Dict[str, str]] = []
+    terminal_rows = [r for r in rows if r.get("done", "").lower() in ("true", "1", "yes")]
+    for r in terminal_rows:
+        stop = dict(r)
+        stop["pass_flag"] = STOP_FLAG
+        stop["pass_name"] = STOP_FLAG
+        stop["pass_id"] = ""
+        stop["done"] = "True"
+        stop["hybrid_reward"] = "0.0"
+        stop["raw_step_reward"] = "0.0"
+        # Terminal: post state is the pre state (no pass applied).
+        for col in list(stop.keys()):
+            if col.startswith("post_"):
+                pre_col = "pre_" + col[len("post_"):]
+                if pre_col in stop:
+                    stop[col] = stop[pre_col]
+        out.append(stop)
+    return out
+
 
 def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action_vocab: Dict[str,int], args: argparse.Namespace):
     """Q-learning via fitted Q iteration using Bellman backups from replay buffer"""
@@ -320,14 +357,24 @@ def main():
     LOGGER.info(f"Using {len(pre_feature_cols)} state features")
 
     # Action vocab: deterministically sorted so one-hot positions are stable
-    # across runs and match the SL vocabulary ordering convention.
+    # across runs and match the SL vocabulary ordering convention. STOP is a
+    # real member of the vocabulary so the agent can learn when to stop.
     action_vocab = {}
     for r in rows:
         flag = r.get("pass_flag")
         if flag and flag not in action_vocab:
             action_vocab[flag] = len(action_vocab)
     action_vocab = {flag: action_vocab[flag] for flag in sorted(action_vocab)}
-    LOGGER.info(f"Action vocab size {len(action_vocab)}")
+    if STOP_FLAG not in action_vocab:
+        action_vocab[STOP_FLAG] = len(action_vocab)
+    LOGGER.info(f"Action vocab size {len(action_vocab)} (includes {STOP_FLAG!r})")
+
+    # Augment the buffer with synthetic terminal STOP transitions so fitted-Q
+    # can learn Q(state, STOP).
+    stop_rows = synthesize_stop_transitions(rows)
+    if stop_rows:
+        rows = rows + stop_rows
+        LOGGER.info(f"Added {len(stop_rows)} synthetic STOP transitions")
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
