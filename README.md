@@ -95,37 +95,56 @@ cancel drift). Because the hybrid pass sequence is input-independent, binaries a
 benchmark and timed on multiple inputs (`--inputs`); the summary reports the largest-baseline-median
 input per benchmark (most trustworthy timing), deduplicated across waves.
 
+The table below is the **Aug 2026 re-measurement under the fixed inference** (no-op actions now
+truly terminate and are masked per state, so degenerate repeated-pass sequences are gone):
+
 | Runtime comparison (executable baseline, `-O3` codegen, largest-input representative) | n | Geo-mean vs opt -O3 | vs clang -O3 | Wins vs clang -O3 |
 |---|---|---|---|---|
-| All 22 test-split benchmarks | 22 | 0.993× | 0.990× | 12/22 (Wilcoxon p=0.50, n.s.) |
-| cBench, non-trivial inputs (median ≥ 0.03 s) | 7 | 1.023× | 1.019× | 5/7 |
-| cBench, substantial inputs (median ≥ 0.1 s) | 6 | 1.039× | 1.015× | 4/6 |
+| All 22 test-split benchmarks | 22 | 1.062× | 1.018× | 11/22 (Wilcoxon p=0.45, n.s.) |
+| cBench, non-trivial inputs (median ≥ 0.03 s) | 7 | 1.027× | 1.005× | 5/7 |
+| cBench, substantial inputs (median ≥ 0.1 s) | 6 | 1.011× | 1.000× | 3/6 |
 
 Large-input cBench detail (`results/o3_runtime_vs_o3_summary.json`):
 
 | benchmark | input | opt-O3 med | clang-O3 med | hybrid med | spd vs clang-O3 |
 |---|---|---|---|---|---|
-| bzip2 | 8.bz2 | 4.319 s | 4.371 s | 4.340 s | 1.007× |
-| dijkstra | 9.dat | 0.625 s | 0.627 s | 0.625 s | 1.004× |
-| gsm | 2.au | 0.775 s | 0.739 s | 0.635 s | **1.164×** |
-| jpeg-c | 17.ppm | 0.970 s | 0.989 s | 1.021 s | 0.968× |
-| tiff2rgba | 11.nocomp.tif | 2.569 s | 2.232 s | 2.363 s | 0.945× |
-| tiff2bw | 17.nocomp.tif | 2.382 s | 2.411 s | 2.379 s | 1.013× |
-| stringsearch | 4.txt | 0.027 s | 0.029 s | 0.027 s | 1.097× |
-| bitcount | (arg) | 0.031 s | 0.034 s | 0.033 s | 1.047× |
+| bzip2 | 8.bz2 | 4.252 s | 4.274 s | 4.252 s | 1.005× |
+| dijkstra | 9.dat | 0.611 s | 0.604 s | 0.614 s | 0.984× |
+| gsm | 2.au | 0.621 s | 0.634 s | 0.627 s | 1.012× |
+| jpeg-c | 17.ppm | 0.980 s | 0.988 s | 1.013 s | 0.975× |
+| tiff2rgba | 11.nocomp.tif | 2.476 s | 2.218 s | 2.347 s | 0.945× |
+| tiff2bw | 17.nocomp.tif | 2.372 s | 2.398 s | 2.467 s | 0.972× |
+| stringsearch | 4.txt | 0.027 s | 0.027 s | 0.028 s | 0.992× |
+| bitcount | (arg) | 0.030 s | 0.033 s | 0.032 s | 1.026× |
 
 Honest interpretation — the key finding of the corrected protocol: **hybrid does not beat
 `clang -O3` at runtime when measured properly.** The large-input wins from the earlier O0-codegen
 protocol (dijkstra 1.42×, tiff2rgba 1.36×, bzip2 1.24×) collapse to ~1.00× once both arms use
-real `-O3` codegen — the backend re-optimizes the IR-level differences away. Geo-mean over all 22
-test benchmarks is **0.99×** vs both baselines (12/22 wins, Wilcoxon p=0.50, n.s.): a statistical
-tie overall. Two genuinely useful signals: (1) gsm — hybrid's worst loss under the old protocol
-(0.44×) — flips to a **1.164× win** under `-O3` codegen, where the learned `-sroa`-heavy sequence
-helps the backend; (2) `opt -O3` ≈ `clang -O3` (within ~1%), validating both baselines. All runs
-produced byte-identical outputs across the three arms (`outputs_match=true`). The research
-conclusion matches the plan's hypothesis: Phase-1 IR-count gains do not yet translate to runtime
-wins over a properly measured `-O3`; the next steps are a runtime-aware (z-scored) reward and
-longer learned sequences with STOP, trained against the `-O3` codegen target.
+real `-O3` codegen — the backend re-optimizes the IR-level differences away. On the cBench
+benchmarks with substantial (≥ 0.1 s) inputs the geo-mean is **1.000× vs `clang -O3`** (a tie),
+and the overall 1.018× geo-mean is inflated by sub-10 ms CHStone/csmith rows where process
+startup noise dominates (Wilcoxon p=0.45, n.s.). The fixed inference does not change this
+conclusion: the old repeated-pass sequences had already terminated at the first no-op for these
+benchmarks, so the pass sequences are essentially unchanged. `opt -O3` ≈ `clang -O3` (within
+~1%), validating both baselines, and all runs produced byte-identical outputs across the three
+arms (`outputs_match=true`). The research conclusion matches the plan's hypothesis: Phase-1
+IR-count gains do not yet translate to runtime wins over a properly measured `-O3`; the next
+steps are a runtime-aware (z-scored) reward and longer learned sequences with STOP, trained
+against the `-O3` codegen target.
+
+### Z-scored runtime reward (why raw runtime targets fail)
+
+The raw `runtime_improvement_pct` target is **incomparable across programs**: each benchmark's
+candidate-pass runtime distribution has a different mean and scale (e.g. gsm mean −21% vs another
+benchmark +57%), so a scorer trained on raw values can learn *benchmark identity* rather than pass
+quality. `scripts/zscore_dataset.py` adds a `z_runtime_improvement_pct` column that normalises each
+benchmark's candidate distribution to mean 0 / std 1 (`scripts/reward.py::per_benchmark_zscore`),
+and `train_sl.py` accepts it as a target. Trained on the z-scored target (`models/supervised_z/`), the scorer's test R² drops
+from −8.05 (raw) to ≈ 0 and test top-3 pass ranking from 9.1% to **0%** (random ≈ 9.7%): once the
+benchmark-identity shortcut is removed, the remaining pass-quality signal is **not learnable from
+the current data** (short sub-10 ms workloads, ~3.1k train rows across 31 passes). This is the
+controlled, decisive confirmation that runtime-aware training needs longer workloads and more
+per-benchmark coverage — not just a different target.
 
 Honest caveats:
 

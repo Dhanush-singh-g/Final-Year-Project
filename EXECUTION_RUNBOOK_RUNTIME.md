@@ -29,11 +29,12 @@ CompilerGym exposes the exact `-O3` IR cost but does not directly expose an
 Guardrail: never claim runtime superiority over `-O3` from CompilerGym
 Runtime-vs-initial numbers. Any such claim must cite the harness output
 (`results/o3_runtime_vs_o3_summary.json`). As of the Aug 2026 corrected
-protocol run the measured result is a geometric-mean **0.99×** speedup vs
-`clang -O3` over all 22 test benchmarks (wins 12/22, Wilcoxon p=0.50) — a
-statistical tie with `-O3` on runtime (and the earlier 0.95× "hybrid looks
-competitive" figure used O0-level codegen and is superseded, see section 10);
-the harness is the instrument for closing that gap.
+protocol run the measured result is a geometric-mean **~1.0×** speedup vs
+`clang -O3` over all 22 test benchmarks (wins 11/22, Wilcoxon p=0.45) — a
+statistical tie with `-O3` on runtime (the earlier 0.95× "hybrid looks
+competitive" figure used O0-level codegen and the first 0.99× figure is
+superseded by the fixed-inference re-measurement, see section 10); the
+harness is the instrument for closing that gap.
 
 ## 0. Install the correction
 
@@ -349,6 +350,20 @@ python evaluation/o3_runtime_harness.py summarize \
   --output results/o3_runtime_vs_o3_summary.json
 ```
 
+To train the runtime-aware scorer on a comparable target, z-score the runtime
+column per benchmark first (sub-10 ms rows are noise-dominated; the z-scored
+target removes the benchmark-identity shortcut, see below):
+
+```bash
+python scripts/zscore_dataset.py \
+  --input datasets/processed/hybrid_dataset_scaled.csv \
+  --output datasets/processed/hybrid_dataset_scaled_z.csv
+python training/train_sl.py \
+  --input datasets/processed/hybrid_dataset_scaled_z.csv \
+  --target z_runtime_improvement_pct \
+  --output-dir models/supervised_z
+```
+
 Protocol note (why the v2 waves replaced the earlier ones): plain
 `clang module.bc` without an -O flag emits effectively O0-level codegen
 (empirically ~25.7 KB of asm vs ~17.5 KB for `-O2`/`-O3` on dijkstra), so the
@@ -357,18 +372,24 @@ binaries — a weak baseline that let IR-level differences show up as large
 runtime wins that do not survive real `-O3` codegen. Since the v2 protocol, the
 harness always compiles with `-O3` codegen and adds the `clang -O3` arm.
 
-Measured result (v2 protocol, Aug 2026, `results/o3_runtime_vs_o3_summary.json`):
+Measured result (v2 protocol, **re-measured Aug 2026 under the fixed
+inference**, `results/o3_runtime_vs_o3_summary.json`):
 
 - All 22 held-out test benchmarks (including ispell/lame via
   `--include-fallback`), largest-baseline-median input per benchmark,
-  deduplicated across waves.
-- Geo-mean speedup hybrid vs `opt -O3`: **0.993×** (wins 12/22, Wilcoxon
-  p = 0.34); vs `clang -O3`: **0.990×** (wins 12/22, Wilcoxon p = 0.50) — a
-  statistical tie with `-O3`.
-- On cBench benchmarks with clang-O3 medians ≥ 0.1 s hybrid wins 4/6: gsm
-  2.au **1.164×** (0.74 s), tiff2bw 17.nocomp.tif 1.013×, bzip2 8.bz2 1.007×,
-  dijkstra 9.dat 1.004×; losses jpeg-c 17.ppm 0.968× and tiff2rgba
-  11.nocomp.tif 0.945×.
+  deduplicated across waves. Re-measured with the post-review inference
+  (no-op actions truly terminate and are masked per state) — the pass
+  sequences are essentially unchanged from the first v2 waves because those
+  runs had already terminated at the first no-op.
+- Geo-mean speedup hybrid vs `opt -O3`: **1.062×** (wins 9/22, Wilcoxon
+  p = 0.27); vs `clang -O3`: **1.018×** (wins 11/22, Wilcoxon p = 0.45) —
+  still a statistical tie with `-O3`. On cBench benchmarks with substantial
+  (≥ 0.1 s) inputs the geo-mean vs `clang -O3` is **1.000×**; the overall
+  geo-mean is inflated by sub-10 ms CHStone/csmith rows dominated by process
+  startup noise (e.g. lame 1.39×, csmith/24 1.47× at ~1–2 ms medians).
+- Large-input cBench: bzip2 8.bz2 1.005×, gsm 2.au 1.012×, bitcount 1.026×,
+  dijkstra 9.dat 0.984×, jpeg-c 17.ppm 0.975×, tiff2bw 17.nocomp.tif 0.972×,
+  tiff2rgba 11.nocomp.tif 0.945×, stringsearch 4.txt 0.992× (all ≈1.0×).
 - `opt -O3` and `clang -O3` agree within ~1%, validating both baselines.
 - All runs byte-identical across the three arms (`outputs_match=true`).
 
@@ -377,13 +398,26 @@ optimizer does NOT beat the full `-O3` pipeline on runtime when measured
 correctly — the earlier large-input wins (dijkstra 1.42×, tiff2rgba 1.36×,
 bzip2 1.24×) collapse to ~1.00× under `-O3` codegen because the backend
 re-optimizes the IR-level differences away, and the overall geo-mean is a tie
-(0.99×). The one benchmark that changed direction under the corrected protocol
-is gsm (0.44× loss -> **1.164× win**), where the learned `-sroa`-heavy
-sequence helps the backend. The IR-count advantage from section 8 still does
-not carry over to runtime; the harness is the controlled, reproducible
-instrument for the next research step (runtime-aware z-scored reward and
-longer learned sequences with STOP, evaluated against this `-O3` codegen
-target).
+(~1.0×; the earlier 0.99× figure is superseded by this re-measurement). The
+IR-count advantage from section 8 still does not carry over to runtime; the
+harness is the controlled, reproducible instrument for the next research step
+(runtime-aware z-scored reward and longer learned sequences with STOP,
+evaluated against this `-O3` codegen target).
+
+Z-scored runtime reward (step 4 of the plan, implemented Aug 2026): raw
+`runtime_improvement_pct` is cross-program-incomparable — each benchmark's
+candidate-pass distribution has a different mean/scale (gsm mean −21% vs
+another benchmark +57%), so a scorer on raw values can learn benchmark
+identity instead of pass quality. `scripts/zscore_dataset.py` adds a
+`z_runtime_improvement_pct` column (per-benchmark z-score via
+`scripts/reward.py::per_benchmark_zscore`), and `train_sl.py` accepts it as a
+target. Trained on the z-scored target, the scorer's test top-3 pass ranking
+drops from 9.1% (raw, ≈ random 9.7%) to **0%** with test R² ≈ 0: once the
+benchmark-identity shortcut is removed, the pass-quality signal is not
+learnable from the current data (short sub-10 ms workloads, ~3.1k train rows
+across 31 passes). This is the controlled confirmation that runtime-aware
+training needs longer workloads and more per-benchmark coverage, not just a
+different target.
 
 Harness robustness notes (Aug 2026): `resolve_input` swaps the whole numbered
 dataset family so multi-file benchmarks (stringsearch: `1.txt` + `1.s.txt`)
@@ -401,5 +435,5 @@ Defensible claims as of this run:
 - runtime improvement vs the initial no-pass state (CompilerGym Runtime
   observation);
 - IR instruction-count comparison vs exact -O3;
-- runtime-vs-O3 measured by the harness above (currently 0.99× vs both
+- runtime-vs-O3 measured by the harness above (currently ~1.0× vs both
   baselines — a statistical tie with `-O3`, not a win).

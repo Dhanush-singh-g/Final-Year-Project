@@ -13,8 +13,9 @@ This is used by both SL dataset (for labeling immediate quality) and RL replay b
 
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import Optional
+from typing import Dict, List, Optional, Sequence, Tuple
 
 @dataclass(frozen=True)
 class RewardWeights:
@@ -109,3 +110,80 @@ def compute_hybrid_reward(
         },
     }
 
+
+def _finite_float(value) -> Optional[float]:
+    """Parse a possibly-empty CSV value into a float, or None if unusable."""
+    if value is None:
+        return None
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return None
+    if number != number or number in (float("inf"), float("-inf")):
+        return None
+    return number
+
+
+def per_benchmark_zscore(
+    rows: Sequence[Dict[str, str]],
+    value_col: str = "runtime_improvement_pct",
+    group_col: str = "benchmark_uri",
+    min_samples: int = 2,
+) -> Dict[str, Tuple[float, float]]:
+    """Compute per-benchmark (mean, std) of ``value_col`` across its candidate
+    passes, so a raw runtime delta can be z-scored to be comparable across
+    programs.
+
+    The z-scored runtime reward is the research fix for the finding that IR
+    gains do not transfer to runtime: raw ``runtime_improvement_pct`` values
+    are cross-program-incomparable (e.g. gsm's distribution mean is -21% while
+    another benchmark's is +57%), so a model trained on them learns benchmark
+    identity rather than pass quality. Normalising each benchmark's candidate
+    distribution to mean 0 / std 1 makes the target comparable.
+
+    Returns a mapping group -> (mean, std). Groups with fewer than
+    ``min_samples`` finite values are omitted (caller leaves the z-score
+    blank).
+    """
+    groups: Dict[str, List[float]] = defaultdict(list)
+    for row in rows:
+        value = _finite_float(row.get(value_col, ""))
+        group = (row.get(group_col, "") or "").strip()
+        if value is not None and group:
+            groups[group].append(value)
+    stats: Dict[str, Tuple[float, float]] = {}
+    for group, values in groups.items():
+        if len(values) < min_samples:
+            continue
+        mean = sum(values) / len(values)
+        variance = sum((v - mean) ** 2 for v in values) / len(values)
+        std = variance ** 0.5
+        if std <= 1e-12:
+            continue
+        stats[group] = (mean, std)
+    return stats
+
+
+def add_zscored_runtime_column(
+    rows: List[Dict[str, str]],
+    value_col: str = "runtime_improvement_pct",
+    group_col: str = "benchmark_uri",
+    out_col: str = "z_runtime_improvement_pct",
+) -> List[Dict[str, str]]:
+    """Return a copy of ``rows`` with ``out_col`` set to the per-benchmark
+    z-score of ``value_col`` (blank where the group's stats are unavailable).
+    """
+    stats = per_benchmark_zscore(rows, value_col=value_col, group_col=group_col)
+    result: List[Dict[str, str]] = []
+    for row in rows:
+        updated = dict(row)
+        group = (row.get(group_col, "") or "").strip()
+        value = _finite_float(row.get(value_col, ""))
+        entry = stats.get(group)
+        if value is not None and entry is not None:
+            mean, std = entry
+            updated[out_col] = f"{(value - mean) / std:.6f}"
+        else:
+            updated[out_col] = ""
+        result.append(updated)
+    return result
