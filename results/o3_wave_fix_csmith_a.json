@@ -1,0 +1,463 @@
+[
+  {
+    "benchmark_uri": "generator://csmith-v0/4",
+    "suite": "csmith-v0",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 10904,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 7147,
+    "o3_ir_instruction_count": 4521,
+    "hybrid_vs_o3_ir_pct": -58.08449458084495,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.001939806155860424,
+          "mean_sec": 0.002125725382938981,
+          "std_sec": 0.0003287047262340011,
+          "min_sec": 0.0019321150612086058,
+          "max_sec": 0.0025052549317479134,
+          "ci95_lo_sec": 0.0019321150612086058,
+          "ci95_hi_sec": 0.0025052549317479134
+        },
+        "clang_o3": {
+          "n": 3,
+          "median_sec": 0.0019371961243450642,
+          "mean_sec": 0.0021611820751180253,
+          "std_sec": 0.00042370924466195463,
+          "min_sec": 0.0018964759074151516,
+          "max_sec": 0.0026498741935938597,
+          "ci95_lo_sec": 0.0018964759074151516,
+          "ci95_hi_sec": 0.0026498741935938597
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.0023096641525626183,
+          "mean_sec": 0.0022963214044769606,
+          "std_sec": 0.0003233105310349522,
+          "min_sec": 0.00196654605679214,
+          "max_sec": 0.0026127540040761232,
+          "ci95_lo_sec": 0.00196654605679214,
+          "ci95_hi_sec": 0.0026127540040761232
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 0.839865031332876,
+        "speedup_hybrid_vs_clang_o3": 0.8387349832639982
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.001939806155860424,
+      "mean_sec": 0.002125725382938981,
+      "std_sec": 0.0003287047262340011,
+      "min_sec": 0.0019321150612086058,
+      "max_sec": 0.0025052549317479134,
+      "ci95_lo_sec": 0.0019321150612086058,
+      "ci95_hi_sec": 0.0025052549317479134
+    },
+    "clang_o3": {
+      "n": 3,
+      "median_sec": 0.0019371961243450642,
+      "mean_sec": 0.0021611820751180253,
+      "std_sec": 0.00042370924466195463,
+      "min_sec": 0.0018964759074151516,
+      "max_sec": 0.0026498741935938597,
+      "ci95_lo_sec": 0.0018964759074151516,
+      "ci95_hi_sec": 0.0026498741935938597
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.0023096641525626183,
+      "mean_sec": 0.0022963214044769606,
+      "std_sec": 0.0003233105310349522,
+      "min_sec": 0.00196654605679214,
+      "max_sec": 0.0026127540040761232,
+      "ci95_lo_sec": 0.00196654605679214,
+      "ci95_hi_sec": 0.0026127540040761232
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 0.839865031332876,
+    "speedup_hybrid_vs_clang_o3": 0.8387349832639982,
+    "elapsed_sec": 5.39
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/6",
+    "suite": "csmith-v0",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 1246,
+    "pass_sequence": [
+      "-sroa",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "final_ir": 501,
+    "o3_ir_instruction_count": 727,
+    "hybrid_vs_o3_ir_pct": 31.08665749656121,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.0024532650131732225,
+          "mean_sec": 0.0023121316141138473,
+          "std_sec": 0.0005505965866556741,
+          "min_sec": 0.0017047058790922165,
+          "max_sec": 0.002778423950076103,
+          "ci95_lo_sec": 0.0017047058790922165,
+          "ci95_hi_sec": 0.002778423950076103
+        },
+        "clang_o3": {
+          "n": 3,
+          "median_sec": 0.0017458668444305658,
+          "mean_sec": 0.00195944596392413,
+          "std_sec": 0.0003719850474743341,
+          "min_sec": 0.0017434959299862385,
+          "max_sec": 0.002388975117355585,
+          "ci95_lo_sec": 0.0017434959299862385,
+          "ci95_hi_sec": 0.002388975117355585
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.00220958492718637,
+          "mean_sec": 0.002109928677479426,
+          "std_sec": 0.0003314963065865261,
+          "min_sec": 0.001740036066621542,
+          "max_sec": 0.0023801650386303663,
+          "ci95_lo_sec": 0.001740036066621542,
+          "ci95_hi_sec": 0.0023801650386303663
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 1.1102831952683299,
+        "speedup_hybrid_vs_clang_o3": 0.7901333969786393
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.0024532650131732225,
+      "mean_sec": 0.0023121316141138473,
+      "std_sec": 0.0005505965866556741,
+      "min_sec": 0.0017047058790922165,
+      "max_sec": 0.002778423950076103,
+      "ci95_lo_sec": 0.0017047058790922165,
+      "ci95_hi_sec": 0.002778423950076103
+    },
+    "clang_o3": {
+      "n": 3,
+      "median_sec": 0.0017458668444305658,
+      "mean_sec": 0.00195944596392413,
+      "std_sec": 0.0003719850474743341,
+      "min_sec": 0.0017434959299862385,
+      "max_sec": 0.002388975117355585,
+      "ci95_lo_sec": 0.0017434959299862385,
+      "ci95_hi_sec": 0.002388975117355585
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.00220958492718637,
+      "mean_sec": 0.002109928677479426,
+      "std_sec": 0.0003314963065865261,
+      "min_sec": 0.001740036066621542,
+      "max_sec": 0.0023801650386303663,
+      "ci95_lo_sec": 0.001740036066621542,
+      "ci95_hi_sec": 0.0023801650386303663
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 1.1102831952683299,
+    "speedup_hybrid_vs_clang_o3": 0.7901333969786393,
+    "elapsed_sec": 2.65
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/8",
+    "suite": "csmith-v0",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 2565,
+    "pass_sequence": [
+      "-sroa",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "final_ir": 1112,
+    "o3_ir_instruction_count": 1010,
+    "hybrid_vs_o3_ir_pct": -10.099009900990099,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.001750395866110921,
+          "mean_sec": 0.0021242753136903048,
+          "std_sec": 0.0006571186541047101,
+          "min_sec": 0.0017394060268998146,
+          "max_sec": 0.0028830240480601788,
+          "ci95_lo_sec": 0.0017394060268998146,
+          "ci95_hi_sec": 0.0028830240480601788
+        },
+        "clang_o3": {
+          "n": 3,
+          "median_sec": 0.0024893449153751135,
+          "mean_sec": 0.002377417947476109,
+          "std_sec": 0.0002949709666471336,
+          "min_sec": 0.002042864914983511,
+          "max_sec": 0.002600044012069702,
+          "ci95_lo_sec": 0.002042864914983511,
+          "ci95_hi_sec": 0.002600044012069702
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.0017736658919602633,
+          "mean_sec": 0.0020044222474098206,
+          "std_sec": 0.0004097075719166002,
+          "min_sec": 0.00176213588565588,
+          "max_sec": 0.0024774649646133184,
+          "ci95_lo_sec": 0.00176213588565588,
+          "ci95_hi_sec": 0.0024774649646133184
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 0.9868802653561635,
+        "speedup_hybrid_vs_clang_o3": 1.4035027265613587
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.001750395866110921,
+      "mean_sec": 0.0021242753136903048,
+      "std_sec": 0.0006571186541047101,
+      "min_sec": 0.0017394060268998146,
+      "max_sec": 0.0028830240480601788,
+      "ci95_lo_sec": 0.0017394060268998146,
+      "ci95_hi_sec": 0.0028830240480601788
+    },
+    "clang_o3": {
+      "n": 3,
+      "median_sec": 0.0024893449153751135,
+      "mean_sec": 0.002377417947476109,
+      "std_sec": 0.0002949709666471336,
+      "min_sec": 0.002042864914983511,
+      "max_sec": 0.002600044012069702,
+      "ci95_lo_sec": 0.002042864914983511,
+      "ci95_hi_sec": 0.002600044012069702
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.0017736658919602633,
+      "mean_sec": 0.0020044222474098206,
+      "std_sec": 0.0004097075719166002,
+      "min_sec": 0.00176213588565588,
+      "max_sec": 0.0024774649646133184,
+      "ci95_lo_sec": 0.00176213588565588,
+      "ci95_hi_sec": 0.0024774649646133184
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 0.9868802653561635,
+    "speedup_hybrid_vs_clang_o3": 1.4035027265613587,
+    "elapsed_sec": 1.98
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/9",
+    "suite": "csmith-v0",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 14866,
+    "pass_sequence": [
+      "-sroa",
+      "-sroa"
+    ],
+    "final_ir": 8041,
+    "o3_ir_instruction_count": 1288,
+    "hybrid_vs_o3_ir_pct": -524.3012422360248,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.0016876158770173788,
+          "mean_sec": 0.0017404262907803059,
+          "std_sec": 0.00019955602161748293,
+          "min_sec": 0.0015725870616734028,
+          "max_sec": 0.001961075933650136,
+          "ci95_lo_sec": 0.0015725870616734028,
+          "ci95_hi_sec": 0.001961075933650136
+        },
+        "clang_o3": {
+          "n": 3,
+          "median_sec": 0.0017266259528696537,
+          "mean_sec": 0.0018845025915652514,
+          "std_sec": 0.00042908051109238237,
+          "min_sec": 0.0015567268710583448,
+          "max_sec": 0.0023701549507677555,
+          "ci95_lo_sec": 0.0015567268710583448,
+          "ci95_hi_sec": 0.0023701549507677555
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.0016908561810851097,
+          "mean_sec": 0.0018438659608364105,
+          "std_sec": 0.00037863809458963993,
+          "min_sec": 0.0015656768810003996,
+          "max_sec": 0.0022750648204237223,
+          "ci95_lo_sec": 0.0015656768810003996,
+          "ci95_hi_sec": 0.0022750648204237223
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 0.9980836311781104,
+        "speedup_hybrid_vs_clang_o3": 1.0211548280597045
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.0016876158770173788,
+      "mean_sec": 0.0017404262907803059,
+      "std_sec": 0.00019955602161748293,
+      "min_sec": 0.0015725870616734028,
+      "max_sec": 0.001961075933650136,
+      "ci95_lo_sec": 0.0015725870616734028,
+      "ci95_hi_sec": 0.001961075933650136
+    },
+    "clang_o3": {
+      "n": 3,
+      "median_sec": 0.0017266259528696537,
+      "mean_sec": 0.0018845025915652514,
+      "std_sec": 0.00042908051109238237,
+      "min_sec": 0.0015567268710583448,
+      "max_sec": 0.0023701549507677555,
+      "ci95_lo_sec": 0.0015567268710583448,
+      "ci95_hi_sec": 0.0023701549507677555
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.0016908561810851097,
+      "mean_sec": 0.0018438659608364105,
+      "std_sec": 0.00037863809458963993,
+      "min_sec": 0.0015656768810003996,
+      "max_sec": 0.0022750648204237223,
+      "ci95_lo_sec": 0.0015656768810003996,
+      "ci95_hi_sec": 0.0022750648204237223
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 0.9980836311781104,
+    "speedup_hybrid_vs_clang_o3": 1.0211548280597045,
+    "elapsed_sec": 2.71
+  },
+  {
+    "benchmark_uri": "generator://csmith-v0/12",
+    "suite": "csmith-v0",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 1181,
+    "pass_sequence": [
+      "-sroa",
+      "-newgvn",
+      "-newgvn",
+      "-newgvn"
+    ],
+    "final_ir": 615,
+    "o3_ir_instruction_count": 1100,
+    "hybrid_vs_o3_ir_pct": 44.09090909090909,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.0024587048683315516,
+          "mean_sec": 0.0023228646411250034,
+          "std_sec": 0.0005835494595283442,
+          "min_sec": 0.0016833760309964418,
+          "max_sec": 0.002826513024047017,
+          "ci95_lo_sec": 0.0016833760309964418,
+          "ci95_hi_sec": 0.002826513024047017
+        },
+        "clang_o3": {
+          "n": 3,
+          "median_sec": 0.0017308560200035572,
+          "mean_sec": 0.0019476556529601414,
+          "std_sec": 0.0003766603182992541,
+          "min_sec": 0.0017295260913670063,
+          "max_sec": 0.002382584847509861,
+          "ci95_lo_sec": 0.0017295260913670063,
+          "ci95_hi_sec": 0.002382584847509861
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.0023605849128216505,
+          "mean_sec": 0.0021680386271327734,
+          "std_sec": 0.00039933113875381064,
+          "min_sec": 0.0017089159227907658,
+          "max_sec": 0.002434615045785904,
+          "ci95_lo_sec": 0.0017089159227907658,
+          "ci95_hi_sec": 0.002434615045785904
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 1.041565950445992,
+        "speedup_hybrid_vs_clang_o3": 0.7332318403808796
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.0024587048683315516,
+      "mean_sec": 0.0023228646411250034,
+      "std_sec": 0.0005835494595283442,
+      "min_sec": 0.0016833760309964418,
+      "max_sec": 0.002826513024047017,
+      "ci95_lo_sec": 0.0016833760309964418,
+      "ci95_hi_sec": 0.002826513024047017
+    },
+    "clang_o3": {
+      "n": 3,
+      "median_sec": 0.0017308560200035572,
+      "mean_sec": 0.0019476556529601414,
+      "std_sec": 0.0003766603182992541,
+      "min_sec": 0.0017295260913670063,
+      "max_sec": 0.002382584847509861,
+      "ci95_lo_sec": 0.0017295260913670063,
+      "ci95_hi_sec": 0.002382584847509861
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.0023605849128216505,
+      "mean_sec": 0.0021680386271327734,
+      "std_sec": 0.00039933113875381064,
+      "min_sec": 0.0017089159227907658,
+      "max_sec": 0.002434615045785904,
+      "ci95_lo_sec": 0.0017089159227907658,
+      "ci95_hi_sec": 0.002434615045785904
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 1.041565950445992,
+    "speedup_hybrid_vs_clang_o3": 0.7332318403808796,
+    "elapsed_sec": 1.82
+  }
+]

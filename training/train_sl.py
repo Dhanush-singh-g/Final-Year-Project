@@ -30,6 +30,7 @@ TARGETS = (
     "runtime_speedup",
     "runtime_reduction_sec",
     "step_reward",
+    "z_runtime_improvement_pct",
 )
 
 
