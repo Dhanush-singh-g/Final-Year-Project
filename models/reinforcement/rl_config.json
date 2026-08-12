@@ -31,6 +31,7 @@
     "-reassociate": 2,
     "-simplifycfg": 30,
     "-sroa": 27,
+    "-stop": 31,
     "-tailcallelim": 18
   },
   "feature_cols": [

@@ -55,6 +55,23 @@ def test_select_action_stop_sentinel():
     assert select_action(["-gvn"], sl, stop_prior=0.5) == "-gvn"
 
 
+def test_select_action_learned_rl_stop():
+    sl = [("-gvn", 1.0, 0.4), ("-licm", 0.5, 0.3)]
+    available = ["-gvn", "-licm"]
+    # Agent's learned Q(STOP) beats every available pass -> stop.
+    q_stop_high = {"-gvn": 0.2, "-licm": -0.4, STOP_FLAG: 0.5}
+    assert select_action(available, sl, rl_q_values=q_stop_high, rl_best="-gvn") == STOP_FLAG
+    # Agent's learned Q(STOP) is worse than the best pass -> keep optimizing.
+    q_stop_low = {"-gvn": 3.0, "-licm": 0.1, STOP_FLAG: 0.0}
+    assert select_action(available, sl, rl_q_values=q_stop_low, rl_best="-gvn") == "-gvn"
+    # STOP is selected even when the agent's own pass pick is masked.
+    q_masked_pick = {"-a": 9.0, "-gvn": 0.1, "-licm": 0.0, STOP_FLAG: 5.0}
+    assert select_action(["-gvn", "-licm"], sl, rl_q_values=q_masked_pick, rl_best="-a") == STOP_FLAG
+    # Without STOP in the Q dict, learned STOP is inert (SL fallback).
+    q_no_stop = {"-gvn": 2.0, "-licm": 1.0}
+    assert select_action(available, sl, rl_q_values=q_no_stop, rl_best="-gvn") == "-gvn"
+
+
 def test_select_action_is_deterministic_by_default():
     sl = [("-a", 5.0, 1.0), ("-b", 3.0, 0.0)]
     for _ in range(5):

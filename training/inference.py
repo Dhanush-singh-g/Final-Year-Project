@@ -115,8 +115,11 @@ def select_action(
         rl_q_values: fitted-Q values over the agent's action space; the
             agent's own pick (``rl_best``) wins only when it is still
             available, otherwise the masked Q argmax is used.
-        stop_prior: when given (RL mode never sees STOP), STOP wins if it
-            scores above every available SL candidate.
+        stop_prior: SL-only fallback — when given and no RL agent is present,
+            STOP wins if it scores above every available SL candidate.
+            With an RL agent, the *learned* Q(STOP) (a real member of the
+            agent's action vocabulary) is used instead: STOP is selected
+            exactly when its Q-value beats every available pass.
         explore: seeded 10% random exploration among available passes.
 
     Returns the chosen flag, STOP_FLAG, or None when nothing is available.
@@ -129,6 +132,14 @@ def select_action(
         return rng.choice(list(available))
     if rl_q_values is not None:
         masked = {flag: q for flag, q in rl_q_values.items() if flag in available}
+        # Learned STOP: when the agent's Q(STOP) beats every available pass,
+        # terminate cleanly. STOP is never in ``available`` (it is not a real
+        # LLVM pass), so it must be scored separately.
+        stop_q = rl_q_values.get(STOP_FLAG)
+        if stop_q is not None and masked:
+            best_avail_q = max(masked.values())
+            if stop_q > best_avail_q:
+                return STOP_FLAG
         if masked and rl_best in masked:
             return rl_best
         if masked:
@@ -627,11 +638,13 @@ def parse_args():
     )
     p.add_argument(
         "--enable-stop", action="store_true",
-        help="Add an explicit STOP candidate that terminates when it scores best",
+        help="SL-only STOP fallback (no RL agent): add an explicit STOP "
+        "candidate that terminates when it scores best. With an RL agent, the "
+        "learned Q(STOP) action is used automatically.",
     )
     p.add_argument(
         "--stop-prior", type=float, default=0.0,
-        help="STOP score vs SL expected rewards (default 0.0)",
+        help="SL-only STOP score vs SL expected rewards (default 0.0)",
     )
     p.add_argument(
         "--explore-epsilon", type=float, default=0.0,

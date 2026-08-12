@@ -56,7 +56,7 @@ Usage:
     python evaluation/o3_runtime_harness.py measure \
         --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
         --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
-        --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 \
+        --max-steps 15 --warmup 1 --reps 5 --cpu 4 --timeout 120 \
         --inputs 0,largest \
         --workdir results/o3_harness_work --output results/o3_harness_wave1.json
 
@@ -929,7 +929,11 @@ def parse_args() -> argparse.Namespace:
     p_measure.add_argument("--benchmarks", action="append", default=[], help="Benchmark URIs (repeatable); defaults to the test split of --processed-csv")
     p_measure.add_argument("--sl-model-dir", default=str(PROJECT_ROOT / "models" / "supervised"))
     p_measure.add_argument("--rl-model-dir", default=str(PROJECT_ROOT / "models" / "reinforcement"))
-    p_measure.add_argument("--max-steps", type=int, default=8)
+    p_measure.add_argument(
+        "--max-steps", type=int, default=15,
+        help="Hybrid pass-sequence budget (longer horizons let the learned "
+        "STOP action decide when to stop; default 15)",
+    )
     p_measure.add_argument("--warmup", type=int, default=1)
     p_measure.add_argument("--reps", type=int, default=5)
     p_measure.add_argument("--cpu", type=int, default=4, help="CPU core to pin executions to")

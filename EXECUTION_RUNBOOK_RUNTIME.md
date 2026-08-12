@@ -342,7 +342,7 @@ Run (one process per wave, disjoint `--benchmarks` subsets for parallelism):
 python evaluation/o3_runtime_harness.py measure \
   --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
   --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
-  --max-steps 8 --warmup 1 --reps 3 --cpu 4 --timeout 120 \
+  --max-steps 15 --warmup 1 --reps 3 --cpu 4 --timeout 120 \
   --inputs 0,largest \
   --workdir results/o3_harness_work --output results/o3_wave1.json
 python evaluation/o3_runtime_harness.py summarize \
@@ -401,8 +401,16 @@ re-optimizes the IR-level differences away, and the overall geo-mean is a tie
 (~1.0×; the earlier 0.99× figure is superseded by this re-measurement). The
 IR-count advantage from section 8 still does not carry over to runtime; the
 harness is the controlled, reproducible instrument for the next research step
-(runtime-aware z-scored reward and longer learned sequences with STOP,
-evaluated against this `-O3` codegen target).
+(runtime-aware z-scored reward evaluated against this `-O3` codegen target).
+
+STOP is now a learned RL action (Aug 2026): the agent's action vocabulary
+includes `-stop` (`training/train_rl.py::synthesize_stop_transitions`
+augments the replay buffer with synthetic terminal STOP rows — reward 0,
+done=True — so fitted-Q learns Q(state, STOP)). Inference uses the learned
+Q(STOP) by default when the agent is loaded; the harness `--max-steps`
+default is 15 so the sequence length is the agent's decision, not a fixed
+budget. Re-measure with these settings before claiming the longer-horizon
+policy changes runtime results.
 
 Z-scored runtime reward (step 4 of the plan, implemented Aug 2026): raw
 `runtime_improvement_pct` is cross-program-incomparable — each benchmark's
