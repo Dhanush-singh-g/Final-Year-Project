@@ -408,9 +408,16 @@ includes `-stop` (`training/train_rl.py::synthesize_stop_transitions`
 augments the replay buffer with synthetic terminal STOP rows — reward 0,
 done=True — so fitted-Q learns Q(state, STOP)). Inference uses the learned
 Q(STOP) by default when the agent is loaded; the harness `--max-steps`
-default is 15 so the sequence length is the agent's decision, not a fixed
-budget. Re-measure with these settings before claiming the longer-horizon
-policy changes runtime results.
+default is 15.
+
+**Longer-horizon experiment (Aug 2026, do not re-run casually):** relaxing
+the first-no-op termination (`no_op_limit=max_steps`) let the learned policy
+emit longer sequences (dijkstra 4 → 15 passes, IR 450→264) but runtime vs
+`clang -O3` got worse (0.957× vs 0.984× for the short sequence) — the tail
+was wasted no-op budget and the backend re-optimizes the extra IR away.
+First-no-op termination therefore remains the harness's measured
+configuration; re-enable longer horizons only after the scorer is retrained
+on data that justifies continuing past a no-op.
 
 Z-scored runtime reward (step 4 of the plan, implemented Aug 2026): raw
 `runtime_improvement_pct` is cross-program-incomparable — each benchmark's

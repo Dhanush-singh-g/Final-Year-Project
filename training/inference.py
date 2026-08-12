@@ -525,15 +525,16 @@ def hybrid_optimize_benchmark(
             else:
                 consecutive_no_op = 0
 
-            if next_state.state_id in visited:
-                termination_reason = "repeated_state"
-                if verbose:
-                    print("   -> Repeated state, terminating")
-                break
             if next_state.ir_instruction_count == 0:
                 termination_reason = "zero_ir"
                 break
 
+            # A repeated state is no longer an early-termination signal:
+            # per-(state, action) masking already prevents looping (every
+            # action tried in that state is masked, so the episode ends via
+            # ``all_actions_tried`` / learned STOP / max_steps instead).
+            # Terminating early here is what capped sequences at 2-3 passes
+            # and made the longer-horizon budget inert.
             visited.add(next_state.state_id)
             current_state = next_state
 

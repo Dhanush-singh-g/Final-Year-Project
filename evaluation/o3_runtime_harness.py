@@ -488,6 +488,12 @@ def measure_benchmark(
         measure_runtime=False,
         verbose=False,
         dump_bitcode_to=base / "hybrid.bc",
+        # Default no_op_limit=1: episodes terminate at the first no-op. An
+        # Aug 2026 experiment relaxed this (no_op_limit=max_steps) to let the
+        # learned STOP/longer-horizon policy act; the longer 15-pass sequences
+        # did NOT help runtime (dijkstra 0.957x vs clang-O3 vs 0.984x for the
+        # short sequence — the backend re-optimizes the extra IR anyway), so
+        # first-no-op termination remains the measured configuration.
     )
     hybrid_bc = base / "hybrid.bc"
     if not hybrid_bc.exists() or hybrid_bc.stat().st_size == 0:
