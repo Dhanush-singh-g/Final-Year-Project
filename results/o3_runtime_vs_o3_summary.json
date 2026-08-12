@@ -1,0 +1,510 @@
+{
+  "benchmarks_evaluated": 20,
+  "wins": 10,
+  "losses": 10,
+  "ties": 0,
+  "geo_mean_speedup": 0.9293374043311753,
+  "geo_mean_log2_speedup": -0.10572561972048644,
+  "mean_speedup": 0.9471698530441139,
+  "rows": [
+    {
+      "benchmark_uri": "benchmark://cbench-v1/bitcount",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.7795129872266711,
+      "log2_speedup": -0.3593550354647129,
+      "o3_median_sec": 0.0602272879332304,
+      "hybrid_median_sec": 0.07726271264255047,
+      "o3_ci": [
+        0.05912076402455568,
+        0.06429379153996706
+      ],
+      "hybrid_ci": [
+        0.07686679158359766,
+        0.08292877208441496
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-simplifycfg",
+        "-simplifycfg"
+      ],
+      "hybrid_vs_o3_ir_pct": 19.27512355848435
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/dijkstra",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.7550823668132595,
+      "log2_speedup": -0.4052940680501786,
+      "o3_median_sec": 0.0018798364326357841,
+      "hybrid_median_sec": 0.002489577978849411,
+      "o3_ci": [
+        0.0017989762127399445,
+        0.00244066771119833
+      ],
+      "hybrid_ci": [
+        0.0018570264801383018,
+        0.002632439136505127
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": 2.185792349726776
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/bzip2",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.328062586547878,
+      "log2_speedup": 0.40932313702717665,
+      "o3_median_sec": 0.13470685109496117,
+      "hybrid_median_sec": 0.10143110156059265,
+      "o3_ci": [
+        0.13144758995622396,
+        0.13966712728142738
+      ],
+      "hybrid_ci": [
+        0.09989225678145885,
+        0.12377528473734856
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": 1.6850122593771193
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/stringsearch",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.9085970688393722,
+      "log2_speedup": -0.13828744366145304,
+      "o3_median_sec": 0.0017672451213002205,
+      "hybrid_median_sec": 0.0019450262188911438,
+      "o3_ci": [
+        0.0017537148669362068,
+        0.0021593766286969185
+      ],
+      "hybrid_ci": [
+        0.001850745640695095,
+        0.0027563385665416718
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -50.21520803443329
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/gsm",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.509313829598728,
+      "log2_speedup": -0.9733732030541953,
+      "o3_median_sec": 0.00935576856136322,
+      "hybrid_median_sec": 0.018369358964264393,
+      "o3_ci": [
+        0.00885526742786169,
+        0.010571562685072422
+      ],
+      "hybrid_ci": [
+        0.01765622664242983,
+        0.02353754546493292
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": -0.38891104906262464
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/jpeg-c",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.9056218661658,
+      "log2_speedup": -0.14301930254340683,
+      "o3_median_sec": 0.004935945384204388,
+      "hybrid_median_sec": 0.005450338125228882,
+      "o3_ci": [
+        0.0047364747151732445,
+        0.00632329098880291
+      ],
+      "hybrid_ci": [
+        0.005293756723403931,
+        0.006046108901500702
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": 21.558480924955614
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/tiff2bw",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.0185856606238772,
+      "log2_speedup": 0.026567312616652343,
+      "o3_median_sec": 0.003572210669517517,
+      "hybrid_median_sec": 0.0035070301964879036,
+      "o3_ci": [
+        0.003322770819067955,
+        0.003597412258386612
+      ],
+      "hybrid_ci": [
+        0.003336271271109581,
+        0.004187112674117088
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": 5.855274805878039
+    },
+    {
+      "benchmark_uri": "benchmark://cbench-v1/tiff2rgba",
+      "suite": "cbench-v1",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.0780665097315596,
+      "log2_speedup": 0.10844618578984629,
+      "o3_median_sec": 0.005920028313994408,
+      "hybrid_median_sec": 0.005491338670253754,
+      "o3_ci": [
+        0.00579362828284502,
+        0.006535750813782215
+      ],
+      "hybrid_ci": [
+        0.005047316662967205,
+        0.00581313855946064
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": 5.38185154040211
+    },
+    {
+      "benchmark_uri": "benchmark://chstone-v0/adpcm",
+      "suite": "chstone-v0",
+      "protocol": "fallback",
+      "speedup_hybrid_vs_o3": 1.1790953293033244,
+      "log2_speedup": 0.2376803642492657,
+      "o3_median_sec": 0.00239532720297575,
+      "hybrid_median_sec": 0.0020314957946538925,
+      "o3_ci": [
+        0.002041356638073921,
+        0.005966438911855221
+      ],
+      "hybrid_ci": [
+        0.001799856312572956,
+        0.004438664764165878
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": 15.48611111111111
+    },
+    {
+      "benchmark_uri": "benchmark://chstone-v0/aes",
+      "suite": "chstone-v0",
+      "protocol": "fallback",
+      "speedup_hybrid_vs_o3": 0.9493671676519372,
+      "log2_speedup": -0.07496193756237951,
+      "o3_median_sec": 0.0018406864255666733,
+      "hybrid_median_sec": 0.0019388562068343163,
+      "o3_ci": [
+        0.0017065349966287613,
+        0.0023933378979563713
+      ],
+      "hybrid_ci": [
+        0.0018521854653954506,
+        0.0024197977036237717
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": -28.56529209621993
+    },
+    {
+      "benchmark_uri": "benchmark://chstone-v0/sha",
+      "suite": "chstone-v0",
+      "protocol": "fallback",
+      "speedup_hybrid_vs_o3": 1.0175134715010816,
+      "log2_speedup": 0.025047895365375265,
+      "o3_median_sec": 0.002277548424899578,
+      "hybrid_median_sec": 0.0022383471950888634,
+      "o3_ci": [
+        0.0017285561189055443,
+        0.0025210976600646973
+      ],
+      "hybrid_ci": [
+        0.0017765257507562637,
+        0.002582687884569168
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -29.25
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/4",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.0373376494458937,
+      "log2_speedup": 0.052885562322645886,
+      "o3_median_sec": 0.001946466974914074,
+      "hybrid_median_sec": 0.0018764063715934753,
+      "o3_ci": [
+        0.001825505867600441,
+        0.002763998694717884
+      ],
+      "hybrid_ci": [
+        0.0018040649592876434,
+        0.0020453566685318947
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": -58.08449458084495
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/6",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.9443952796288902,
+      "log2_speedup": -0.08253726432568877,
+      "o3_median_sec": 0.0017094463109970093,
+      "hybrid_median_sec": 0.0018100962042808533,
+      "o3_ci": [
+        0.0016635553911328316,
+        0.0024055782705545425
+      ],
+      "hybrid_ci": [
+        0.0016475161537528038,
+        0.0024017486721277237
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-inline",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -67.2627235213205
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/8",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.1155498388821723,
+      "log2_speedup": 0.1577549696124947,
+      "o3_median_sec": 0.0020847367122769356,
+      "hybrid_median_sec": 0.0018687974661588669,
+      "o3_ci": [
+        0.0017924746498465538,
+        0.0028763897716999054
+      ],
+      "hybrid_ci": [
+        0.0017070043832063675,
+        0.002862788736820221
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -10.099009900990099
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/9",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.7764335697422426,
+      "log2_speedup": -0.36506559938386984,
+      "o3_median_sec": 0.0019409656524658203,
+      "hybrid_median_sec": 0.002499847672879696,
+      "o3_ci": [
+        0.0018656160682439804,
+        0.0022077877074480057
+      ],
+      "hybrid_ci": [
+        0.0018982859328389168,
+        0.0027269087731838226
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa",
+        "-sroa"
+      ],
+      "hybrid_vs_o3_ir_pct": -524.3012422360248
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/12",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.7320449185723631,
+      "log2_speedup": -0.4499959193106161,
+      "o3_median_sec": 0.0018082959577441216,
+      "hybrid_median_sec": 0.0024701980873942375,
+      "o3_ci": [
+        0.001722295768558979,
+        0.002226336859166622
+      ],
+      "hybrid_ci": [
+        0.0018679965287446976,
+        0.002768218517303467
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": 3.090909090909091
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/17",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.000033743694147,
+      "log2_speedup": 4.868103887287623e-05,
+      "o3_median_sec": 0.0014904448762536049,
+      "hybrid_median_sec": 0.0014903945848345757,
+      "o3_ci": [
+        0.0014530355110764503,
+        0.0015361858531832695
+      ],
+      "hybrid_ci": [
+        0.0014827940613031387,
+        0.0021104570478200912
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-gvn",
+        "-instcombine",
+        "-gvn"
+      ],
+      "hybrid_vs_o3_ir_pct": 14.193548387096774
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/24",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.0063061172587693,
+      "log2_speedup": 0.009069238217067272,
+      "o3_median_sec": 0.0016435543075203896,
+      "hybrid_median_sec": 0.001633254811167717,
+      "o3_ci": [
+        0.0016183452680706978,
+        0.0017544860020279884
+      ],
+      "hybrid_ci": [
+        0.0015633050352334976,
+        0.0016375649720430374
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -123.18840579710145
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/26",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 0.894158379865045,
+      "log2_speedup": -0.16139770015837504,
+      "o3_median_sec": 0.0019732266664505005,
+      "hybrid_median_sec": 0.0022067977115511894,
+      "o3_ci": [
+        0.0017812056466937065,
+        0.002358187921345234
+      ],
+      "hybrid_ci": [
+        0.0017713652923703194,
+        0.0026682186871767044
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn"
+      ],
+      "hybrid_vs_o3_ir_pct": -25.39969834087481
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/29",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "speedup_hybrid_vs_o3": 1.0083187197892682,
+      "log2_speedup": 0.011951732865749966,
+      "o3_median_sec": 0.0018994258716702461,
+      "hybrid_median_sec": 0.001883755438029766,
+      "o3_ci": [
+        0.001817186363041401,
+        0.002192476764321327
+      ],
+      "hybrid_ci": [
+        0.0017994660884141922,
+        0.0018939673900604248
+      ],
+      "outputs_match": true,
+      "pass_sequence": [
+        "-newgvn",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn",
+        "-newgvn",
+        "-memcpyopt"
+      ],
+      "hybrid_vs_o3_ir_pct": -132.19461697722568
+    }
+  ],
+  "wilcoxon_signed_rank": {
+    "statistic": 74.0,
+    "p_value": 0.8772563934326172,
+    "alternative": "hybrid faster than O3 (on log2 speedups)"
+  },
+  "total_rows": 22,
+  "failed": [
+    "benchmark://cbench-v1/ispell",
+    "benchmark://cbench-v1/lame"
+  ],
+  "skipped": []
+}

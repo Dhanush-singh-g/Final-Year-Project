@@ -118,9 +118,33 @@ def run_hybrid_on_testset(args: argparse.Namespace):
             print(
                 "[Eval] NOTE: this is runtime vs the initial no-pass state, not "
                 "runtime vs -O3. CompilerGym exposes the -O3 IR cost directly but "
-                "not an -O3 Runtime observation. A separate O3 executable baseline "
-                "harness is required before claiming runtime superiority over -O3."
+                "not an -O3 Runtime observation."
             )
+            # Guardrail (runbook section 10): do not claim runtime superiority
+            # over -O3 from the numbers above. Only the external O3 executable
+            # baseline harness may back such a claim; surface it when measured.
+            o3_summary = PROJECT_ROOT / "results" / "o3_runtime_vs_o3_summary.json"
+            if o3_summary.exists():
+                try:
+                    data = json.loads(o3_summary.read_text())
+                    gm = data.get("geo_mean_speedup")
+                    n = data.get("benchmarks_evaluated")
+                    wins = data.get("wins")
+                    if gm is not None:
+                        print(
+                            "[Eval] O3 executable baseline (external harness): "
+                            f"geo-mean speedup vs opt -O3 = {gm:.4f}x over {n} "
+                            f"benchmarks (wins {wins}/{n}). "
+                            f"See {o3_summary.relative_to(PROJECT_ROOT)}."
+                        )
+                except Exception as error:
+                    print(f"[Eval] WARNING: could not read O3 baseline summary: {error}")
+            else:
+                print(
+                    "[Eval] GUARDRAIL: no measured O3 baseline found "
+                    f"({o3_summary.relative_to(PROJECT_ROOT)}). Do not claim runtime "
+                    "superiority over -O3; run evaluation/o3_runtime_harness.py first."
+                )
         # Save
         if args.output:
             Path(args.output).write_text(json.dumps(results, indent=2, default=str))
