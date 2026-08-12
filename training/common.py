@@ -46,10 +46,14 @@ CORE_NUMERIC_FEATURES = [
 def get_pre_autophase_cols() -> List[str]:
     return [f"pre_autophase_{name}" for name in AUTOPHASE_FEATURE_NAMES]
 
-def get_feature_cols(available: List[str], use_norm: bool = True) -> List[str]:
+def get_feature_cols(available: List[str], use_norm: bool = False) -> List[str]:
     """
-    Choose best feature columns present in CSV.
-    Prefers normalized if exists, else raw.
+    Choose feature columns present in CSV.
+
+    Defaults to RAW pre-state features: raw values are safer for tree models
+    (train_sl.py trains on raw by default). Normalized features are only used
+    when explicitly requested AND present, because online inference has no
+    normalization statistics to apply (inference.py rejects norm_* models).
     """
     cols = []
     # Try norm_pre_*
@@ -76,7 +80,7 @@ def safe_float(v) -> Optional[float]:
     try:
         f = float(v)
         return f if math.isfinite(f) else None
-    except:
+    except (TypeError, ValueError):
         return None
 
 def load_csv_rows(path: Path, max_rows: Optional[int] = None) -> Tuple[List[Dict[str, str]], List[str]]:

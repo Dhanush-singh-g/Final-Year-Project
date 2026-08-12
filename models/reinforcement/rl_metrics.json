@@ -1,4 +1,5 @@
 {
   "transitions": 3324,
-  "actions": 31
+  "actions": 31,
+  "action_encoding": "one_hot"
 }

@@ -1,4 +1,5 @@
 {
+  "action_encoding": "one_hot",
   "action_vocab": {
     "-adce": 0,
     "-aggressive-instcombine": 22,

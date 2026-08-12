@@ -12,3 +12,9 @@ __pycache__/
 # Dataset directories
 datasets/raw/
 datasets/processed/
+
+# O3 runtime harness build artifacts (compiled binaries + run outputs)
+results/o3_harness_work/
+
+# Windows "downloaded file" metadata sidecars (NTFS ADS materialized as files)
+*Zone.Identifier

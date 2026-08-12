@@ -152,7 +152,9 @@ def run_hybrid_on_testset(args: argparse.Namespace):
 
 def parse_args():
     p = argparse.ArgumentParser(description="Evaluate Hybrid vs baselines")
-    p.add_argument("--processed-csv", default=str(PROJECT_ROOT / "datasets" / "processed" / "hybrid_dataset.csv"))
+    # Canonical dataset is the scaled one; the pilot (hybrid_dataset.csv) is
+    # only used when explicitly requested.
+    p.add_argument("--processed-csv", default=str(PROJECT_ROOT / "datasets" / "processed" / "hybrid_dataset_scaled.csv"))
     p.add_argument("--benchmarks", action="append", default=[], help="Benchmark URIs to evaluate (overrides test split)")
     p.add_argument("--max-benchmarks", type=int, default=10)
     p.add_argument("--max-steps", type=int, default=10)

@@ -27,7 +27,20 @@ Requires:
   - CompilerGym environment
   - models/supervised/sl_reward_model.joblib (from train_sl.py)
   - models/reinforcement/rl_agent.joblib (from train_rl.py)
-  If models missing, falls back to heuristic: always pick pass with largest immediate reward (greedy) or random for demo.
+If the RL agent is missing, inference falls back to the SL scorer's greedy
+best pass (deterministic by default; ``--explore`` adds seeded random
+exploration among the available passes).
+
+Episode control (review fixes):
+  - Actions that had no effect in a state are masked for the rest of the
+    episode (per ``(state_id, action)`` pair); after ``--no-op-limit``
+    consecutive no-op actions the episode terminates ("no_effect").
+  - Repeated states terminate ("repeated_state"); a selected pass is never
+    re-applied while the state is unchanged.
+  - ``--enable-stop`` adds an explicit STOP candidate scored with
+    ``--stop-prior`` (default 0.0): selecting it terminates cleanly ("stop").
+  - Inference is deterministic by default (``--explore-epsilon 0``,
+    ``--explore`` off); pass ``--seed`` to reproduce seeded runs.
 """
 
 from __future__ import annotations
@@ -59,6 +72,74 @@ except ImportError:
 LOGGER = logging.getLogger("hybrid_inference")
 DEFAULT_SL_DIR = PROJECT_ROOT / "models" / "supervised"
 DEFAULT_RL_DIR = PROJECT_ROOT / "models" / "reinforcement"
+
+# Sentinel candidate flag for the explicit STOP action (see select_action).
+STOP_FLAG = "-stop"
+
+
+def step_is_no_op(
+    action_had_no_effect: Optional[bool],
+    state_changed: bool,
+    delta_ir: int,
+    hybrid_reward_scaled: float,
+) -> bool:
+    """True when the last step produced no measurable progress.
+
+    A step is a no-op when the environment reported the action had no effect,
+    the IR state did not move, or both IR count and hybrid reward are
+    unchanged. Such actions are masked for the rest of the episode.
+    """
+    return (
+        action_had_no_effect is True
+        or not state_changed
+        or (delta_ir == 0 and hybrid_reward_scaled == 0.0)
+    )
+
+
+def select_action(
+    available: Sequence[str],
+    sl_ranked: Sequence[Tuple[str, float, float]],
+    *,
+    rl_q_values: Optional[Dict[str, float]] = None,
+    rl_best: Optional[str] = None,
+    stop_prior: Optional[float] = None,
+    explore: bool = False,
+    rng=None,
+) -> Optional[str]:
+    """Pick the next pass under per-(state, action) masking.
+
+    Args:
+        available: candidate flags not yet tried in the current state.
+        sl_ranked: (flag, expected_reward, prob) from the SL scorer, sorted by
+            expected reward descending.
+        rl_q_values: fitted-Q values over the agent's action space; the
+            agent's own pick (``rl_best``) wins only when it is still
+            available, otherwise the masked Q argmax is used.
+        stop_prior: when given (RL mode never sees STOP), STOP wins if it
+            scores above every available SL candidate.
+        explore: seeded 10% random exploration among available passes.
+
+    Returns the chosen flag, STOP_FLAG, or None when nothing is available.
+    """
+    if not available:
+        return None
+    rng = rng if rng is not None else random
+    sl_scores = {flag: score for flag, score, _ in sl_ranked if flag in available}
+    if explore and len(available) >= 2 and rng.random() < 0.1:
+        return rng.choice(list(available))
+    if rl_q_values is not None:
+        masked = {flag: q for flag, q in rl_q_values.items() if flag in available}
+        if masked and rl_best in masked:
+            return rl_best
+        if masked:
+            return max(masked, key=masked.get)
+        # RL returned nothing usable (e.g. an empty Q dict): fall through to SL.
+    if stop_prior is not None and sl_scores:
+        best_sl = max(sl_scores, key=sl_scores.get)
+        if stop_prior > sl_scores[best_sl]:
+            return STOP_FLAG
+    return max(sl_scores, key=sl_scores.get) if sl_scores else available[0]
+
 
 def softmax(scores: List[float], temperature: float = 1.0) -> List[float]:
     if not scores:
@@ -199,6 +280,12 @@ def hybrid_optimize_benchmark(
     measure_runtime: bool = False,
     verbose: bool = True,
     dump_bitcode_to: Optional[Path] = None,
+    no_op_limit: int = 1,
+    enable_stop: bool = False,
+    stop_prior: float = 0.0,
+    explore_epsilon: float = 0.0,
+    explore: bool = False,
+    seed: int = 42,
 ) -> Dict:
     """
     Run hybrid optimization on one benchmark URI.
@@ -274,6 +361,13 @@ def hybrid_optimize_benchmark(
         step_details = []
         visited = {initial_state.state_id}
         cumulative_hybrid = 0.0
+        # Per-(state_id, action) mask: a no-op action is never re-tried while
+        # the state is unchanged (review fix — previously the same pass could
+        # be selected repeatedly and wasted the fixed pass budget).
+        tried_in_state: Dict[str, set] = {}
+        consecutive_no_op = 0
+        termination_reason: Optional[str] = None
+        explore_rng = random.Random(seed) if (explore or explore_epsilon > 0) else None
 
         if verbose:
             print(f"\n[Hybrid] Optimizing {benchmark_uri}")
@@ -282,13 +376,21 @@ def hybrid_optimize_benchmark(
             print(f"  Candidates: {len(candidate_flags)} passes")
 
         for step in range(max_steps):
-            # Step 2: SL predicts distribution
+            tried = tried_in_state.setdefault(current_state.state_id, set())
+            available = [flag for flag in candidate_flags if flag not in tried]
+            if not available:
+                termination_reason = "all_actions_tried"
+                if verbose:
+                    print("   -> All candidate actions tried in this state, terminating")
+                break
+
+            # Step 2: SL predicts distribution over the masked candidate set.
             sl_ranked = predict_sl_distribution(
                 sl_model,
                 sl_feature_cols or [],
                 sl_vocab or {},
                 current_state,
-                candidate_flags,
+                available,
                 temperature=5.0,
                 feature_meta=sl_feature_meta,
             )
@@ -301,25 +403,41 @@ def hybrid_optimize_benchmark(
             # Step 3 & 4: RL considers high-prob candidates + exploration
             # If RL agent present: it gets sl_probs dict and current state row
             sl_probs_dict = {flag: prob for flag, _, prob in sl_ranked}
-
+            rl_best: Optional[str] = None
+            q_values: Dict[str, float] = {}
             if rl_agent is not None:
                 # Need to construct state row dict similar to training: pre_*
                 state_row = current_state.flattened("pre_")
-                # RL's feature cols might differ; but we pass state_row directly
-                # Agent's predict will internally handle
                 try:
-                    best_flag, q_values = rl_agent.predict(state_row, sl_probs=sl_probs_dict, epsilon=0.05)
-                except Exception as e:
-                    LOGGER.warning(f"RL predict failed: {e}, fallback to SL top1")
-                    best_flag = sl_ranked[0][0] if sl_ranked else candidate_flags[0]
+                    rl_best, q_values = rl_agent.predict(
+                        state_row, sl_probs=sl_probs_dict, epsilon=explore_epsilon
+                    )
+                except Exception as error:
+                    LOGGER.warning(
+                        "RL predict failed (%s); falling back to SL top-1", error
+                    )
                     q_values = {}
-            else:
-                # No RL: pick SL best, with occasional exploration of top-3
-                if random.random() < 0.1 and len(sl_ranked) >= 3:
-                    best_flag = random.choice([f for f,_,_ in sl_ranked[:3]])
-                else:
-                    best_flag = sl_ranked[0][0] if sl_ranked else candidate_flags[0]
-                q_values = {}
+
+            # Step 5: masked selection (deterministic by default).
+            best_flag = select_action(
+                available,
+                sl_ranked,
+                rl_q_values=q_values if rl_agent is not None else None,
+                rl_best=rl_best,
+                stop_prior=stop_prior if enable_stop else None,
+                explore=explore,
+                rng=explore_rng,
+            )
+            if best_flag is None:
+                termination_reason = "all_actions_tried"
+                if verbose:
+                    print("   -> All candidate actions tried in this state, terminating")
+                break
+            if best_flag == STOP_FLAG:
+                termination_reason = "stop"
+                if verbose:
+                    print("   -> STOP selected, terminating")
+                break
 
             # Apply pass
             actions = resolve_actions(env, [best_flag])
@@ -333,11 +451,13 @@ def hybrid_optimize_benchmark(
                 next_state = trans.post
             except Exception as e:
                 LOGGER.warning(f"Failed to apply {best_flag}: {e}")
+                termination_reason = "action_failed"
                 break
 
             if next_state is None:
                 if verbose:
                     print(f"   -> No post state, terminating")
+                termination_reason = "post_state_none"
                 break
 
             # Compute rewards
@@ -370,25 +490,44 @@ def hybrid_optimize_benchmark(
 
             pass_sequence.append(best_flag)
 
-            # Termination conditions per design
+            # Termination conditions per design (review fix: the previous
+            # "no IR change" branch printed 'terminating' but did not break,
+            # so no-op/redundant actions could repeat for the whole budget).
+            no_op = step_is_no_op(
+                trans.action_had_no_effect,
+                next_state.state_id != current_state.state_id,
+                next_state.ir_instruction_count - current_state.ir_instruction_count,
+                reward_info["hybrid_reward_scaled"],
+            )
+            if no_op:
+                consecutive_no_op += 1
+                # Mask this (state, action) pair for the rest of the episode.
+                tried.add(best_flag)
+                if consecutive_no_op >= no_op_limit:
+                    termination_reason = "no_effect"
+                    if verbose:
+                        print(
+                            f"   -> No effect for {no_op_limit} consecutive "
+                            f"action(s), terminating"
+                        )
+                    break
+            else:
+                consecutive_no_op = 0
+
             if next_state.state_id in visited:
+                termination_reason = "repeated_state"
                 if verbose:
                     print("   -> Repeated state, terminating")
                 break
-            if next_state.ir_instruction_count == current_state.ir_instruction_count and reward_info["hybrid_reward_scaled"] == 0.0:
-                # Allow 1 zero-effect but terminate after 2 consecutive?
-                # For simplicity terminate if no change
-                if verbose:
-                    print("   -> No IR change, terminating")
-                # Don't necessarily terminate immediately? For demo we terminate
-                # break
-                pass
+            if next_state.ir_instruction_count == 0:
+                termination_reason = "zero_ir"
+                break
 
             visited.add(next_state.state_id)
             current_state = next_state
 
-            if next_state.ir_instruction_count == 0:
-                break
+        if termination_reason is None:
+            termination_reason = "max_steps"
 
         final_state = current_state
         if measure_runtime:
@@ -468,31 +607,9 @@ def hybrid_optimize_benchmark(
             "cumulative_hybrid": cumulative_hybrid,
             "initial_state_id": initial_state.state_id,
             "final_state_id": final_state.state_id,
+            "termination_reason": termination_reason,
         }
 
-    finally:
-        env.close()
-
-def compare_with_O_levels(benchmark_uri: str, reward_space: str = "IrInstructionCountO3"):
-    """
-    Quick evaluation vs default -O0, -O2, -O3 baselines using CompilerGym's observations
-    We can approximate by checking IrInstructionCountO3 reward? For simplicity we just report.
-    """
-    try:
-        import compiler_gym
-    except ImportError:
-        return None
-
-    env = compiler_gym.make("llvm-v0")
-    try:
-        env.reset(benchmark=benchmark_uri, reward_space=reward_space)
-        from scripts.extract_features import extract_features, MeasurementConfig
-        meas = MeasurementConfig()
-        s0 = extract_features(env, meas)
-        # Try to get O3 reward? CompilerGym has special handling: reward is improvement over O3?
-        # We'll just attempt env.commandline -O3? Simpler: use env.observation["IrInstructionCountO3"]?
-        # For now just return s0
-        return {"initial_ir": s0.ir_instruction_count}
     finally:
         env.close()
 
@@ -504,9 +621,34 @@ def parse_args():
     p.add_argument("--rl-model-dir", default=str(DEFAULT_RL_DIR))
     p.add_argument("--reward-space", default="IrInstructionCountO3")
     p.add_argument("--measure-runtime", action="store_true")
-    p.add_argument("--compare-with-o-levels", action="store_true", help="Also evaluate vs -O1/-O2/-O3 if possible")
-    p.add_argument("--output", default=None, help="JSON output path for result")
+    p.add_argument(
+        "--no-op-limit", type=int, default=1,
+        help="Terminate after N consecutive no-effect actions (default 1)",
+    )
+    p.add_argument(
+        "--enable-stop", action="store_true",
+        help="Add an explicit STOP candidate that terminates when it scores best",
+    )
+    p.add_argument(
+        "--stop-prior", type=float, default=0.0,
+        help="STOP score vs SL expected rewards (default 0.0)",
+    )
+    p.add_argument(
+        "--explore-epsilon", type=float, default=0.0,
+        help="RL epsilon-greedy exploration (default 0 = deterministic)",
+    )
+    p.add_argument(
+        "--explore", action="store_true",
+        help="SL-only mode: seeded 10%% random exploration among available passes",
+    )
+    p.add_argument("--seed", type=int, default=42, help="Seed for seeded exploration")
+    p.add_argument(
+        "--output", default=None, help="JSON output path for result"
+    )
     p.add_argument("--log-level", default="INFO")
+    # Runtime-vs-O3 comparison is NOT exposed here: it is measured by the
+    # controlled executable harness (evaluation/o3_runtime_harness.py, runbook
+    # section 10). CompilerGym has no -O3 Runtime observation.
     return p.parse_args()
 
 def main():
@@ -522,15 +664,17 @@ def main():
         reward_space=args.reward_space,
         measure_runtime=args.measure_runtime,
         verbose=True,
+        no_op_limit=args.no_op_limit,
+        enable_stop=args.enable_stop,
+        stop_prior=args.stop_prior,
+        explore_epsilon=args.explore_epsilon,
+        explore=args.explore,
+        seed=args.seed,
     )
 
     if args.output:
         Path(args.output).write_text(json.dumps(result, indent=2, default=str))
         print(f"\nSaved result to {args.output}")
-
-    if args.compare_with_o_levels:
-        print("\n[Comparison placeholder] To compare vs -O2/-O3, you would compile bitcode with clang -O2 -O3")
-        print("and measure IR size/runtime. This requires clang toolchain in eval environment.")
 
     return 0
 
