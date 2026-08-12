@@ -82,33 +82,59 @@ tiff2rgba 58,661 → 37,131 (**+5.4% vs -O3**).
 Learned sequences are short and sensible, e.g. `-sroa → -simplifycfg`, `-newgvn → -newgvn`,
 and `-sroa ×7 → -loop-distribute` (lame).
 
-**External O3 runtime baseline (runbook §10, `evaluation/o3_runtime_harness.py`) — implemented.**
+**External O3 runtime baseline — v2 protocol (runbook §10, `evaluation/o3_runtime_harness.py`).**
 CompilerGym exposes no `-O3` runtime observation, so runtime-vs-O3 is measured with a controlled
-harness: the same O0 bitcode is compiled with `opt -O3` (LLVM 10) and with the hybrid final IR,
-both with the benchmark's own clang build command, then executed with the benchmark's dynamic
-input configuration, identical warmups + repetitions, and `taskset` CPU pinning, reporting medians
-with 95% bootstrap CIs (interleaved to cancel drift).
+harness: the same O0 bitcode is compiled three ways — `clang -O3` (clang's own O3 pipeline, the
+reference baseline), `opt -O3` (kept as a sanity check), and the hybrid final IR as a pre-pass —
+ALL with clang's `-O3` codegen, so the comparison isolates the middle-end pass sequence. Plain
+`clang module.bc` without an -O flag emits effectively O0-level codegen; the pre-2026 waves that
+used it made hybrid look 0.95×-competitive against a weak baseline and are superseded by these
+v2 waves. Executables run with the benchmark's own dynamic input config, identical warmups +
+repetitions, and `taskset` CPU pinning, reporting medians with 95% bootstrap CIs (interleaved to
+cancel drift). Because the hybrid pass sequence is input-independent, binaries are built once per
+benchmark and timed on multiple inputs (`--inputs`); the summary reports the largest-baseline-median
+input per benchmark (most trustworthy timing), deduplicated across waves.
 
-| Runtime comparison (executable baseline) | n | Geo-mean speedup | Wins |
-|---|---|---|---|
-| Hybrid vs `opt -O3` | 20 runnable test benchmarks | **0.93×** | 10/20 (Wilcoxon p=0.88, n.s.) |
+| Runtime comparison (executable baseline, `-O3` codegen, largest-input representative) | n | Geo-mean vs opt -O3 | vs clang -O3 | Wins vs clang -O3 |
+|---|---|---|---|---|
+| All 22 test-split benchmarks | 22 | 0.993× | 0.990× | 12/22 (Wilcoxon p=0.50, n.s.) |
+| cBench, non-trivial inputs (median ≥ 0.03 s) | 7 | 1.023× | 1.019× | 5/7 |
+| cBench, substantial inputs (median ≥ 0.1 s) | 6 | 1.039× | 1.015× | 4/6 |
 
-Honest interpretation: the learned IR-level advantage (above) does **not** yet translate into a
-runtime win over the full `-O3` pipeline on these default small inputs — `-O3` wins on 10 of the
-20 runnable benchmarks (e.g. bitcount 1.28×, gsm 1.96×) while hybrid's clear wins are
-compute-heavy bzip2 (**1.33×**), CHStone adpcm (1.18×), and csmith-8 (1.12×). All 20 runs produced
-byte-identical outputs on both sides (`outputs_match=true`), so the comparison is apples-to-apples.
-Runtimes below ~10 ms are dominated by process startup, so the trustworthy signal is on the
-heavier programs (bzip2 135 ms, bitcount 60 ms). Closing this gap (larger benchmark inputs,
-longer learned sequences, runtime-aware selection) is the next research step.
+Large-input cBench detail (`results/o3_runtime_vs_o3_summary.json`):
+
+| benchmark | input | opt-O3 med | clang-O3 med | hybrid med | spd vs clang-O3 |
+|---|---|---|---|---|---|
+| bzip2 | 8.bz2 | 4.319 s | 4.371 s | 4.340 s | 1.007× |
+| dijkstra | 9.dat | 0.625 s | 0.627 s | 0.625 s | 1.004× |
+| gsm | 2.au | 0.775 s | 0.739 s | 0.635 s | **1.164×** |
+| jpeg-c | 17.ppm | 0.970 s | 0.989 s | 1.021 s | 0.968× |
+| tiff2rgba | 11.nocomp.tif | 2.569 s | 2.232 s | 2.363 s | 0.945× |
+| tiff2bw | 17.nocomp.tif | 2.382 s | 2.411 s | 2.379 s | 1.013× |
+| stringsearch | 4.txt | 0.027 s | 0.029 s | 0.027 s | 1.097× |
+| bitcount | (arg) | 0.031 s | 0.034 s | 0.033 s | 1.047× |
+
+Honest interpretation — the key finding of the corrected protocol: **hybrid does not beat
+`clang -O3` at runtime when measured properly.** The large-input wins from the earlier O0-codegen
+protocol (dijkstra 1.42×, tiff2rgba 1.36×, bzip2 1.24×) collapse to ~1.00× once both arms use
+real `-O3` codegen — the backend re-optimizes the IR-level differences away. Geo-mean over all 22
+test benchmarks is **0.99×** vs both baselines (12/22 wins, Wilcoxon p=0.50, n.s.): a statistical
+tie overall. Two genuinely useful signals: (1) gsm — hybrid's worst loss under the old protocol
+(0.44×) — flips to a **1.164× win** under `-O3` codegen, where the learned `-sroa`-heavy sequence
+helps the backend; (2) `opt -O3` ≈ `clang -O3` (within ~1%), validating both baselines. All runs
+produced byte-identical outputs across the three arms (`outputs_match=true`). The research
+conclusion matches the plan's hypothesis: Phase-1 IR-count gains do not yet translate to runtime
+wins over a properly measured `-O3`; the next steps are a runtime-aware (z-scored) reward and
+longer learned sequences with STOP, trained against the `-O3` codegen target.
 
 Honest caveats:
 
 1. On small/synthetic programs (CHStone, csmith) `-O3` still wins the IR-count race — its full
    fixed pipeline removes trivially dead synthetic code that our short learned sequences do not.
-2. Runtime-vs-O3 is now measured directly (table above). The comparison uses `opt -O3` on the
-   same O0 bitcode, so it is an IR-pipeline comparison, not a full frontend `clang -O3` build;
-   it also uses each benchmark's default (small) input sizes.
+2. Runtime-vs-O3 is measured directly with `-O3` codegen (table above). The `opt -O3` arm runs
+   on the same O0 bitcode (IR-pipeline comparison); the `clang -O3` arm is clang's own pipeline
+   on that bitcode — the benchmark protos ship no source, so a literal source-level `clang -O3`
+   rebuild is not possible for these datasets.
 3. Cross-program runtime prediction remains noisy (single-pass runtime deltas are dominated by
    process overhead), so the canonical SL scorer uses the deterministic IR `step_reward`;
    `models/supervised_runtime/` is kept as the runtime-target reference.
@@ -301,7 +327,7 @@ python evaluation/evaluate_benchmarks.py \
 python evaluation/o3_runtime_harness.py measure \
   --processed-csv datasets/processed/hybrid_dataset_scaled.csv \
   --sl-model-dir models/supervised --rl-model-dir models/reinforcement \
-  --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 \
+  --max-steps 8 --warmup 1 --reps 5 --cpu 4 --timeout 120 --inputs 0,largest \
   --workdir results/o3_harness_work --output results/o3_wave1.json
 
 python evaluation/o3_runtime_harness.py summarize \
@@ -384,8 +410,9 @@ This project:
 - RL discovers **effective sequences and ordering** for long-term cumulative reward
 - Hybrid beats -O3 **on IR count** because it adapts to program features instead
   of using a fixed pipeline; runtime vs -O3 is measured separately by the
-  external O3 baseline harness (0.93× geo-mean on the scaled run — -O3 is
-  currently ahead, see results above).
+  external O3 baseline harness (0.99× geo-mean on the scaled run — a statistical
+  tie with `-O3`, see results above; the earlier 0.93× figure used O0-level codegen
+  and is superseded).
 
 Easier to justify in research: supervised reward modeling + RL for sequential decision = principled division of labor.
 

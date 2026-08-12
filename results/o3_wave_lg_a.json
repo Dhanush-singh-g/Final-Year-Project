@@ -1,0 +1,71 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bitcount",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out 1125000",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "o0_ir_instruction_count": 857,
+    "pass_sequence": [
+      "-sroa",
+      "-simplifycfg",
+      "-simplifycfg"
+    ],
+    "final_ir": 490,
+    "o3_ir_instruction_count": 607,
+    "hybrid_vs_o3_ir_pct": 19.27512355848435,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 3,
+          "median_sec": 0.06395646836608648,
+          "mean_sec": 0.06839209546645482,
+          "std_sec": 0.011822842401736344,
+          "min_sec": 0.05942851770669222,
+          "max_sec": 0.08179130032658577,
+          "ci95_lo_sec": 0.05942851770669222,
+          "ci95_hi_sec": 0.08179130032658577
+        },
+        "hybrid": {
+          "n": 3,
+          "median_sec": 0.07771120220422745,
+          "mean_sec": 0.07827046451469262,
+          "std_sec": 0.002442954068121865,
+          "min_sec": 0.07615563459694386,
+          "max_sec": 0.08094455674290657,
+          "ci95_lo_sec": 0.07615563459694386,
+          "ci95_hi_sec": 0.08094455674290657
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 0.82300191673791
+      }
+    ],
+    "o3": {
+      "n": 3,
+      "median_sec": 0.06395646836608648,
+      "mean_sec": 0.06839209546645482,
+      "std_sec": 0.011822842401736344,
+      "min_sec": 0.05942851770669222,
+      "max_sec": 0.08179130032658577,
+      "ci95_lo_sec": 0.05942851770669222,
+      "ci95_hi_sec": 0.08179130032658577
+    },
+    "hybrid": {
+      "n": 3,
+      "median_sec": 0.07771120220422745,
+      "mean_sec": 0.07827046451469262,
+      "std_sec": 0.002442954068121865,
+      "min_sec": 0.07615563459694386,
+      "max_sec": 0.08094455674290657,
+      "ci95_lo_sec": 0.07615563459694386,
+      "ci95_hi_sec": 0.08094455674290657
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 0.82300191673791,
+    "elapsed_sec": 2.14
+  }
+]
