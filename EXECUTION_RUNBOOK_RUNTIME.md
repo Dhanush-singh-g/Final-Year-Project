@@ -410,6 +410,35 @@ done=True — so fitted-Q learns Q(state, STOP)). Inference uses the learned
 Q(STOP) by default when the agent is loaded; the harness `--max-steps`
 default is 15.
 
+Large-input pass-quality pipeline (full sweep, Aug 2026):
+`scripts/generate_large_input_dataset.py --benchmark benchmark://cbench-v1/gsm
+--inputs 11 --output datasets/processed/gsm_large_input_passes.csv` builds
+all 31 curated pass variants natively and times them on the chosen input
+(~2 min/benchmark at ~0.6-1 s workloads; use `--warmup 0 --runs 3` and pick a
+bounded input — bzip2's largest is 4.3 s/run, tiff's largest is 143 MB). The
+full 8-benchmark sweep (gsm 2.au, dijkstra 9.dat, jpeg-c 17.ppm, bzip2 30.bz2,
+tiff2rgba/tiff2bw 15.nocomp.tif, bitcount, stringsearch 4.txt) confirms a real
+and stable per-pass runtime ordering (best `-loop-unroll` +4.4% mean vs O0,
+worst `-sroa` −2.0%; 24/31 passes beat O0) — this is the review-demanded
+*global-best-pass* baseline, now measured.
+
+STRUCTURAL RESULT: a leave-one-benchmark-out scorer trained on the other 7
+benchmarks gets test top-3 = **0% on every held-out benchmark** (mean R²
+−0.005). Verified root cause: all 31 rows of a benchmark share one pre-state
+signature, so pre-state features cannot discriminate passes within a
+benchmark, and no pass is positive on all 8 (no cross-benchmark signal). The
+raw-target model's earlier "signal" was benchmark identity, which z-scoring
+removes. The dataset design fix is a multi-state transition dataset (pre-state
+features varying across rows, e.g. relabeling the RL replay buffer's unique
+states with large-input runtime) — the committed scorer should NOT be
+retrained on the current single-shot data (it would be a 0%-ranking model).
+
+Next steps from here: (a) add a fixed-sequence arm to the harness
+(`-loop-unroll -loop-vectorize -argpromotion …` as the review-demanded
+fixed-curated-sequence baseline) and measure it on the 8 large-input
+benchmarks; (b) build the multi-state dataset (replay buffer states timed
+natively on large inputs) and retrain the scorer on it.
+
 **Longer-horizon experiment (Aug 2026, do not re-run casually):** relaxing
 the first-no-op termination (`no_op_limit=max_steps`) let the learned policy
 emit longer sequences (dijkstra 4 → 15 passes, IR 450→264) but runtime vs
@@ -445,10 +474,81 @@ sets — verify with the printed `input_file`). A benchmark's "largest" input by
 file size can be impractically slow (`dijkstra` 20.dat: minutes per run) —
 pass explicit `--inputs` indices to pick a larger-but-bounded input instead.
 
+Fixed-sequence baseline arm (implemented + measured Aug 2026):
+`measure --sequence=-loop-unroll,-loop-vectorize,-loop-deletion,
+-argpromotion,-globaldce` applies the static list to the same O0 bitcode and
+times it as a 4th arm (`fixed`) with `speedup_fixed_vs_*` and
+`speedup_hybrid_vs_fixed` fields + summary aggregates. Measured on the 8
+large-input cBench benchmarks (same inputs as the sweep, 5 interleaved reps):
+
+- fixed geo-mean vs clang -O3 = **1.015×** (first positive runtime result;
+  driven by tiff2rgba 1.197× with non-overlapping 95% CIs);
+- **hybrid is beaten by the fixed list**: geo-mean hybrid-vs-fixed 0.977×
+  (split 4-4) — the IR-based scorer's `-sroa`/`-newgvn` picks are re-optimized
+  by the backend while the loop transforms actually move runtime on tiff2rgba;
+- the fixed list, not the learned policy, is now the baseline to beat.
+  `results/o3_runtime_fixed_arm_summary.json`, `results/o3_wave_fixed_*.json`.
+
+REPLICATION (Aug 2026, 15 reps x 3 inputs on tiff2rgba,
+`results/o3_wave_fixed_tiff2rgba_rep.json`): the 1.197x was partly baseline
+noise. Fixed vs clang -O3: **1.109x on 15.nocomp.tif** (non-overlapping CIs),
+1.009x on 11.tif, 1.013x on 23.nocomp.tif (geo-mean ~1.04x); hybrid loses on
+every input (0.86x-0.97x). The advantage concentrates where pixel-loop work
+dominates (uncompressed input).
+
+MULTI-STATE DATASET + LOOP-FOCUSED SCORER (max-scale, Aug 2026):
+`scripts/generate_multistate_dataset.py` builds the transition structure the
+single-shot design lacked — O0 plus states from IR-reducing scalar prefixes,
+with the 8-pass loop subset timed natively at each state. State acceptance
+requires BOTH a new bitcode signature AND a feature-vector distance >= 0.05
+from every accepted state (autophase proportions + relative IR). The
+signature check alone is insufficient: -memcpyopt changes the bitcode while
+leaving model-visible features identical (distance 0.0000), which silently
+duplicates rows — the diversity guard rejects those. SCALED to EVERY
+runnable benchmark in the environment: 14 cBench (real inputs) + 12 CHStone
++ 9 csmith (both via `--fallback`: build ./a.out, run with no inputs) = 35
+benchmarks x 3 distinct states x 8 passes = 840 rows, per-(benchmark,state)
+z-scored (`datasets/processed/multistate_combined_z.csv`, gitignored).
+CHStone/csmith runtimes are 1-10 ms (startup noise); they add diversity, not
+runtime signal. Findings:
+
+- in-distribution ranking (state-level split): top-1 0.154, top-3 0.615
+  (random 0.125/0.375);
+- 35-fold leave-one-benchmark-out: top-1 0.029 (1/35), top-3 0.343 ~= random
+  (0.375), in both suites (cBench/CHStone 0.346, csmith 0.333) —
+  cross-benchmark transfer is definitively absent at the maximum achievable
+  scale (34 train benchmarks / 102 states);
+- harness comparison (8 large-input cBench benchmarks, 5 interleaved reps,
+  committed 840-row model, `results/o3_runtime_loop840_summary.json`): loop
+  scorer (SL-only) 1.009x vs clang -O3, fixed top-5 loop list 1.010x,
+  scorer-vs-fixed 0.999x (3-5) — a tie, both beating clang -O3 on average
+  (tiff2rgba 1.085x). In-distribution only; on unseen benchmarks the scorer
+  ranks ~randomly, so the fixed list is the defensible general policy;
+- ANGHABENCH BOUNDARY (verified): anghabench-v1, blas/clgen/poj104/npb are
+  function-level datasets — no main, no inputs, no dynamic run config — so a
+  runtime-measuring pipeline cannot process them. The dataset also does not
+  fit the sandbox disk (a failed install filled it — ENOSPC; cleaned). The
+  35-benchmark set is the complete runnable universe here. Further scaling
+  needs runnable-program corpora (SPEC/PolyBench) or synthesized
+  call-harnesses for function-level code (separate build).
+- retrained artifact at `models/supervised_loop_multistate/` (8 loop actions,
+  target z_runtime_improvement_pct) is an IN-DISTRIBUTION ranker only; do
+  NOT use it for unseen benchmarks. Fixed loop list remains the defensible
+  general policy.
+
+INPUT-INDEX TRAP (hit again Aug 2026): `--inputs` indexes the
+lexicographically-sorted same-suffix files, NOT the dataset number — dijkstra
+`--inputs 9` resolves to **18.dat (~28 s/run)** and jpeg-c `--inputs 17` to
+7.ppm; dijkstra 9.dat is index **19**, jpeg-c 17.ppm is index **8**. Always
+verify with the printed `input_file` before launching a wave.
+
 Defensible claims as of this run:
 
 - runtime improvement vs the initial no-pass state (CompilerGym Runtime
   observation);
 - IR instruction-count comparison vs exact -O3;
-- runtime-vs-O3 measured by the harness above (currently ~1.0× vs both
-  baselines — a statistical tie with `-O3`, not a win).
+- runtime-vs-O3 measured by the harness above (hybrid currently ~1.0× vs
+  `clang -O3` — a statistical tie, not a win);
+- a fixed top-5 loop-pass sequence is **1.015× vs `clang -O3`** (8 large-input
+  cBench benchmarks) and beats the learned hybrid (0.977× hybrid-vs-fixed),
+  pending replication on more reps/inputs.

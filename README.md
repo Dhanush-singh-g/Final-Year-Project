@@ -131,6 +131,115 @@ arms (`outputs_match=true`). The research conclusion matches the plan's hypothes
 IR-count gains do not yet translate to runtime wins over a properly measured `-O3`; the next
 steps are a runtime-aware (z-scored) reward trained against the `-O3` codegen target.
 
+### Fixed-sequence baseline arm (the first positive runtime result)
+
+The reviews demanded a *fixed curated sequence* baseline, and the large-input
+sweep (section below) finally supplied the measured ranking to build one.
+`evaluation/o3_runtime_harness.py` now takes `--sequence` (comma-separated
+passes): it applies the static list to the same O0 bitcode and times it as a
+fourth arm (`fixed`) alongside `o3` / `clang_o3` / `hybrid`, with
+`speedup_fixed_*` and `speedup_hybrid_vs_fixed` fields and summary aggregates.
+
+Measured on the same 8 large-input cBench benchmarks as the sweep, using the
+top-5 single-pass ranking (`-loop-unroll,-loop-vectorize,-loop-deletion,
+-argpromotion,-globaldce`), 5 interleaved reps, `-O3` codegen on every arm
+(`results/o3_runtime_fixed_arm_summary.json` + `results/o3_wave_fixed_*.json`):
+
+| arm | geo-mean vs opt -O3 | vs clang -O3 | best | worst |
+|---|---|---|---|---|
+| **hybrid** (learned) | 0.977× | 0.992× | gsm 1.027× | tiff2rgba 0.940× |
+| **fixed** (top-5 loop passes) | 1.000× | **1.015×** | **tiff2rgba 1.197×** | tiff2bw 0.968× |
+
+| benchmark | input | hybrid vs clang-O3 | fixed vs clang-O3 | hybrid vs fixed |
+|---|---|---|---|---|
+| bitcount | (arg) | 1.006× | 1.002× | 1.005× |
+| bzip2 | 30.bz2 | 1.001× | 0.988× | 1.013× |
+| dijkstra | 9.dat | 0.994× | 1.004× | 0.991× |
+| gsm | 2.au | 1.027× | 0.981× | 1.047× |
+| jpeg-c | 17.ppm | 0.956× | 0.997× | 0.960× |
+| stringsearch | 4.txt | 0.988× | 1.002× | 0.986× |
+| tiff2bw | 15.nocomp.tif | 1.025× | 0.968× | 1.059× |
+| tiff2rgba | 15.nocomp.tif | 0.940× | **1.197×** | 0.785× |
+
+Interpretation — this is the project's **first measured runtime win**: a static
+top-5 middle-end sequence is **1.015× faster than `clang -O3`** on average over
+these 8 benchmarks (driven by tiff2rgba). Two conclusions follow. (1) The
+learned hybrid is **beaten by the dumb fixed list** (0.977× hybrid-vs-fixed
+geo-mean, split 4-4) — the IR-count-based scorer picks `-sroa`/`-newgvn`-type
+passes that the backend re-optimizes away, while the loop transforms in the
+fixed list actually move runtime on tiff2rgba. This is exactly the review's
+demand to compare against a fixed curated sequence, and it sharpens the
+thesis: pass selection should target runtime, and the loop-pass subset is the
+promising part of the action space. (2) The fixed list, not the learned
+policy, is the baseline to beat going forward.
+
+**Replication (15 reps × 3 inputs, `results/o3_wave_fixed_tiff2rgba_rep.json`):**
+the original 1.197× was partly baseline noise. Fixed vs `clang -O3` is
+**1.109× on 15.nocomp.tif** (non-overlapping CIs), **1.009× on 11.tif** and
+**1.013× on 23.nocomp.tif** (geo-mean ≈1.04× across inputs). The advantage is
+input-dependent and concentrated where pixel-loop work dominates (the
+uncompressed input); the hybrid arm loses on every input (0.86×–0.97×).
+
+### Multi-state dataset (the dataset-design fix) and loop-focused scorer
+
+The single-pass-from-O0 design is structurally incapable of teaching pass
+selection, so `scripts/generate_multistate_dataset.py` builds the
+*transition* structure instead: each benchmark contributes O0 plus states
+built by applying IR-reducing scalar passes one at a time, and the 8-pass
+**loop subset** (`-licm -loop-rotate -loop-unroll -loop-vectorize
+-loop-deletion -loop-unswitch -loop-distribute -indvars`) is timed natively
+at every state on the large input.
+
+**State-diversity guard** (added after the first version's verified failure
+mode): a candidate state is accepted only if its bitcode signature is new AND
+its feature vector (autophase proportions + relative IR) is at least 0.05
+from *every* accepted state. Without this, near-duplicate states pass the
+signature check — `-memcpyopt` changes the bitcode while leaving the
+model-visible features identical (measured distance 0.0000 vs 0.25+ for
+genuine states), silently tripling duplicate rows. Audit of the scaled build:
+global minimum pairwise state distance **0.0657** — no near-duplicates.
+
+**Scaled build (Aug 2026): every runnable benchmark in the environment** —
+14 cBench (real inputs) + 12 CHStone (fallback `./a.out`) + 9 csmith
+(fallback) = **35 benchmarks × 3 genuinely distinct states × 8 loop passes =
+840 rows**, z-scored per (benchmark, state)
+(`datasets/processed/multistate_combined_z.csv`, gitignored). CHStone/csmith
+run at 1–10 ms (startup-dominated), so their z-scores are noise — they add
+benchmark/state diversity, not runtime signal.
+
+Findings (35-fold leave-one-benchmark-out — the maximum power this
+environment allows):
+
+- **In-distribution ranking works**: state-level split gives **top-1 0.154,
+  top-3 0.615** (random 0.125 / 0.375).
+- **It does NOT transfer across benchmarks**: LOBO gives **top-1 0.029
+  (1/35), top-3 0.343 ≈ random (0.375)**, in both suites (cBench/CHStone
+  0.346, csmith 0.333). Even with 34 training benchmarks × 102 diverse
+  states, no transferable state→pass-quality mapping emerges.
+- **AnghaBench-scale is not reachable in this environment, and not for
+  runtime at all**: AnghaBench (and BLAS/CLgen/POJ104/NPB here) are
+  function-level — no `main`, no inputs, no dynamic run config — so a
+  runtime-measuring pipeline cannot process them; the dataset also does not
+  fit on this sandbox's disk (a failed install filled it; cleaned up). The
+  35-benchmark set above is the complete runnable universe. Scaling further
+  requires runnable-program corpora (SPEC/PolyBench) or synthesizing
+  call-harnesses for function-level code — a separate build.
+- **Harness comparison (in-distribution, committed 840-row model,
+  `results/o3_runtime_loop840_summary.json`):** the retrained loop scorer
+  (SL-only, 8 actions) vs the fixed top-5 loop list vs `clang -O3` on the 8
+  large-input cBench benchmarks, 5 interleaved reps: **loop scorer 1.009× vs
+  `clang -O3`**, fixed list **1.010×**, scorer-vs-fixed **0.999×** (3-5) —
+  a tie, with both arms beating `clang -O3` on average (tiff2rgba 1.085× for
+  the scorer, picking `-indvars`). On *unseen* benchmarks the scorer ranks
+  loop passes ~randomly (LOBO 0.343 ≈ random 0.375), so the fixed list
+  remains the defensible general policy.
+
+The retrained artifact is committed at
+`models/supervised_loop_multistate/` (8 loop actions, 62 features, target
+`z_runtime_improvement_pct`): an in-distribution loop-pass ranker only — do
+not use it for unseen benchmarks. Scaling to AnghaBench-scale benchmarks with
+the same guard is the path to a generalizable runtime-aware scorer.
+
 ### STOP is now a learned RL action (longer horizons)
 
 The RL agent's action vocabulary now includes a real `-stop` action
@@ -143,6 +252,46 @@ net-negative — no more fixed 10%-chance or stop-prior hacks. Inference's
 `--max-steps` default is 15. Verified: the retrained agent (32 actions,
 2,227 synthetic STOP transitions) predicts Q(STOP) < 0 on normal states and
 stops cleanly when continuation is worse.
+
+### Large-input runtime signal (full 8-benchmark sweep)
+
+`scripts/generate_large_input_dataset.py` builds each curated pass variant
+natively (via the O3 harness's input-resolution/timing machinery) and measures
+runtime on an explicit **large** input, emitting the standard `pre_*` feature
+columns so the SL trainer can consume it directly. Full sweep (Aug 2026,
+`datasets/processed/*_large_input_passes*.csv` + `large_input_combined_z.csv`,
+gitignored):
+
+| benchmark | input | O0 med | per-pass spread | signal quality |
+|---|---|---|---|---|
+| gsm | 2.au | 0.645 s | −0.6% … +4.1% | clean |
+| dijkstra | 9.dat | 0.641 s | −1.8% … +2.8% | clean |
+| jpeg-c | 17.ppm | 1.02 s | −1% … +2% | clean |
+| bzip2 | 30.bz2 | 1.06 s | −7.4% … +2.8% | clean |
+| tiff2rgba | 15.nocomp.tif | 0.25 s | −5.6% … +9.6% | decent |
+| tiff2bw | 15.nocomp.tif | 52 ms | −10% … +8.4% | noisy |
+| bitcount | (fixed arg) | 32 ms | −11% … +2% | noisy |
+| stringsearch | 4.txt | 27 ms | −7% … +7% | noisy |
+
+**Finding 1 — the pass ordering is real, and stable.** At large inputs the
+fixed ranking of single passes has a wide spread (mean effect vs O0:
+`-loop-unroll` +4.4%, `-loop-vectorize` +3.6%, `-loop-deletion` +3.3%,
+`-argpromotion` +3.2%, `-globaldce` +3.0% … `-newgvn` +0.4%, `-sroa` −2.0%;
+24/31 passes beat O0 on average). This is the review-demanded
+*global-best-pass* baseline, now measured rather than speculative.
+
+**Finding 2 — the single-pass-from-O0 dataset design is structurally
+incapable of teaching pass *selection*.** All 31 rows of a benchmark share
+one pre-state (verified: exactly 1 distinct pre-state signature per
+benchmark), so the model cannot discriminate between passes within a
+benchmark — and no pass is positive on all 8 benchmarks (or negative on
+all 8), so there is no cross-benchmark signal to grab either. A
+leave-one-benchmark-out scorer trained on the other 7 benchmarks gets
+**test top-3 = 0% on every single held-out benchmark** (mean R² −0.005). The
+earlier raw-target "signal" was entirely benchmark identity (per-benchmark
+mean runtime), which z-scoring correctly removes. The dataset design fix is
+multi-state transitions — rows whose pre-state features actually vary (the RL
+replay-buffer structure), which is the next build.
 
 **Measured result (Aug 2026): longer horizons do not help with the current
 scorer.** An experiment relaxed the first-no-op termination
