@@ -441,6 +441,7 @@ def measure_benchmark(
     workdir: Path,
     include_fallback: bool,
     inputs: Sequence[int],
+    sequence: Optional[Sequence[str]] = None,
     dataset_env=None,
 ) -> Dict:
     """Run the full O3-vs-hybrid runtime comparison for one benchmark."""
@@ -499,6 +500,18 @@ def measure_benchmark(
     if not hybrid_bc.exists() or hybrid_bc.stat().st_size == 0:
         raise HarnessError("hybrid optimization produced no bitcode output")
 
+    # 1b. Optional fixed curated sequence baseline arm: apply a static pass
+    #     list to the same O0 bitcode instead of the learned policy.
+    fixed_bc = base / "fixed.bc"
+    fixed_applied: Optional[List[str]] = None
+    fixed_final_ir: Optional[int] = None
+    if sequence:
+        fixed_applied, fixed_final_ir = _apply_fixed_sequence(
+            env, benchmark_uri, sequence, fixed_bc, timeout
+        )
+        if not fixed_bc.exists() or fixed_bc.stat().st_size == 0:
+            raise HarnessError("fixed sequence produced no bitcode output")
+
     # 2. opt -O3 on the identical O0 bitcode.
     o0_bc_path = base / "o0.bc"
     o0_bc_path.write_bytes(o0_bc)
@@ -527,7 +540,11 @@ def measure_benchmark(
     build_native(o0_bc_path.read_bytes(), clang_o3_dir, build_args, outfile, timeout)
     build_native(hybrid_bc.read_bytes(), hybrid_dir, build_args, outfile, timeout)
 
-    arms = (("o3", o3_dir), ("clang_o3", clang_o3_dir), ("hybrid", hybrid_dir))
+    arms = [("o3", o3_dir), ("clang_o3", clang_o3_dir), ("hybrid", hybrid_dir)]
+    if sequence:
+        fixed_dir = base / "fixed"
+        build_native(fixed_bc.read_bytes(), fixed_dir, build_args, outfile, timeout)
+        arms.append(("fixed", fixed_dir))
 
     # 4. Interleaved, CPU-pinned timing with warmups, per requested input.
     measured_inputs: List[Dict] = []
@@ -563,23 +580,32 @@ def measure_benchmark(
         o3_med = statistics.median(samples["o3"])
         clang_o3_med = statistics.median(samples["clang_o3"])
         hybrid_med = statistics.median(samples["hybrid"])
-        measured_inputs.append(
-            {
-                "input_file": input_info["input_file"],
-                "input_index": input_info["input_index"],
-                "input_candidates": input_info["input_candidates"],
-                "o3": arm_stats(samples["o3"], seed),
-                "clang_o3": arm_stats(samples["clang_o3"], seed),
-                "hybrid": arm_stats(samples["hybrid"], seed),
-                "outputs_match": (
-                    len(set(hashes["o3"])) == 1
-                    and hashes["o3"] == hashes["clang_o3"]
-                    and hashes["o3"] == hashes["hybrid"]
-                ),
-                "speedup_hybrid_vs_o3": o3_med / hybrid_med,
-                "speedup_hybrid_vs_clang_o3": clang_o3_med / hybrid_med,
-            }
-        )
+        entry = {
+            "input_file": input_info["input_file"],
+            "input_index": input_info["input_index"],
+            "input_candidates": input_info["input_candidates"],
+            "o3": arm_stats(samples["o3"], seed),
+            "clang_o3": arm_stats(samples["clang_o3"], seed),
+            "hybrid": arm_stats(samples["hybrid"], seed),
+            "outputs_match": (
+                len(set(hashes["o3"])) == 1
+                and hashes["o3"] == hashes["clang_o3"]
+                and hashes["o3"] == hashes["hybrid"]
+            ),
+            "speedup_hybrid_vs_o3": o3_med / hybrid_med,
+            "speedup_hybrid_vs_clang_o3": clang_o3_med / hybrid_med,
+        }
+        if sequence and "fixed" in samples:
+            fixed_med = statistics.median(samples["fixed"])
+            entry["fixed"] = arm_stats(samples["fixed"], seed)
+            entry["outputs_match"] = (
+                entry["outputs_match"]
+                and hashes["o3"] == hashes["fixed"]
+            )
+            entry["speedup_fixed_vs_o3"] = o3_med / fixed_med
+            entry["speedup_fixed_vs_clang_o3"] = clang_o3_med / fixed_med
+            entry["speedup_hybrid_vs_fixed"] = fixed_med / hybrid_med
+        measured_inputs.append(entry)
 
     first = measured_inputs[0] if measured_inputs else {}
     result = {
@@ -604,7 +630,65 @@ def measure_benchmark(
         "speedup_hybrid_vs_o3": first.get("speedup_hybrid_vs_o3"),
         "speedup_hybrid_vs_clang_o3": first.get("speedup_hybrid_vs_clang_o3"),
     }
+    if sequence:
+        result["fixed_pass_sequence"] = fixed_applied
+        result["fixed_final_ir"] = fixed_final_ir
+        if hybrid_result.get("o3_ir_instruction_count") and fixed_final_ir:
+            result["fixed_vs_o3_ir_pct"] = (
+                100.0
+                * (fixed_final_ir - hybrid_result["o3_ir_instruction_count"])
+                / hybrid_result["o3_ir_instruction_count"]
+            )
+        result["fixed"] = first.get("fixed")
+        result["speedup_fixed_vs_o3"] = first.get("speedup_fixed_vs_o3")
+        result["speedup_fixed_vs_clang_o3"] = first.get("speedup_fixed_vs_clang_o3")
+        result["speedup_hybrid_vs_fixed"] = first.get("speedup_hybrid_vs_fixed")
     return result
+
+
+def _apply_fixed_sequence(
+    env: Any,
+    benchmark_uri: str,
+    sequence: Sequence[str],
+    dump_to: Path,
+    timeout: int,
+) -> Tuple[List[str], Optional[int]]:
+    """Apply a fixed pass sequence to the O0 state and dump the resulting bitcode.
+
+    Used for the review-demanded *fixed curated sequence* baseline arm: a
+    static pass list (e.g. the top passes by measured single-pass effect)
+    instead of the learned hybrid policy. Returns (applied flags, final IR
+    instruction count). Passes that fail to apply are skipped; the sequence
+    stops early if the environment reports done.
+    """
+    env.reset(benchmark=benchmark_uri)
+    applied: List[str] = []
+    for flag in sequence:
+        try:
+            _, _, done, _ = env.step(env.action_space.from_string(flag))
+            applied.append(flag)
+            if done:
+                break
+        except Exception as error:
+            LOGGER.warning("Fixed-sequence pass %s failed (%s); skipping", flag, error)
+            continue
+    bc_raw = env.observation["Bitcode"]
+    if hasattr(bc_raw, "tobytes"):
+        bc_raw = bc_raw.tobytes()
+    bc_bytes = bc_raw if isinstance(bc_raw, bytes) else bytes(bc_raw)
+    Path(dump_to).write_bytes(bc_bytes)
+    ir: Optional[int] = None
+    try:
+        raw_ir = env.observation["IrInstructionCount"]
+        if isinstance(raw_ir, int):
+            ir = raw_ir
+        elif hasattr(raw_ir, "reshape"):
+            ir = int(raw_ir.reshape(-1)[0])
+        else:
+            ir = int(raw_ir[0])
+    except Exception as error:
+        LOGGER.warning("Could not read fixed-sequence IR count: %s", error)
+    return applied, ir
 
 
 def _baseline_median_sec(entry: Dict) -> Optional[float]:
@@ -725,6 +809,23 @@ def summarize_results(
             "pass_sequence": result.get("pass_sequence"),
             "hybrid_vs_o3_ir_pct": result.get("hybrid_vs_o3_ir_pct"),
         }
+        fixed = rep.get("fixed") or {}
+        fixed_med = fixed.get("median_sec")
+        if fixed_med:
+            row["fixed_median_sec"] = fixed_med
+            row["fixed_ci"] = [
+                fixed.get("ci95_lo_sec"),
+                fixed.get("ci95_hi_sec"),
+            ]
+            row["speedup_fixed_vs_o3"] = (
+                o3_median / fixed_med if o3_median else None
+            )
+            row["speedup_fixed_vs_clang_o3"] = (
+                c3_median / fixed_med if c3_median else None
+            )
+            row["speedup_hybrid_vs_fixed"] = fixed_med / hy_median
+            row["fixed_pass_sequence"] = result.get("fixed_pass_sequence")
+            row["fixed_vs_o3_ir_pct"] = result.get("fixed_vs_o3_ir_pct")
         rows.append(row)
 
     speedups_o3 = [r["speedup_hybrid_vs_o3"] for r in rows if r["speedup_hybrid_vs_o3"]]
@@ -749,6 +850,27 @@ def summarize_results(
         "mean_speedup": statistics.fmean(speedups_o3) if speedups_o3 else None,
         "rows": rows,
     }
+
+    fixed_rows = [r for r in rows if r.get("fixed_median_sec")]
+    if fixed_rows:
+        fixed_o3 = [r["speedup_fixed_vs_o3"] for r in fixed_rows if r.get("speedup_fixed_vs_o3")]
+        fixed_c3 = [r["speedup_fixed_vs_clang_o3"] for r in fixed_rows if r.get("speedup_fixed_vs_clang_o3")]
+        hy_vs_fx = [r["speedup_hybrid_vs_fixed"] for r in fixed_rows if r.get("speedup_hybrid_vs_fixed")]
+        summary.update(
+            {
+                "fixed_benchmarks_evaluated": len(fixed_rows),
+                "wins_fixed_vs_o3": sum(1 for s in fixed_o3 if s > 1.0),
+                "losses_fixed_vs_o3": sum(1 for s in fixed_o3 if s < 1.0),
+                "geo_mean_speedup_fixed_vs_o3": geo_mean(fixed_o3),
+                "wins_fixed_vs_clang_o3": sum(1 for s in fixed_c3 if s > 1.0),
+                "losses_fixed_vs_clang_o3": sum(1 for s in fixed_c3 if s < 1.0),
+                "geo_mean_speedup_fixed_vs_clang_o3": geo_mean(fixed_c3),
+                "wins_hybrid_vs_fixed": sum(1 for s in hy_vs_fx if s > 1.0),
+                "losses_hybrid_vs_fixed": sum(1 for s in hy_vs_fx if s < 1.0),
+                "ties_hybrid_vs_fixed": sum(1 for s in hy_vs_fx if s == 1.0),
+                "geo_mean_speedup_hybrid_vs_fixed": geo_mean(hy_vs_fx),
+            }
+        )
 
     if len(speedups_o3) >= 2:
         try:
@@ -793,6 +915,9 @@ def cmd_measure(args: argparse.Namespace) -> int:
     workdir.mkdir(parents=True, exist_ok=True)
     output = Path(args.output)
     inputs = parse_inputs(args.inputs)
+    sequence: Optional[List[str]] = None
+    if getattr(args, "sequence", None):
+        sequence = [s.strip() for s in args.sequence.split(",") if s.strip()]
 
     benchmark_uris = list(args.benchmarks)
     if not benchmark_uris and Path(args.processed_csv).exists():
@@ -837,6 +962,7 @@ def cmd_measure(args: argparse.Namespace) -> int:
                     workdir=workdir,
                     include_fallback=args.include_fallback,
                     inputs=inputs,
+                    sequence=sequence,
                     dataset_env=env,
                 )
             except Exception as error:
@@ -855,6 +981,13 @@ def cmd_measure(args: argparse.Namespace) -> int:
             if row.get("status") == "ok":
                 rep = _representative_input(row)
                 if rep is not None and rep.get("speedup_hybrid_vs_clang_o3") is not None:
+                    fixed_part = ""
+                    if rep.get("fixed") is not None and rep.get("speedup_fixed_vs_clang_o3") is not None:
+                        fixed_part = (
+                            f" | fixed {rep['fixed']['median_sec']:.6f}s "
+                            f"spd/vcO3 {rep['speedup_fixed_vs_clang_o3']:.4f}x "
+                            f"hybrid-vs-fixed {rep['speedup_hybrid_vs_fixed']:.4f}x"
+                        )
                     print(
                         f"  {uri}: best-measured input "
                         f"{Path(rep['input_file']).name if rep.get('input_file') else '(default)'} | "
@@ -862,8 +995,13 @@ def cmd_measure(args: argparse.Namespace) -> int:
                         f"opt-O3 {rep['o3']['median_sec']:.6f}s | "
                         f"hybrid {rep['hybrid']['median_sec']:.6f}s | "
                         f"spd/vO3 {rep['speedup_hybrid_vs_o3']:.4f}x | "
-                        f"spd/vcO3 {rep['speedup_hybrid_vs_clang_o3']:.4f}x "
-                        f"({len(row.get('inputs') or [])} inputs, {row['pass_sequence']})"
+                        f"spd/vcO3 {rep['speedup_hybrid_vs_clang_o3']:.4f}x{fixed_part} "
+                        f"({len(row.get('inputs') or [])} inputs, hybrid={row['pass_sequence']}"
+                        + (
+                            f", fixed={row.get('fixed_pass_sequence')})"
+                            if row.get("fixed_pass_sequence")
+                            else ")"
+                        )
                     )
             else:
                 print(f"  {uri}: {row.get('status')} - {row.get('reason', '')[:120]}")
@@ -951,6 +1089,15 @@ def parse_args() -> argparse.Namespace:
         "'largest' for the biggest input by file size (e.g. '0,largest'). "
         "The hybrid pass sequence is input-independent, so the binaries are "
         "built once and each input is timed with the same protocol.",
+    )
+    p_measure.add_argument(
+        "--sequence", default=None,
+        help="Comma-separated fixed pass list to measure as an additional arm "
+        "(e.g. '-loop-unroll,-loop-vectorize,-argpromotion'). Applies the "
+        "static sequence to the same O0 bitcode and times it alongside o3, "
+        "clang-o3 and the learned hybrid, adding speedup_fixed_* and "
+        "speedup_hybrid_vs_fixed fields. Omitted by default (2-arm+hybrid "
+        "protocol unchanged).",
     )
     p_measure.add_argument("--workdir", default=str(PROJECT_ROOT / "results" / "o3_harness_work"))
     p_measure.add_argument("--output", default=str(PROJECT_ROOT / "results" / "o3_harness_results.json"))

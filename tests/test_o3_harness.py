@@ -178,6 +178,52 @@ def test_summarize_results_aggregation():
     assert summary["wins_vs_clang_o3"] == 1
 
 
+def test_summarize_results_fixed_arm_aggregation():
+    def row(uri, o3, c3, hy, fixed, seq):
+        return {
+            "benchmark_uri": uri,
+            "suite": "cbench-v1",
+            "protocol": "native",
+            "o3": {"median_sec": o3, "ci95_lo_sec": o3 * 0.9, "ci95_hi_sec": o3 * 1.1},
+            "clang_o3": {"median_sec": c3, "ci95_lo_sec": c3 * 0.9, "ci95_hi_sec": c3 * 1.1},
+            "hybrid": {"median_sec": hy, "ci95_lo_sec": hy * 0.9, "ci95_hi_sec": hy * 1.1},
+            "fixed": {"median_sec": fixed, "ci95_lo_sec": fixed * 0.9, "ci95_hi_sec": fixed * 1.1},
+            "outputs_match": True,
+            "pass_sequence": seq,
+            "fixed_pass_sequence": ["-loop-unroll", "-loop-vectorize"],
+            "fixed_vs_o3_ir_pct": -2.0,
+        }
+
+    # hybrid 0.2s beats fixed 0.3s on A; fixed 0.1s beats hybrid 0.15s on B.
+    rows = [
+        row("benchmark://cbench-v1/a", 0.2, 0.2, 0.2, 0.3, ["-gvn"]),
+        row("benchmark://cbench-v1/b", 0.1, 0.1, 0.15, 0.1, ["-licm"]),
+    ]
+    summary = summarize_results(rows)
+    assert summary["fixed_benchmarks_evaluated"] == 2
+    assert summary["wins_hybrid_vs_fixed"] == 1
+    assert summary["losses_hybrid_vs_fixed"] == 1
+    # geo-mean of hybrid-vs-fixed speedups 1.5, 0.6667 == 1.0
+    assert abs(summary["geo_mean_speedup_hybrid_vs_fixed"] - 1.0) < 1e-6
+    assert summary["geo_mean_speedup_fixed_vs_clang_o3"] is not None
+    row_a = next(r for r in summary["rows"] if r["benchmark_uri"].endswith("/a"))
+    assert math.isclose(row_a["speedup_hybrid_vs_fixed"], 1.5)
+    assert row_a["fixed_pass_sequence"] == ["-loop-unroll", "-loop-vectorize"]
+    # Legacy rows without the fixed arm must not create fixed aggregates.
+    legacy = [{
+        "benchmark_uri": "benchmark://cbench-v1/c",
+        "suite": "cbench-v1",
+        "protocol": "native",
+        "o3": {"median_sec": 0.1, "ci95_lo_sec": 0.09, "ci95_hi_sec": 0.11},
+        "clang_o3": {"median_sec": 0.1, "ci95_lo_sec": 0.09, "ci95_hi_sec": 0.11},
+        "hybrid": {"median_sec": 0.1, "ci95_lo_sec": 0.09, "ci95_hi_sec": 0.11},
+        "outputs_match": True,
+        "pass_sequence": ["-dce"],
+    }]
+    legacy_summary = summarize_results(legacy)
+    assert "fixed_benchmarks_evaluated" not in legacy_summary
+
+
 def test_resolve_input_swaps_file_and_syncs_finfo(tmp_path):
     for name, size in (("1.dat", 100), ("2.dat", 200), ("3.dat", 50)):
         (tmp_path / name).write_bytes(b"x" * size)
