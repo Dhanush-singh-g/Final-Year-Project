@@ -1,5 +1,10 @@
 # Complete Pipeline — Implementation Notes
 
+> **Legacy documentation (pre-Aug 2026).** This describes the original
+> IR-oriented pipeline. The current runtime-based pipeline (multi-state
+> dataset, loop-pass SL scorer, runtime-trained RL) is documented in
+> `README.md` and `EXECUTION_RUNBOOK_RUNTIME.md`.
+
 This document maps the July 31 2026 design doc to actual implemented files.
 
 ## Objective Restated
