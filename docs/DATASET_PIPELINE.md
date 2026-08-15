@@ -1,5 +1,9 @@
 # NeuroCompiler Dataset Pipeline
 
+> **Legacy documentation (pre-Aug 2026).** This describes the original
+> IR-oriented dataset pipeline. The current runtime-based multi-state pipeline
+> is `scripts/generate_multistate_dataset.py` (see `README.md`).
+
 The master entry point is `scripts/generate_dataset.py`. It enumerates multiple
 benchmark programs and LLVM actions, records independent pre/action/post
 transitions incrementally, resumes interrupted runs, and can invoke processing

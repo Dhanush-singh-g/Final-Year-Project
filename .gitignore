@@ -9,14 +9,19 @@ __pycache__/
 # Pytest cache
 .pytest_cache/
 
+# Logs (transient; commit results, not logs)
+*.log
+
 # Dataset directories
 datasets/raw/
 datasets/processed/
 
 # O3 runtime harness build artifacts (compiled binaries + run outputs)
 results/o3_harness_work/
+results/o3_harness_work_ood/
 results/large_input_work/
 results/multistate_work/
+results/no_rl/
 
 # Windows "downloaded file" metadata sidecars (NTFS ADS materialized as files)
 *Zone.Identifier
