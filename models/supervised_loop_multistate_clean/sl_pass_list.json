@@ -1,0 +1,10 @@
+[
+  "-indvars",
+  "-licm",
+  "-loop-deletion",
+  "-loop-distribute",
+  "-loop-rotate",
+  "-loop-unroll",
+  "-loop-unswitch",
+  "-loop-vectorize"
+]

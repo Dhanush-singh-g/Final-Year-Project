@@ -387,6 +387,221 @@ family-specific and needs cross-family data (or a fundamentally different
 policy/objective), not another feature tweak. The raw-feature OOD agent and
 its waves are preserved as the 0.990× baseline (`models/reinforcement_runtime_ood/`).
 
+**Training-diversity experiment (Aug 2026): more cross-family training data
+closes part of the OOD gap — H1 supported.** Only 3 benchmark families exist
+in the dataset (cBench, CHStone, csmith — verified; mibench/NPB/AnghaBench
+are unavailable in this environment), so the diversity treatment is the
+maximum the data permits: train the fitted-Q agent (identical scale-free 61
+features, 9 actions, same z-scored reward, same procedure/seeds) on
+CHStone + csmith **+ the 6 non-eval cBench benchmarks** (patricia, qsort,
+sha, susan, tiffdither, tiffmedian) → 648 transitions, 27 benchmarks, with
+the 8 eval benchmarks excluded from training
+(`datasets/replay_buffer/rl_experiences_runtime_diverse_rel_z.csv`,
+gitignored; `models/reinforcement_runtime_diverse_rel/`). Same 8-benchmark
+eval (`results/o3_wave_rldiverse_*.json` +
+`results/o3_runtime_rl_diverse_summary.json`):
+
+| arm | geo-mean vs `clang -O3` | wins/8 |
+|---|---|---|
+| SL + RL (OOD, raw 62) — preserved | 0.990× | 3 |
+| SL + RL (OOD, scale-free 61) — preserved | 1.006× | 5 |
+| **SL + RL (diverse, scale-free 61)** | **1.022×** | **5** |
+
+Per-benchmark vs the scale-free OOD arm: tiff2rgba **0.997→1.147×** (the
+agent now selects `-indvars` — the tiff-family opportunity it previously
+missed — because tiffmedian/tiffdither in the training set taught it),
+jpeg-c 0.978→1.000, bitcount 0.972→1.028, stringsearch 1.009→1.054;
+gsm 1.020→0.996, dijkstra 1.010→1.000, tiff2bw 1.053→0.957 (ms-scale
+noise band). Repeated passes verified legal (state-change-gated masking).
+Interpretation: **the remaining OOD gap is largely insufficient training
+diversity — seeing programs similar to the eval family (same suite, held
+out of eval) transfers (`-indvars`), and the diverse agent ties/edges the
+fixed list on tiff2rgba.** Caveat: the win count is unchanged (5/8); the
+geo-mean gain is concentrated in tiff2rgba, and the added data includes
+same-family (cBench) benchmarks, so this is diversity-helps, not
+family-agnostic transfer. The frozen baselines (`models/reinforcement_runtime_ood/`,
+`models/reinforcement_runtime_ood_rel/` + their wave JSONs) are untouched.
+
+**Strict leave-one-family-out (Aug 2026): no genuine cross-family
+generalization.** Corpus audit first: only 3 runnable families exist in this
+environment. **MiBench-v1 is installed (40 programs) but NOT runnable** — its
+bitcode is instrumented with the ASTEX runtime (`__astex_fopen`,
+`__astex_memalloc`, …) and no runtime library ships, so linking fails
+(verified at the link level). JotaiBench/AnghaBench/BLAS/CLgen/NPB are
+function- or kernel-level (no `main`, no run config); SPEC/PolyBench are not
+in the CompilerGym registry and would require manual dataset integration;
+disk is 90% full. So the strict LOO runs across the 3 runnable families,
+identical methodology (61 scale-free features, 9 actions, z-scored reward,
+fitted-Q, seeds 42, SL scorer `models/supervised_loop_multistate` fixed):
+
+| held-out family (eval) | training families | geo-mean vs `clang -O3` | wins/losses/ties | fixed-list geo-mean |
+|---|---|---|---|---|
+| cBench (8, large inputs, clean timing) | CHStone + csmith | **1.006×** | 5/3/0 | ~1.02× |
+| csmith (9, ms-scale fallback) | CHStone + cBench | **0.996×** | 4/5/0 | 1.057× |
+| CHStone (12, ms-scale fallback) | cBench + csmith | **0.968×** | 4/8/0 | 0.976× |
+
+Training buffers (`rl_experiences_runtime_loo_*_z.csv`, gitignored) verified
+leakage-free; agents `models/reinforcement_runtime_loo_csmith/` and
+`models/reinforcement_runtime_loo_chstone/`; waves + summaries
+`results/o3_wave_loo_*.json`, `results/o3_runtime_loo_*_summary.json`.
+Interpretation: the learned policy is **neutral-to-negative on completely
+unseen families** (0.996× csmith, 0.968× CHStone — the latter is ms-scale
+noise around 1.0, and the fixed list is also ≈1.0 there, so neither arm
+helps CHStone at fallback scale). The earlier 1.006→1.022× gain therefore
+came from **same-family exposure, not cross-family transfer**: the RL layer
+adapts within a seen family's state distribution and does not generalize the
+state→pass→reward mapping across families. Combined with the SL 35-fold LOBO
+(top-3 ≈ random) and this LOO evidence, the strongest defensible claim is:
+**the learned pipeline shows within-family adaptation on seen benchmark
+families (tiff2rgba `-indvars` transfer, 1.147×), no demonstrated
+generalization to unseen families, and no runtime advantage over the fixed
+loop list outside the in-distribution case.**
+
+### Multi-step RL — genuine Bellman backups (Phases 5–6, the RL redesign)
+
+**The old RL layer was not really RL.** All previous runtime replay buffers
+were one-step: every row carried `done=True` and post-states were never
+chained, so fitted-Q never bootstrapped and the "agent" was a myopic reward
+regressor. The redesign (approved design, then implemented + measured Aug
+2026) makes the training genuinely multi-step:
+
+```
+S0 --A0--> S1 --A1--> S2 --A2--> ... --STOP--> terminal
+```
+
+- **Phase 5 — collector** (`scripts/generate_rl_episodes.py`): one
+  CompilerGym env per episode, `env.step` mutates the SAME LLVM state that
+  the next step reads (never regenerated from S0). `state_id` is the
+  `IrSha1` observation (identical identity to inference masking).
+  Non-terminal transitions carry `done=False`; STOP is an explicit action
+  that only ever appears as the final transition (127 real STOP rows, none
+  synthesized). Start distribution 70% O0 / 30% deeper diversity-guarded
+  states; per-(state, action) masking keeps no-ops out of later steps.
+- **Phase 6 — trainer** (`training/train_rl.py::train_sklearn_dqn`,
+  `fqi_target`): the Bellman branch is now live —
+  `y = r + γ·max_{a'∈avail(s')} Q(s', a')` for non-terminal transitions
+  (max over the transition's recorded `available_actions` plus the
+  always-available STOP), `y = r` for terminal, self-loop (`s'==s`), and
+  missing-next-state rows. Legacy one-step buffers still train as the myopic
+  special case (bootstrap branch empty).
+- **Verification tooling**: `scripts/inspect_rl_buffer.py` proves
+  `post_state_id(t) == pre_state_id(t+1)` for every episode (0 violations),
+  `scripts/verify_split_leakage.py` proves the 8 eval programs are absent,
+  and `tests/test_multistep_rl.py` (8 tests) covers the terminal /
+  non-terminal / STOP / self-loop / chaining / leakage properties plus an
+  end-to-end check that fitted-Q actually propagates future value
+  (Q(s0,a0) ≈ 1 + γ·1 > 1). `pytest` 71 passed.
+
+**Buffer** (27 clean training benchmarks — 6 non-eval cBench + 12 CHStone +
+9 csmith; the 8 eval benchmarks excluded, verified zero leakage): 258
+episodes, **1,670 transitions**, avg episode length 6.5, **84.6%
+non-terminal**, 127 episodes ended by real STOP / 131 by max-steps, 183
+O0 / 75 deeper starts, z-scored per benchmark
+(`datasets/replay_buffer/rl_experiences_multistep_z.csv`, gitignored).
+
+**Agent**: `models/reinforcement_multistep/` — configuration deviation from
+the approved design, noted explicitly: it mirrored the frozen diverse agent
+(61 scale-free features, 9 actions incl. `-stop`, one-hot, **γ=0.9, 3
+Q-iterations**, seed 42) on the chained buffer. 452 of 1,670 transitions got
+genuine bootstrap targets; the average target rises 0.105 → 0.141 across
+iterations (future value propagating). The approved configuration (γ=0.95,
+20 Q-iterations) was retrained later on the identical buffer — see the
+FQI-configuration follow-up below.
+
+**Fused inference verified**: State → SL ranks candidates → multi-step RL
+selects/STOP → apply → next state. The learned policy emits genuinely
+multi-pass sequences, e.g. gsm `-licm → -loop-unswitch → -indvars ×3`,
+jpeg-c `-licm ×3`, tiff2bw `-indvars → -licm → -indvars ×3`, tiff2rgba
+`-indvars ×2` — the one-step agent's uniform `-indvars ×2` is replaced by
+state-conditional adaptation (tiff2rgba's `-indvars` opportunity is still
+found, learned from tiffmedian/tiffdither in training).
+
+**Measured result** (same clean protocol as the frozen clean experiment: 8
+held-out cBench, input 0, warmup 1, reps 5, `-O3` codegen, fixed top-5 loop
+list arm, `results/o3_wave_msrl_*.json` + `results/o3_runtime_msrl_summary.json`;
+all arms byte-identical, `outputs_match=true`):
+
+| arm | geo-mean vs `clang -O3` | wins/8 |
+|---|---|---|
+| fixed top-5 loop list (same wave) | 1.0026× | 4 |
+| **SL + multi-step RL (this experiment)** | **1.0067×** | **4** |
+| SL + multi-step RL, hybrid-vs-fixed | 1.0041× | 3 |
+
+Per-benchmark vs `clang -O3`: gsm 1.119×, bitcount 1.046×, tiff2rgba
+1.052×, jpeg-c 1.030× are the wins; bzip2 0.903×, stringsearch 0.967×,
+dijkstra 0.967×, tiff2bw 0.985× are the losses. Wilcoxon p = 0.37 vs
+`clang -O3` (n.s.).
+
+**Comparison against the frozen clean arms (identical protocol):** SL-only
+1.006× (6/8), SL + one-step RL 1.0032× (4/8), fixed ~1.010×. The multi-step
+agent lands between SL-only and the one-step agent — **within wave-to-wave
+noise of both, and still below the fixed list on average.**
+
+**Conclusion: the multi-step redesign is implemented and verified, and it
+changes the policy qualitatively (multi-pass, state-conditional sequences)
+but does not close the runtime gap.** On the clean held-out set the
+multi-step fused arm is 1.0067× vs `clang -O3` — a statistical tie, matching
+SL-only (1.006×) and the one-step fused (1.0032×) within noise, and trailing
+the fixed loop list (~1.01×). Combined with the earlier evidence (SL
+35-fold LOBO ≈ random; strict LOO RL ≈ 1.0), this says the bottleneck is
+not temporal credit assignment: even a correctly bootstrapped multi-step
+policy cannot learn a transferable state→pass→runtime mapping from this
+corpus. The fixed loop list remains the defensible general policy; the
+learned pipeline's value remains in-distribution adaptation. (Caveats: all
+arms are ms-scale at default inputs, single wave per arm, 1670-transition
+buffer with modest per-benchmark episode counts.)
+
+**FQI-configuration follow-up (γ=0.95, 20 iterations, approved config):**
+Because the first multi-step agent reused the frozen diverse baseline's
+hyperparameters (γ=0.9, 3 Q-iters) instead of the approved γ=0.95 / 20
+Q-iterations, the identical 1,670-transition buffer was retrained with the
+approved configuration: same 61 scale-free features, 9 actions incl.
+`-stop`, one-hot, γ=0.95, 20 fitted-Q iterations, seed 42, same z-scored
+rewards, same train set. All 20 iterations bootstrap the same 452
+non-terminal transitions (the other 1,218 rows are terminal STOP / self-loop
+/ no-next-state and use the myopic target); the average Bellman target rises
+monotonically 0.163 → 0.798 across iterations (min −5.803 → −4.978, max
+4.287 → 14.225), confirming genuine future-value propagation under the
+approved discount. Artifact `models/reinforcement_multistep_g095_it20/`
+(γ=0.95, 20 Q-iters; the γ=0.9/3-iter model is preserved untouched).
+
+Measured with the identical clean protocol (same 8 held-out cBench, input 0,
+warmup 1, reps 5, `-O3` codegen, fixed top-5 arm,
+`results/o3_wave_msrl_g095_*.json` + `results/o3_runtime_msrl_g095_summary.json`;
+all arms byte-identical, `outputs_match=true`):
+
+| arm | geo-mean vs `clang -O3` | wins/8 |
+|---|---|---|
+| fixed top-5 loop list (same wave) | 0.9652× | 3 |
+| **SL + multi-step RL, γ=0.95/20 (this experiment)** | **0.9790×** | **4** |
+| SL + multi-step RL, γ=0.95/20, hybrid-vs-fixed | 1.0144× | 6 |
+
+Per-benchmark vs `clang -O3`: bitcount 1.066×, bzip2 1.062×, dijkstra
+1.088×, tiff2bw 1.038× are the wins; gsm 0.983×, jpeg-c 0.937×,
+stringsearch 0.778×, tiff2rgba 0.922× are the losses. Wilcoxon p = 0.63 vs
+`clang -O3` (n.s.).
+
+**Result: the approved γ=0.95 / 20-iteration configuration does NOT improve
+over the γ=0.9 / 3-iteration agent or the SL/one-step baselines — it is
+worse.** The γ=0.95/20 policy is qualitatively different (it converges on
+`-loop-rotate`-heavy sequences — gsm/jpeg-c/bzip2/stringsearch open with
+`-loop-rotate ×2` — and loses the γ=0.9 agent's targeted wins on gsm
+(1.119× → 0.983×), tiff2rgba (1.052× → 0.922×) and jpeg-c (1.030× → 0.937×),
+while stringsearch collapses to 0.778×). The 20-iteration FQI appears to
+overfit the buffer's reward structure: the deeper backups amplify the
+value of the dominant loop passes in the training distribution, and that
+bias does not transfer to the held-out programs. Sequential-RL
+configuration is therefore not the lever that closes the gap; the
+bottleneck remains the transferable state→pass→runtime mapping.
+
+| arm (clean protocol, all frozen or measured this turn) | geo-mean vs `clang -O3` | wins/8 |
+|---|---|---|
+| fixed top-5 loop list (msrl γ=0.9 wave) | 1.0026× | 4 |
+| SL-only loop scorer | 1.006× | 6 |
+| SL + one-step RL | 1.0032× | 4 |
+| SL + multi-step RL, γ=0.9, 3 iters (preserved) | 1.0067× | 4 |
+| SL + multi-step RL, γ=0.95, 20 iters (this turn) | 0.9790× | 4 |
+
 ### Large-input runtime signal (full 8-benchmark sweep)
 
 `scripts/generate_large_input_dataset.py` builds each curated pass variant

@@ -1,0 +1,34 @@
+{
+  "action_count": 8,
+  "feature_count": 62,
+  "fit_seconds": 0.03543457901105285,
+  "iterations_completed": 30,
+  "model_class": "HistGradientBoostingRegressor",
+  "model_type_requested": "histgb",
+  "target": "z_runtime_improvement_pct",
+  "test": {},
+  "test_ranking": {
+    "groups": 0
+  },
+  "total_seconds": 0.9076031770091504,
+  "train": {
+    "mae": 0.8094467813428031,
+    "mse": 0.9333479524734767,
+    "r2": 0.06665205703703836,
+    "rmse": 0.9660993491735085,
+    "samples": 528
+  },
+  "validation": {
+    "mae": 0.8223306375398235,
+    "mse": 1.019865566710684,
+    "r2": -0.019865597993378614,
+    "rmse": 1.009883937247585,
+    "samples": 120
+  },
+  "validation_ranking": {
+    "groups": 5,
+    "mean_oracle_regret": 1.9202815999999998,
+    "top1_accuracy": 0.0,
+    "top3_accuracy": 0.4
+  }
+}
