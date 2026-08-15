@@ -63,11 +63,13 @@ try:
     from scripts.run_passes import resolve_actions, run_pass_sequence
     from scripts.curated_passes import get_curated_flags
     from scripts.reward import compute_hybrid_reward, RewardWeights
+    from training.common import SCALE_FREE_RATIO_COLS, derive_ratio_features
 except ImportError:
     from extract_features import MeasurementConfig, extract_features  # type: ignore
     from run_passes import resolve_actions, run_pass_sequence  # type: ignore
     from curated_passes import get_curated_flags  # type: ignore
     from reward import compute_hybrid_reward, RewardWeights  # type: ignore
+    from common import SCALE_FREE_RATIO_COLS, derive_ratio_features  # type: ignore
 
 LOGGER = logging.getLogger("hybrid_inference")
 DEFAULT_SL_DIR = PROJECT_ROOT / "models" / "supervised"
@@ -419,6 +421,11 @@ def hybrid_optimize_benchmark(
             if rl_agent is not None:
                 # Need to construct state row dict similar to training: pre_*
                 state_row = current_state.flattened("pre_")
+                # Scale-free derived features (per-function/per-instruction
+                # ratios): injected only when the agent was trained with them,
+                # so raw-count and other agents are unaffected.
+                if any(c in rl_agent.feature_cols for c in SCALE_FREE_RATIO_COLS):
+                    state_row.update(derive_ratio_features(state_row, "pre_"))
                 try:
                     rl_best, q_values = rl_agent.predict(
                         state_row, sl_probs=sl_probs_dict, epsilon=explore_epsilon

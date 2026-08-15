@@ -650,6 +650,42 @@ protocol for all arms, geo-mean speedup vs `clang -O3`):
   trained jointly on runnable corpora) — not more rows from the same
   families.
 
+- OOD REPRESENTATION ABLATION (Aug 2026): the fitted-Q state is 62 features
+  (6 absolute IR/size/block/function counts + 56 autophase proportions).
+  Diagnostics BEFORE the change: (1) 43-50% of cBench values fall outside
+  the CHStone+csmith training range on the 6 absolute counts (covariate
+  shift); (2) family classifier: 100% in-sample / 60% LOBO vs 33% chance;
+  (3) the raw OOD Q-function does NOT extrapolate wildly on cBench
+  (|z|>3 ~ 0 per action) — it confidently applies training-family patterns.
+  CHANGE: replaced the 6 absolute counts with 5 per-state ratios
+  (`training/common.py::derive_ratio_features`: pre_ir_per_func,
+  pre_mem_frac, pre_size_per_inst, pre_blocks_per_func, pre_insts_per_block),
+  which cut the cBench out-of-range fraction to 0-7%. Trainer gained
+  `--feature-cols` (comma-separated override; default auto-derivation
+  unchanged); inference injects the ratio columns online when the agent
+  expects them (no normalization statistics needed at test time). Retrained
+  OOD agent -> `models/reinforcement_runtime_ood_rel/` (61 features),
+  same CHStone+csmith -> cBench eval (`results/o3_wave_rloodrel_*.json` +
+  `results/o3_runtime_rl_ood_rel_summary.json`):
+
+  | arm | geo-mean vs clang-O3 | wins/8 |
+  |---|---|---|
+  | SL + RL (OOD, raw 62 features) | 0.990x | 3 |
+  | SL + RL (OOD, scale-free 61) | **1.006x** | **5** |
+
+  RESULT: scale-free representation removed the degenerate
+  -loop-distribute-everywhere behavior (per-benchmark picks: -loop-rotate
+  gsm, -loop-unroll dijkstra/bitcount, -licm bzip2/tiff-family,
+  -loop-deletion stringsearch) and moved the OOD arm above clang-O3, but
+  does NOT achieve transfer: tiff2rgba's -indvars is still missed (0.997x)
+  and the arm trails the fixed list. CONCLUSION: BOTH causes are real —
+  spurious program-size scale in the state representation contributed to
+  the OOD failure (now removed), and insufficient training diversity is the
+  DOMINANT remaining bottleneck (the state->pass->reward mapping is
+  family-specific). Next lever: cross-family data / policy change, not
+  another feature tweak. Raw-feature baseline preserved at
+  `models/reinforcement_runtime_ood/` (0.990x).
+
 Defensible claims as of this run:
 
 - runtime improvement vs the initial no-pass state (CompilerGym Runtime
