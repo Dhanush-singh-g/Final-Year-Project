@@ -20,9 +20,13 @@ datasets/processed/
 results/o3_harness_work/
 results/o3_harness_work_ood/
 results/o3_harness_work_oodrel/
+results/o3_harness_work_diverse/
+results/o3_harness_work_loo/
 results/large_input_work/
 results/multistate_work/
 results/no_rl/
+results/msrl_episode_work/
+results/msrl_pilot_work/
 
 # Windows "downloaded file" metadata sidecars (NTFS ADS materialized as files)
 *Zone.Identifier

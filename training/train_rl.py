@@ -211,20 +211,67 @@ def synthesize_stop_transitions(rows: List[Dict[str, str]]) -> List[Dict[str, st
     return out
 
 
+def fqi_target(
+    reward: float,
+    gamma: float,
+    qmax_next: Optional[float],
+    done: bool,
+    is_self_loop: bool,
+) -> float:
+    """Bellman target for one transition (multi-step RL design, Phase 6).
+
+    - terminal (``done=True``): ``y = r``
+    - non-terminal with no usable next state or a self-loop (``s' == s``):
+      ``y = r`` — never bootstrap through a state-identical transition
+    - non-terminal: ``y = r + gamma * max_{a' in avail(s')} Q(s', a')``
+
+    ``qmax_next`` must already include the STOP action (the option to stop,
+    whose learned value is ~0), so the backup is
+    ``r + gamma * max(0, max over available passes)``.
+    """
+    if done or is_self_loop or qmax_next is None:
+        return reward
+    return reward + gamma * qmax_next
+
+
+def _parse_available_actions(r: Dict[str, str]) -> Optional[set]:
+    """Unmasked candidate set at the transition's POST state, plus STOP.
+
+    Returns None for legacy buffers without the column, meaning "fall back to
+    the full action vocabulary" (the previous behaviour).
+    """
+    raw = (r.get("available_actions") or "").strip()
+    if not raw:
+        return None
+    try:
+        flags = json.loads(raw)
+    except Exception:
+        return None
+    if not isinstance(flags, list) or not flags:
+        return None
+    return set(flags) | {STOP_FLAG}
+
+
 def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action_vocab: Dict[str,int], args: argparse.Namespace):
-    """Q-learning via fitted Q iteration using Bellman backups from replay buffer"""
+    """Q-learning via fitted Q iteration with genuine Bellman backups.
+
+    The runtime replay buffers collected by ``generate_rl_episodes.py`` are
+    chained multi-step trajectories with real ``done`` flags (non-terminal
+    transitions are ``done=False``), so the non-terminal branch of the backup
+    is live and future value actually propagates:
+
+        y = r                        if done / self-loop / no next state
+        y = r + gamma * max_{a'} Q_prev(s', a')   otherwise
+
+    The max ranges over the transition's ``available_actions`` (the unmasked
+    candidate set at s') plus the STOP action, so the backup encodes the
+    option to stop. Legacy one-step buffers (all ``done=True``) still train
+    correctly as the myopic case: the bootstrap branch is simply empty.
+    """
     from sklearn.ensemble import HistGradientBoostingRegressor
     import numpy as np
 
     gamma = args.gamma
-
-    # Build X, y for initial Q estimate = immediate reward
-    # Then perform a few iterations of Bellman update: Q(s,a) = r + gamma * max_a' Q(s',a')
-    # We need ability to lookup next state's max Q. We'll do iterative improvement.
-
-    # First pass: gather rows with state and next state mapping
-    # For simplicity, create arrays
-
     action_encoding = getattr(args, "action_encoding", "one_hot")
 
     def featurize_row(r, action_flag):
@@ -232,89 +279,109 @@ def train_sklearn_dqn(rows: List[Dict[str,str]], feature_cols: List[str], action
             r, action_flag, feature_cols, action_vocab, action_encoding
         )
 
-    # Initial dataset: immediate hybrid_reward
-    X = []
-    y = []
+    def row_reward(r: Dict[str, str]) -> Optional[float]:
+        v = safe_float(r.get("hybrid_reward"))
+        if v is None:
+            v = safe_float(r.get("raw_step_reward"))
+        return v
+
+    # Build X, y for the initial Q estimate = immediate reward (iteration 0
+    # bootstrap is the myopic model; later iterations use the previous model).
+    X: List[List[float]] = []
+    y: List[float] = []
+    usable: List[Dict[str, str]] = []
     for r in rows:
         flag = r.get("pass_flag")
         if not flag:
             continue
-        hr = safe_float(r.get("hybrid_reward"))
-        if hr is None:
-            hr = safe_float(r.get("raw_step_reward"))
-        if hr is None:
-            hr = 0.0
+        reward = row_reward(r)
+        if reward is None:
+            continue
         X.append(featurize_row(r, flag))
-        y.append(hr)
+        y.append(reward)
+        usable.append(r)
+    rows = usable
 
     LOGGER.info(f"[DQN] Initial training set {len(X)} samples")
 
     model = HistGradientBoostingRegressor(max_iter=args.q_iterations*100, max_depth=8, learning_rate=0.05, random_state=42)
     model.fit(X, y)
 
-    # Fitted Q iteration: refine targets using model itself for next state value
-    # Need to be able to estimate V(s') = max_a' Q(s',a')
-    # Our rows have pre_* and post_* features. For next state value we need its features.
-    # post state features are prefixed post_... we need to map to pre_ equivalent for encoding
-
-    # Build reverse mapping: post_ -> pre_? We'll create a helper that for next state prediction constructs feature dict from post columns
+    # Map pre_ feature columns to their post_ counterparts so the next state's
+    # features can be reconstructed from a row's post_* columns.
     pre_to_post = {}
     for col in feature_cols:
-        # feature_cols come from RL: e.g., pre_autophase_TotalBlocks, so for next state we need post equivalent
         if col.startswith("pre_"):
-            post_col = col.replace("pre_", "post_", 1)
-            pre_to_post[col] = post_col
+            pre_to_post[col] = col.replace("pre_", "post_", 1)
         else:
-            pre_to_post[col] = col  # fallback
+            pre_to_post[col] = col
 
     for iteration in range(args.q_iterations):
         X_new: List[List[float]] = []
         y_new: List[float] = []
-        non_done: List[Dict[str, str]] = []
+        # Non-terminal rows that need a bootstrapped target: (row, avail_set).
+        pending: List[Tuple[Dict[str, str], Optional[set]]] = []
         for r in rows:
             flag = r.get("pass_flag")
             if not flag:
                 continue
-            r_reward = safe_float(r.get("hybrid_reward"))
-            if r_reward is None:
-                r_reward = safe_float(r.get("raw_step_reward")) or 0.0
+            reward = row_reward(r)
+            if reward is None:
+                continue
             done = r.get("done", "").lower() in ("true", "1", "yes")
-            if done:
+            post_id = (r.get("post_state_id") or "").strip()
+            is_self_loop = bool(post_id) and post_id == (r.get("pre_state_id") or "").strip()
+            if done or is_self_loop or not post_id:
                 X_new.append(featurize_row(r, flag))
-                y_new.append(r_reward)
+                y_new.append(reward)
             else:
-                non_done.append(r)
+                pending.append((r, _parse_available_actions(r)))
 
-        if non_done:
-            # Vectorized Bellman backup: V(s') = max_a' Q(s', a') via batched
-            # predictions (one batch per action) instead of per-row predict
-            # calls, which are dominated by sklearn call overhead.
-            next_q_max: Optional[np.ndarray] = None
-            for cand_flag in action_vocab.keys():
+        if pending:
+            # Vectorized Bellman backup: for each candidate action, predict
+            # Q_prev(s', a') only for the rows where that action is unmasked.
+            qmax = np.full(len(pending), float("-inf"))
+            candidates: set = set()
+            for _, avail in pending:
+                if avail is None:
+                    candidates |= set(action_vocab.keys())
+                else:
+                    candidates |= avail
+            for cand_flag in sorted(candidates):
+                idxs: List[int] = []
                 X_next: List[List[float]] = []
-                for r in non_done:
+                for i, (r, avail) in enumerate(pending):
+                    if avail is not None and cand_flag not in avail:
+                        continue
                     fake_next_state = {}
                     for pre_c, post_c in pre_to_post.items():
                         fake_next_state[pre_c] = r.get(post_c, "")
                     X_next.append(featurize_row(fake_next_state, cand_flag))
+                    idxs.append(i)
+                if not X_next:
+                    continue
                 q_next = np.asarray(model.predict(X_next), dtype=float)
-                if next_q_max is None:
-                    next_q_max = q_next
-                else:
-                    next_q_max = np.maximum(next_q_max, q_next)
+                for i, qi in zip(idxs, q_next):
+                    if qi > qmax[i]:
+                        qmax[i] = float(qi)
 
-            for r, qmax in zip(non_done, next_q_max):
-                r_reward = safe_float(r.get("hybrid_reward"))
-                if r_reward is None:
-                    r_reward = safe_float(r.get("raw_step_reward")) or 0.0
+            for i, (r, _avail) in enumerate(pending):
+                reward = row_reward(r)
+                if reward is None:
+                    continue
+                qmax_i: Optional[float] = None if qmax[i] == float("-inf") else float(qmax[i])
                 X_new.append(featurize_row(r, r.get("pass_flag", "")))
-                y_new.append(r_reward + gamma * float(qmax))
+                y_new.append(fqi_target(reward, gamma, qmax_i, done=False, is_self_loop=False))
 
         model.fit(X_new, y_new)
         avg_target = sum(y_new) / len(y_new) if y_new else 0.0
+        min_target = min(y_new) if y_new else 0.0
+        max_target = max(y_new) if y_new else 0.0
+        bootstrapped = len(pending)
         LOGGER.info(
             f"[DQN] Iteration {iteration+1}/{args.q_iterations} "
-            f"samples={len(y_new)} avg target {avg_target:.3f}"
+            f"samples={len(y_new)} bootstrapped={bootstrapped} "
+            f"avg target {avg_target:.3f} min {min_target:.3f} max {max_target:.3f}"
         )
 
     return model
@@ -329,8 +396,8 @@ def parse_args():
         choices=["dqn_sklearn", "dqn_torch", "ppo"],
         help="RL algorithm. Only 'dqn_sklearn' is implemented; dqn_torch/ppo are rejected.",
     )
-    p.add_argument("--gamma", type=float, default=0.9, help="Discount factor")
-    p.add_argument("--q-iterations", type=int, default=3, help="Fitted Q iterations")
+    p.add_argument("--gamma", type=float, default=0.95, help="Discount factor (multi-step RL design)")
+    p.add_argument("--q-iterations", type=int, default=20, help="Fitted Q iterations")
     p.add_argument("--max-rows", type=int, default=None)
     p.add_argument(
         "--feature-cols",
@@ -387,12 +454,18 @@ def main():
         action_vocab[STOP_FLAG] = len(action_vocab)
     LOGGER.info(f"Action vocab size {len(action_vocab)} (includes {STOP_FLAG!r})")
 
-    # Augment the buffer with synthetic terminal STOP transitions so fitted-Q
-    # can learn Q(state, STOP).
-    stop_rows = synthesize_stop_transitions(rows)
-    if stop_rows:
-        rows = rows + stop_rows
-        LOGGER.info(f"Added {len(stop_rows)} synthetic STOP transitions")
+    # STOP transitions: multi-step buffers collected by
+    # scripts/generate_rl_episodes.py contain REAL terminal STOP rows (episodes
+    # that actually ended by choosing STOP). Only legacy one-step buffers need
+    # the synthetic augmentation so Q(state, STOP) is learnable.
+    real_stop_count = sum(1 for r in rows if (r.get("pass_flag") or "") == STOP_FLAG)
+    if real_stop_count:
+        LOGGER.info(f"Buffer contains {real_stop_count} real STOP transitions; skipping synthesis")
+    else:
+        stop_rows = synthesize_stop_transitions(rows)
+        if stop_rows:
+            rows = rows + stop_rows
+            LOGGER.info(f"Added {len(stop_rows)} synthetic STOP transitions")
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
