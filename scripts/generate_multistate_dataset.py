@@ -50,7 +50,11 @@ from evaluation.o3_runtime_harness import (  # type: ignore
     resolve_input,
     timed_run,
 )
-from scripts.extract_features import MeasurementConfig, extract_features  # type: ignore
+from scripts.extract_features import (  # type: ignore
+    AUTOPHASE_FEATURE_NAMES,
+    MeasurementConfig,
+    extract_features,
+)
 
 LOGGER = logging.getLogger("generate_multistate_dataset")
 
@@ -107,6 +111,94 @@ BASE_COLUMNS = [
     "warmup",
     "runs",
 ]
+
+# RL replay-buffer schema (compatible with training/train_rl.py's reader):
+# one row per measured (state, pass) transition with pre/post features and the
+# measured runtime improvement as the reward. ``hybrid_reward`` is the raw
+# per-state improvement pct at collection time; run scripts/zscore_dataset.py
+# with ``--group-col pre_state_id --sync-to hybrid_reward`` to convert it to a
+# per-(benchmark, state) z-score (the same target the SL loop scorer uses).
+# Episodes are one-step (done=True): the measured transition is the whole
+# episode. training/train_rl.py synthesizes STOP transitions for these.
+REPLAY_FIELDS = [
+    "episode_id",
+    "benchmark_uri",
+    "state_index",
+    "step_index",
+    "pass_flag",
+    "done",
+    "hybrid_reward",
+    "runtime_improvement",
+    "pre_state_id",
+    "post_state_id",
+    "pre_ir_instruction_count",
+    "post_ir_instruction_count",
+    "pre_runtime_median_sec",
+    "post_runtime_median_sec",
+    "pre_object_text_size_bytes",
+    "post_object_text_size_bytes",
+    "pre_total_basic_blocks",
+    "post_total_basic_blocks",
+    "pre_total_functions",
+    "post_total_functions",
+    "pre_total_instructions",
+    "post_total_instructions",
+    "pre_total_memory_instructions",
+    "post_total_memory_instructions",
+] + [f"pre_autophase_{n}" for n in AUTOPHASE_FEATURE_NAMES] \
+  + [f"post_autophase_{n}" for n in AUTOPHASE_FEATURE_NAMES]
+
+
+def _replay_episode_id(benchmark_uri: str, state_id: str) -> str:
+    """Deterministic episode id per (benchmark, state): all 8 pass transitions
+    measured at that state belong to the same one-step episode."""
+    return hashlib.sha256(f"{benchmark_uri}|{state_id}".encode()).hexdigest()[:24]
+
+
+def build_replay_row(
+    benchmark_uri: str,
+    state_index: int,
+    step_index: int,
+    pass_flag: str,
+    state_id: str,
+    post_state_id: str,
+    state_features: Dict[str, str],
+    post_features: Dict[str, str],
+    state_ir: Optional[int],
+    post_ir: Optional[int],
+    state_med: float,
+    post_med: float,
+    improvement: float,
+) -> Dict[str, str]:
+    """Build one RL-schema transition row from a measured (state, pass) pair.
+
+    ``state_features``/``post_features`` are pre_*-prefixed feature dicts from
+    ``_pre_state_row``; the post dict is relabeled to post_* here. The reward
+    (``hybrid_reward``) is the raw runtime improvement pct vs the state's own
+    baseline; z-score it per (benchmark, state) before training so it matches
+    the SL scorer's target exactly.
+    """
+    row: Dict[str, str] = {
+        "episode_id": _replay_episode_id(benchmark_uri, state_id),
+        "benchmark_uri": benchmark_uri,
+        "state_index": str(state_index),
+        "step_index": str(step_index),
+        "pass_flag": pass_flag,
+        "done": "True",
+        "hybrid_reward": f"{improvement:.6f}",
+        "runtime_improvement": f"{improvement:.6f}",
+        "pre_state_id": state_id,
+        "post_state_id": post_state_id,
+        "pre_ir_instruction_count": str(state_ir or ""),
+        "post_ir_instruction_count": str(post_ir or ""),
+        "pre_runtime_median_sec": f"{state_med:.6f}",
+        "post_runtime_median_sec": f"{post_med:.6f}",
+    }
+    for key, value in state_features.items():
+        row[key] = value
+        if key.startswith("pre_"):
+            row["post_" + key[len("pre_"):]] = post_features.get(key, "")
+    return row
 
 
 def _state_signature(bc_bytes: bytes) -> str:
@@ -310,6 +402,20 @@ def generate(args: argparse.Namespace) -> Path:
             )
 
         rows: List[Dict[str, str]] = []
+
+        # RL replay output (append mode: each benchmark invocation adds its
+        # rows to the shared buffer file; header written once on first use).
+        replay_handle = None
+        if args.emit_replay:
+            replay_path = Path(args.emit_replay).expanduser().resolve()
+            replay_path.parent.mkdir(parents=True, exist_ok=True)
+            replay_new = not replay_path.exists() or replay_path.stat().st_size == 0
+            replay_handle = replay_path.open("a", newline="", encoding="utf-8")
+            replay_writer = csv.DictWriter(replay_handle, fieldnames=REPLAY_FIELDS, extrasaction="ignore")
+            if replay_new:
+                replay_writer.writeheader()
+                replay_handle.flush()
+
         o0_dir = workdir / "state_00_o0"
         build_native(o0_bc, o0_dir, build_args, outfile, args.timeout)
         o0_med = _median_time(
@@ -342,6 +448,8 @@ def generate(args: argparse.Namespace) -> Path:
                         env.step(env.action_space.from_string(pf))
                     env.step(env.action_space.from_string(flag))
                     pass_bc = _bitcode_bytes(env)
+                    post_features = _pre_state_row(env)
+                    post_ir = _ir_count(env)
                 except Exception as error:
                     LOGGER.warning("Pass %s at state %d failed (%s); skipping",
                                    flag, state_idx, error)
@@ -376,6 +484,24 @@ def generate(args: argparse.Namespace) -> Path:
                 }
                 row.update(state["features"])
                 rows.append(row)
+                if args.emit_replay:
+                    replay_row = build_replay_row(
+                        benchmark_uri=args.benchmark,
+                        state_index=state_idx,
+                        step_index=pass_index - 1,
+                        pass_flag=flag,
+                        state_id=_state_signature(state["bc"]),
+                        post_state_id=_state_signature(pass_bc),
+                        state_features=state["features"],
+                        post_features=post_features,
+                        state_ir=state["ir"],
+                        post_ir=post_ir,
+                        state_med=state_med,
+                        post_med=med,
+                        improvement=improvement,
+                    )
+                    replay_writer.writerow(replay_row)
+                    replay_handle.flush()
                 LOGGER.info(
                     "[state %d | pass %d/%d] %-20s med %.4f s  imp %+.2f%%  (%.1f s)",
                     state_idx, pass_index, len(eval_passes), flag, med, improvement,
@@ -393,10 +519,15 @@ def generate(args: argparse.Namespace) -> Path:
             writer = csv.DictWriter(handle, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows)
+        if replay_handle is not None:
+            replay_handle.close()
+
         print(
             f"\nWrote {len(rows)} rows "
             f"({args.states} states x {len(eval_passes)} passes) to {output_path}"
         )
+        if args.emit_replay:
+            print(f"RL replay rows appended to {Path(args.emit_replay).resolve()}")
         return output_path
     finally:
         env.close()
@@ -407,6 +538,13 @@ def main() -> int:
     parser.add_argument("--benchmark", required=True, help="Runnable benchmark URI")
     parser.add_argument("--inputs", type=int, default=-1, help="Input index (or -1 = largest)")
     parser.add_argument("--output", required=True, help="Output CSV path")
+    parser.add_argument(
+        "--emit-replay", default=None,
+        help="Optional RL replay-buffer CSV path: also append one transition "
+        "row per measured (state, pass) with pre/post features and the raw "
+        "runtime improvement as reward (then z-score per pre_state_id and "
+        "train with training/train_rl.py).",
+    )
     parser.add_argument("--states", type=int, default=3, help="Total states per benchmark incl. O0")
     parser.add_argument(
         "--eval-passes", default=",".join(LOOP_PASSES),
