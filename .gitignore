@@ -19,6 +19,7 @@ datasets/processed/
 # O3 runtime harness build artifacts (compiled binaries + run outputs)
 results/o3_harness_work/
 results/o3_harness_work_ood/
+results/o3_harness_work_oodrel/
 results/large_input_work/
 results/multistate_work/
 results/no_rl/

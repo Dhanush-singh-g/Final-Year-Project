@@ -332,6 +332,14 @@ def parse_args():
     p.add_argument("--gamma", type=float, default=0.9, help="Discount factor")
     p.add_argument("--q-iterations", type=int, default=3, help="Fitted Q iterations")
     p.add_argument("--max-rows", type=int, default=None)
+    p.add_argument(
+        "--feature-cols",
+        default=None,
+        help="Comma-separated override of the state feature columns (default: "
+        "auto-derive pre_autophase_* + the core IR/size/block/function "
+        "counts). Use for scale-free / derived state representations, e.g. "
+        "--feature-cols=pre_autophase_TotalInsts,pre_ir_per_func.",
+    )
     p.add_argument("--log-level", default="INFO")
     return p.parse_args()
 
@@ -354,7 +362,17 @@ def main():
         # fallback try without prefix
         from training.common import get_feature_cols
         pre_feature_cols = get_feature_cols(fieldnames, use_norm=False)
-    LOGGER.info(f"Using {len(pre_feature_cols)} state features")
+    if args.feature_cols:
+        override = [c.strip() for c in args.feature_cols.split(",") if c.strip()]
+        missing = [c for c in override if c not in fieldnames]
+        if missing:
+            raise SystemExit(
+                f"--feature-cols columns missing from buffer: {missing}"
+            )
+        pre_feature_cols = override
+        LOGGER.info(f"Using --feature-cols override: {len(pre_feature_cols)} state features")
+    else:
+        LOGGER.info(f"Using {len(pre_feature_cols)} state features")
 
     # Action vocab: deterministically sorted so one-hot positions are stable
     # across runs and match the SL vocabulary ordering convention. STOP is a

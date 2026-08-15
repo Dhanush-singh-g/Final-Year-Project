@@ -114,3 +114,46 @@ def split_by_column(rows: List[Dict[str, str]], split_col: str = "dataset_split"
             split = "train"
         out[split].append(r)
     return out
+
+
+# Scale-free state features: ratios of the absolute IR/size/block/function
+# counts. They are benchmark-size agnostic (a big program and a small program
+# with the same shape get the same values), so a Q-function trained on one
+# benchmark family does not depend on the absolute program size of the
+# training family. Derived per-state, so they are computable online at
+# inference for unseen benchmarks without any normalization statistics.
+SCALE_FREE_RATIO_COLS: List[str] = [
+    "pre_ir_per_func",
+    "pre_mem_frac",
+    "pre_size_per_inst",
+    "pre_blocks_per_func",
+    "pre_insts_per_block",
+]
+
+
+def derive_ratio_features(row: Dict[str, object], prefix: str = "pre_") -> Dict[str, float]:
+    """Compute the 5 scale-free ratio features from a row (or flattened state
+    dict) that carries ``{prefix}ir_instruction_count`` etc."""
+    def val(name: str) -> float:
+        try:
+            return float(row.get(f"{prefix}{name}", 0) or 0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    ir = val("ir_instruction_count")
+    funcs = val("total_functions")
+    mem = val("total_memory_instructions")
+    insts = val("total_instructions")
+    size = val("object_text_size_bytes")
+    blocks = val("total_basic_blocks")
+
+    def ratio(a: float, b: float) -> float:
+        return (a / b) if b else 0.0
+
+    return {
+        f"{prefix}ir_per_func": ratio(ir, funcs),
+        f"{prefix}mem_frac": ratio(mem, insts),
+        f"{prefix}size_per_inst": ratio(size, insts),
+        f"{prefix}blocks_per_func": ratio(blocks, funcs),
+        f"{prefix}insts_per_block": ratio(insts, blocks),
+    }

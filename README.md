@@ -349,6 +349,44 @@ separates the two claims: the fixed loop list remains the defensible general
 policy, and the learned pipeline's value is in *adapting to a seen
 benchmark's state distribution*, not transferring across families.
 
+**OOD representation ablation (Aug 2026): part of the failure was scale
+leakage; the rest is diversity.** The fitted-Q state is 62 features: 6
+absolute IR/size/block/function counts + 56 autophase proportions. Diagnostics
+before any change: (1) 43–50% of cBench feature values fall **outside the
+CHStone+csmith training range** for the 6 absolute counts (covariate shift);
+(2) a family classifier reaches 100% in-sample / 60% leave-one-benchmark-out
+vs 33% chance — features carry family signal; (3) the raw OOD Q-function does
+NOT extrapolate wildly on cBench (|z|>3 ≈ 0 for every action) — it
+confidently applies training-family patterns (e.g. Q(`-loop-distribute`)
+rises 0.07→0.17 on cBench). To distinguish scale leakage from insufficient
+diversity, the OOD agent was retrained on a **scale-free representation**:
+the 6 absolute counts replaced by 5 per-state ratios
+(`pre_ir_per_func`, `pre_mem_frac`, `pre_size_per_inst`, `pre_blocks_per_func`,
+`pre_insts_per_block` — `training/common.derive_ratio_features`), which drop
+the cBench out-of-range fraction to **0–7%** while keeping the autophase
+shape signal. Same CHStone+csmith → cBench evaluation
+(`models/reinforcement_runtime_ood_rel/`, `results/o3_wave_rloodrel_*.json`
++ `results/o3_runtime_rl_ood_rel_summary.json`):
+
+| arm | geo-mean vs `clang -O3` | wins/8 |
+|---|---|---|
+| SL + RL (OOD, raw 62 features) | 0.990× | 3 |
+| **SL + RL (OOD, scale-free 61)** | **1.006×** | **5** |
+
+The scale-free representation removed the degenerate `-loop-distribute`-
+everywhere behavior (per-benchmark picks now: `-loop-rotate` gsm,
+`-loop-unroll` dijkstra/bitcount, `-licm` bzip2/tiff-family, `-loop-deletion`
+stringsearch) and moved the OOD arm from below `clang -O3` to above it.
+But it does NOT achieve transfer: tiff2rgba's `-indvars` opportunity is still
+missed (0.997× vs 1.10–1.19× for fixed/in-dist arms) and the arm still trails
+the fixed list (1.006× vs 1.015–1.025×). Conclusion: **both causes are real —
+spurious program-size scale in the state representation contributed to the
+OOD failure and is now removed; insufficient training diversity remains the
+dominant bottleneck**, i.e. the state→pass→reward mapping itself is
+family-specific and needs cross-family data (or a fundamentally different
+policy/objective), not another feature tweak. The raw-feature OOD agent and
+its waves are preserved as the 0.990× baseline (`models/reinforcement_runtime_ood/`).
+
 ### Large-input runtime signal (full 8-benchmark sweep)
 
 `scripts/generate_large_input_dataset.py` builds each curated pass variant
