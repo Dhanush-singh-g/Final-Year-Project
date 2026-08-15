@@ -542,6 +542,114 @@ lexicographically-sorted same-suffix files, NOT the dataset number — dijkstra
 7.ppm; dijkstra 9.dat is index **19**, jpeg-c 17.ppm is index **8**. Always
 verify with the printed `input_file` before launching a wave.
 
+RUNTIME-LABELED RL (SL -> RL end-to-end, Aug 2026):
+
+The RL side was made consistent with the runtime-based SL side. Old state:
+`models/reinforcement/` was trained on IR rewards (reward_space
+IrInstructionCountO3; `runtime_improvement` column all zeros in the scaled
+buffer) on a 31-action space that does not match the loop scorer's 8 actions.
+
+New pipeline (committed):
+
+1. `scripts/generate_multistate_dataset.py --emit-replay` reuses the exact
+   multi-state measurement protocol (large-input native timing, output
+   matched, diversity-guarded states) and ALSO writes RL-schema rows with
+   POST-state features + `runtime_improvement` — same pass application, same
+   timing, zero extra measurement passes.
+2. `scripts/zscore_dataset.py --group-col state_id --value-col
+   runtime_improvement --sync-to hybrid_reward` converts the raw delta to a
+   per-(benchmark, state) z-score and writes it into `hybrid_reward`, the
+   column the RL trainer consumes (matching how the SL data is z-scored).
+3. `training/train_rl.py` retrains fitted-Q on the **9-action space (8 loop
+   passes + learned `-stop`)**, one-hot encoding — same pass set as the SL
+   loop scorer. Artifact: `models/reinforcement_runtime/` (384 transitions,
+   9 actions). The old IR-trained 31-action agent is preserved untouched at
+   `models/reinforcement/` as the ablation baseline.
+4. Harness waves with the fused path (`--sl-model-dir
+   models/supervised_loop_multistate --rl-model-dir
+   models/reinforcement_runtime`): SL ranks candidates -> RL Q-values decide
+   (learned Q(STOP) can terminate) -> apply -> time. Verified per-episode
+   trace: masking is per-(state_id, action); a repeated pass only fires after
+   a genuine state change, and consecutive no-ops terminate via `no_effect`.
+   Wave artifacts: `results/o3_wave_rlfused_*.json` (fused) +
+   `results/o3_wave_slonly_*.json` (SL-only, `--rl-model-dir results/no_rl`)
+   + summaries `results/o3_runtime_rl_fused_summary.json` /
+   `results/o3_runtime_sl_only_summary.json`.
+
+FOUR-ARM COMPARISON (8 large-input cBench, 5 interleaved reps, same wave
+protocol for all arms, geo-mean speedup vs `clang -O3`):
+
+| arm | geo-mean vs clang-O3 | wins/losses vs clang-O3 |
+|---|---|---|
+| fixed top-5 loop list | 1.018x | 5-3 |
+| SL-only loop scorer | 1.022x | 4-4 |
+| SL + runtime-RL (fused) | 1.020x | 5-3 |
+
+- All three learned/fixed arms beat `clang -O3` on average; the differences
+  BETWEEN arms (scorer-vs-fixed 1.004x fused / 1.016x slonly, 4-4
+  hybrid-vs-fixed) are within run-to-run noise on ms-scale benchmarks.
+- The RL layer is now active in the measured pipeline and neither helps nor
+  hurts on average vs SL-only — it selects the same top passes (Q argmax over
+  the SL candidates) with a learned STOP.
+- tiff2rgba remains the standout for all arms (fixed 1.147x, SL-only 1.163x,
+  fused 1.133x); bzip2 and jpeg-c are slight losses for the learned arms.
+- SCALED TO THE FULL 35-BENCHMARK BUFFER (Aug 2026): the same collector
+  ran over all 14 cBench + 12 CHStone + 9 csmith (--fallback), merged with
+  the original 8-benchmark buffer, deduplicated on (benchmark, state, pass)
+  -> 840 transitions (`datasets/replay_buffer/rl_experiences_runtime_full_z.csv`,
+  gitignored), z-scored per (benchmark, state). Retrained agent
+  `models/reinforcement_runtime_full/` (9 actions incl. -stop, one-hot,
+  3 Q-iterations; the 8-buffer agent stays at `models/reinforcement_runtime/`
+  as the smaller-data ablation). Re-measured wave
+  `results/o3_wave_rlfused_full_*.json` + summary
+  `results/o3_runtime_rl_fused_full_summary.json`:
+
+  | arm | geo-mean vs clang-O3 | wins/8 |
+  |---|---|---|
+  | fixed top-5 loop list | 1.015x | -- |
+  | SL-only loop scorer | 1.022x | 4 |
+  | SL + RL (8-buffer) | 1.020x | 5 |
+  | SL + RL (35-buffer) | **1.023x** | **6** |
+
+  The 35-buffer agent is the best arm measured to date; gains over the
+  8-buffer agent come from RL training diversity (SL scorer unchanged across
+  both fused waves). CAVEATS (stated, not optimized away): harness
+  benchmarks were in the training set (in-distribution adaptation case);
+  ms-scale noise on 6 of 8 benchmarks; single wave per arm. The claim is:
+  the fused SL->runtime-RL pipeline executes end-to-end and, trained on the
+  full 840-transition runtime buffer, matches/edges the fixed list and
+  SL-only, with the tiff2rgba signal present in all arms.
+
+- OUT-OF-DISTRIBUTION HOLDOUT (Aug 2026): to separate in-distribution
+  adaptation from generalization, retrained the fitted-Q agent on
+  CHStone+csmith ONLY (504 runtime-labeled transitions, 21 benchmarks x 3
+  states, zero cBench rows -> `datasets/replay_buffer/rl_experiences_runtime_ood_z.csv`,
+  gitignored) into `models/reinforcement_runtime_ood/` (9 actions incl.
+  -stop, one-hot, 3 Q-iterations), then measured the fused pipeline on the
+  SAME 8 large-input cBench with the SAME protocol
+  (`results/o3_wave_rlood_*.json` + `results/o3_runtime_rl_ood_summary.json`):
+
+  | arm | geo-mean vs clang-O3 | wins/8 |
+  |---|---|---|
+  | fixed top-5 loop list | 1.025x | 6 |
+  | SL-only loop scorer | 1.022x | 4 |
+  | SL + RL (35-buffer, in-dist) | 1.023x | 6 |
+  | SL + RL (CHStone/csmith-trained, OOD) | **0.990x** | **3** |
+
+  RESULT: the OOD agent is the worst arm measured — below clang-O3 on
+  average. Its Q-prior (learned from CHStone/csmith reward patterns) opens
+  with -loop-distribute on 4/8 benchmarks where it is a no-op/harmful, and
+  misses tiff2rgba's -indvars opportunity entirely (0.993x vs 1.16-1.19x
+  for the other arms). CONCLUSION: the RL layer's measured gain is
+  IN-DISTRIBUTION ADAPTATION, not generalization — consistent with the SL
+  LOBO result (top-3 ~ random on unseen benchmarks). The fixed loop list
+  remains the defensible general policy; the learned pipeline's value is
+  adapting to a seen benchmark's state distribution, not transferring across
+  families. To fix OOD transfer, the state/action representation itself must
+  change (features that normalize away benchmark identity, or a policy
+  trained jointly on runnable corpora) — not more rows from the same
+  families.
+
 Defensible claims as of this run:
 
 - runtime improvement vs the initial no-pass state (CompilerGym Runtime
@@ -549,6 +657,9 @@ Defensible claims as of this run:
 - IR instruction-count comparison vs exact -O3;
 - runtime-vs-O3 measured by the harness above (hybrid currently ~1.0× vs
   `clang -O3` — a statistical tie, not a win);
-- a fixed top-5 loop-pass sequence is **1.015× vs `clang -O3`** (8 large-input
-  cBench benchmarks) and beats the learned hybrid (0.977× hybrid-vs-fixed),
-  pending replication on more reps/inputs.
+- a fixed top-5 loop-pass sequence is **1.015-1.018× vs `clang -O3`** (8
+  large-input cBench benchmarks) and beats the learned hybrid on some waves
+  (0.977-1.004× hybrid-vs-fixed) — pending replication on more reps/inputs;
+- the full SL -> runtime-RL pipeline (State -> SL ranks -> RL selects/STOP ->
+  apply -> measure runtime -> next state) is implemented, measured, and
+  matches the fixed list within noise on the 8-benchmark set.

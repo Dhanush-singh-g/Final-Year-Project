@@ -14,10 +14,13 @@ import hashlib
 
 from scripts.generate_multistate_dataset import (
     LOOP_PASSES,
+    REPLAY_FIELDS,
     STATE_BUILDER_PASSES,
     STATE_DIVERSITY_THRESHOLD,
     _feature_distance,
+    _replay_episode_id,
     _state_signature,
+    build_replay_row,
 )
 
 
@@ -29,6 +32,60 @@ def test_state_signature_is_deterministic_and_distinct():
     # 16 hex chars, derived from sha256 of the bitcode bytes.
     assert len(_state_signature(a)) == 16
     assert _state_signature(a) == hashlib.sha256(a).hexdigest()[:16]
+
+
+def _replay_feats(ir):
+    return {
+        "pre_ir_instruction_count": str(ir),
+        "pre_object_text_size_bytes": "100",
+        "pre_total_basic_blocks": "3",
+        "pre_total_functions": "1",
+        "pre_total_instructions": str(ir),
+        "pre_total_memory_instructions": "2",
+        "pre_autophase_TotalInsts": str(ir),
+    }
+
+
+def test_replay_episode_id_is_deterministic_per_state():
+    a = _replay_episode_id("benchmark://cbench-v1/gsm", "sig1")
+    b = _replay_episode_id("benchmark://cbench-v1/gsm", "sig1")
+    c = _replay_episode_id("benchmark://cbench-v1/gsm", "sig2")
+    assert a == b
+    assert a != c
+    assert len(a) == 24
+
+
+def test_replay_row_schema_and_relabeling():
+    row = build_replay_row(
+        "benchmark://cbench-v1/gsm",
+        state_index=1,
+        step_index=2,
+        pass_flag="-licm",
+        state_id="sig_pre",
+        post_state_id="sig_post",
+        state_features=_replay_feats(100),
+        post_features=_replay_feats(90),
+        state_ir=100,
+        post_ir=90,
+        state_med=1.0,
+        post_med=0.9,
+        improvement=10.0,
+    )
+    # Every non-autophase schema field is present (autophase columns are
+    # filled by the real extractor; the synthetic fixture provides one).
+    core_fields = [f for f in REPLAY_FIELDS if "autophase" not in f]
+    missing = [f for f in core_fields if f not in row]
+    assert not missing, missing
+    # Post features are relabeled copies of the post-state pre_* row.
+    assert row["post_ir_instruction_count"] == "90"
+    assert row["post_autophase_TotalInsts"] == "90"
+    assert row["pre_autophase_TotalInsts"] == "100"
+    # One-step episode semantics: done, raw runtime reward, ids wired.
+    assert row["done"] == "True"
+    assert row["hybrid_reward"] == "10.000000"
+    assert row["pre_state_id"] == "sig_pre"
+    assert row["post_state_id"] == "sig_post"
+    assert row["episode_id"] == _replay_episode_id("benchmark://cbench-v1/gsm", "sig_pre")
 
 
 def test_loop_passes_are_not_state_builders():

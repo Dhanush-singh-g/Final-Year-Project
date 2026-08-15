@@ -1,0 +1,127 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/bitcount",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out 1125000",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 857,
+    "pass_sequence": [
+      "-indvars"
+    ],
+    "final_ir": 857,
+    "o3_ir_instruction_count": 607,
+    "hybrid_vs_o3_ir_pct": -41.18616144975288,
+    "inputs": [
+      {
+        "input_file": null,
+        "input_index": null,
+        "input_candidates": 0,
+        "o3": {
+          "n": 5,
+          "median_sec": 0.029687698930501938,
+          "mean_sec": 0.029875942319631577,
+          "std_sec": 0.0007972157760979245,
+          "min_sec": 0.028915785253047943,
+          "max_sec": 0.030696723610162735,
+          "ci95_lo_sec": 0.028915785253047943,
+          "ci95_hi_sec": 0.030696723610162735
+        },
+        "clang_o3": {
+          "n": 5,
+          "median_sec": 0.031657516956329346,
+          "mean_sec": 0.03180591836571693,
+          "std_sec": 0.0002496414550702521,
+          "min_sec": 0.031647391617298126,
+          "max_sec": 0.03222660720348358,
+          "ci95_lo_sec": 0.031647391617298126,
+          "ci95_hi_sec": 0.03222660720348358
+        },
+        "hybrid": {
+          "n": 5,
+          "median_sec": 0.03179381042718887,
+          "mean_sec": 0.031884294003248215,
+          "std_sec": 0.0005150004406975939,
+          "min_sec": 0.031246744096279144,
+          "max_sec": 0.03251755237579346,
+          "ci95_lo_sec": 0.031246744096279144,
+          "ci95_hi_sec": 0.03251755237579346
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 0.9337571851757074,
+        "speedup_hybrid_vs_clang_o3": 0.9957132074127556,
+        "fixed": {
+          "n": 5,
+          "median_sec": 0.032980360090732574,
+          "mean_sec": 0.034628094732761384,
+          "std_sec": 0.003780932446205544,
+          "min_sec": 0.031747352331876755,
+          "max_sec": 0.04099956899881363,
+          "ci95_lo_sec": 0.031747352331876755,
+          "ci95_hi_sec": 0.04099956899881363
+        },
+        "speedup_fixed_vs_o3": 0.9001629711994603,
+        "speedup_fixed_vs_clang_o3": 0.9598899729789504,
+        "speedup_hybrid_vs_fixed": 1.0373201465191164
+      }
+    ],
+    "o3": {
+      "n": 5,
+      "median_sec": 0.029687698930501938,
+      "mean_sec": 0.029875942319631577,
+      "std_sec": 0.0007972157760979245,
+      "min_sec": 0.028915785253047943,
+      "max_sec": 0.030696723610162735,
+      "ci95_lo_sec": 0.028915785253047943,
+      "ci95_hi_sec": 0.030696723610162735
+    },
+    "clang_o3": {
+      "n": 5,
+      "median_sec": 0.031657516956329346,
+      "mean_sec": 0.03180591836571693,
+      "std_sec": 0.0002496414550702521,
+      "min_sec": 0.031647391617298126,
+      "max_sec": 0.03222660720348358,
+      "ci95_lo_sec": 0.031647391617298126,
+      "ci95_hi_sec": 0.03222660720348358
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.03179381042718887,
+      "mean_sec": 0.031884294003248215,
+      "std_sec": 0.0005150004406975939,
+      "min_sec": 0.031246744096279144,
+      "max_sec": 0.03251755237579346,
+      "ci95_lo_sec": 0.031246744096279144,
+      "ci95_hi_sec": 0.03251755237579346
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 0.9337571851757074,
+    "speedup_hybrid_vs_clang_o3": 0.9957132074127556,
+    "fixed_pass_sequence": [
+      "-loop-unroll",
+      "-loop-vectorize",
+      "-loop-deletion",
+      "-argpromotion",
+      "-globaldce"
+    ],
+    "fixed_final_ir": 857,
+    "fixed_vs_o3_ir_pct": 41.18616144975288,
+    "fixed": {
+      "n": 5,
+      "median_sec": 0.032980360090732574,
+      "mean_sec": 0.034628094732761384,
+      "std_sec": 0.003780932446205544,
+      "min_sec": 0.031747352331876755,
+      "max_sec": 0.04099956899881363,
+      "ci95_lo_sec": 0.031747352331876755,
+      "ci95_hi_sec": 0.04099956899881363
+    },
+    "speedup_fixed_vs_o3": 0.9001629711994603,
+    "speedup_fixed_vs_clang_o3": 0.9598899729789504,
+    "speedup_hybrid_vs_fixed": 1.0373201465191164,
+    "elapsed_sec": 2.51
+  }
+]
