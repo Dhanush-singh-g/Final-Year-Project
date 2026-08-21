@@ -1,21 +1,31 @@
+# NeuroCompiler — Python 3.10+
+#
+# IMPORTANT: CompilerGym 0.2.5 depends on gym<=0.21, which has broken
+# metadata in pip>=24.1. If `pip install -r requirements.txt` fails with
+# "gym has invalid metadata", either:
+#   (a) pin pip:  pip install "pip<24.1" then retry, OR
+#   (b) install with legacy resolver: pip install -r requirements.txt --use-deprecated=legacy-resolver
+#
+# NumPy must stay <2 because CompilerGym uses np.NINF (removed in NumPy 2.0).
+
 # Core
-compiler_gym==0.2.5
-numpy>=1.24
+numpy<2,>=1.24
 pandas>=2.0
 scikit-learn>=1.3
 joblib>=1.3
 tqdm
 
-# Optional but recommended for SL
+# CompilerGym (requires pip<24.1 or legacy resolver for gym metadata)
+compiler_gym==0.2.5
+
+# Testing
+pytest
+
+# Evaluation / plotting
+matplotlib
+seaborn
+
+# Optional — uncomment if needed
 # lightgbm
 # xgboost
 # catboost
-
-# Optional for RL
-# torch -- for DQN PPO custom
-# stable-baselines3 -- for PPO
-# gymnasium
-
-# Evaluation
-matplotlib
-seaborn  # optional for plots
