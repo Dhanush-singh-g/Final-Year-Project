@@ -1,0 +1,482 @@
+{
+  "benchmarks_evaluated": 9,
+  "wins": 5,
+  "losses": 4,
+  "ties": 0,
+  "wins_vs_clang_o3": 4,
+  "losses_vs_clang_o3": 5,
+  "ties_vs_clang_o3": 0,
+  "geo_mean_speedup": 0.9636564661919736,
+  "geo_mean_speedup_vs_clang_o3": 0.9960233498668885,
+  "geo_mean_log2_speedup": -0.053409163008380625,
+  "mean_speedup": 0.9681354887165876,
+  "rows": [
+    {
+      "benchmark_uri": "generator://csmith-v0/12",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 1.0462648057938098,
+      "log2_speedup": 0.06524803863623517,
+      "speedup_hybrid_vs_clang_o3": 0.9509000527977844,
+      "log2_speedup_vs_clang_o3": -0.07263438462240479,
+      "o3_median_sec": 0.0019562840461730957,
+      "clang_o3_median_sec": 0.0017779730260372162,
+      "hybrid_median_sec": 0.0018697790801525116,
+      "o3_ci": [
+        0.00179344043135643,
+        0.0027729496359825134
+      ],
+      "clang_o3_ci": [
+        0.0017479807138442993,
+        0.0051033273339271545
+      ],
+      "hybrid_ci": [
+        0.0016686953604221344,
+        0.001982215791940689
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-licm",
+        "-loop-distribute"
+      ],
+      "hybrid_vs_o3_ir_pct": -7.909090909090909,
+      "fixed_median_sec": 0.001878105103969574,
+      "fixed_ci": [
+        0.001730121672153473,
+        0.0020690113306045532
+      ],
+      "speedup_fixed_vs_o3": 1.0416265000495883,
+      "speedup_fixed_vs_clang_o3": 0.9466845184964793,
+      "speedup_hybrid_vs_fixed": 1.004452945219808,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 7.363636363636363
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/17",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 0.866965115617353,
+      "log2_speedup": -0.2059541505041032,
+      "speedup_hybrid_vs_clang_o3": 1.0182502797958912,
+      "log2_speedup_vs_clang_o3": 0.026092210766654845,
+      "o3_median_sec": 0.0017025992274284363,
+      "clang_o3_median_sec": 0.0019997023046016693,
+      "hybrid_median_sec": 0.0019638612866401672,
+      "o3_ci": [
+        0.0016604624688625336,
+        0.0022513307631015778
+      ],
+      "clang_o3_ci": [
+        0.0016605816781520844,
+        0.0025796666741371155
+      ],
+      "hybrid_ci": [
+        0.001664619892835617,
+        0.004413440823554993
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-loop-unroll",
+        "-loop-unroll"
+      ],
+      "hybrid_vs_o3_ir_pct": -98.70967741935483,
+      "fixed_median_sec": 0.0016842558979988098,
+      "fixed_ci": [
+        0.0015213005244731903,
+        0.0022235065698623657
+      ],
+      "speedup_fixed_vs_o3": 1.01089105844986,
+      "speedup_fixed_vs_clang_o3": 1.1872912583994302,
+      "speedup_hybrid_vs_fixed": 0.857624675152228,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 98.70967741935483
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/24",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 0.8824642529249307,
+      "log2_speedup": -0.1803902563590263,
+      "speedup_hybrid_vs_clang_o3": 1.1772273321378686,
+      "log2_speedup_vs_clang_o3": 0.235392943383133,
+      "o3_median_sec": 0.0017581172287464142,
+      "clang_o3_median_sec": 0.002345368266105652,
+      "hybrid_median_sec": 0.001992281526327133,
+      "o3_ci": [
+        0.0015497393906116486,
+        0.0021861381828784943
+      ],
+      "clang_o3_ci": [
+        0.0015672706067562103,
+        0.006960660219192505
+      ],
+      "hybrid_ci": [
+        0.0017000921070575714,
+        0.0024657249450683594
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-loop-unroll"
+      ],
+      "hybrid_vs_o3_ir_pct": -211.35265700483092,
+      "fixed_median_sec": 0.0017255805432796478,
+      "fixed_ci": [
+        0.001521330326795578,
+        0.002140440046787262
+      ],
+      "speedup_fixed_vs_o3": 1.0188555008883717,
+      "speedup_fixed_vs_clang_o3": 1.359176350961881,
+      "speedup_hybrid_vs_fixed": 0.866132883569341,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 211.35265700483092
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/26",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 1.053627397531843,
+      "log2_speedup": 0.07536476567424047,
+      "speedup_hybrid_vs_clang_o3": 0.9927699856271993,
+      "log2_speedup_vs_clang_o3": -0.01046859569765426,
+      "o3_median_sec": 0.0019799023866653442,
+      "clang_o3_median_sec": 0.0018655434250831604,
+      "hybrid_median_sec": 0.001879129558801651,
+      "o3_ci": [
+        0.0017058290541172028,
+        0.0021881982684135437
+      ],
+      "clang_o3_ci": [
+        0.0017044730484485626,
+        0.001995030790567398
+      ],
+      "hybrid_ci": [
+        0.0017859600484371185,
+        0.002006731927394867
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-licm",
+        "-licm"
+      ],
+      "hybrid_vs_o3_ir_pct": -27.963800904977376,
+      "fixed_median_sec": 0.0018160156905651093,
+      "fixed_ci": [
+        0.001730363816022873,
+        0.002183757722377777
+      ],
+      "speedup_fixed_vs_o3": 1.0902451982940944,
+      "speedup_fixed_vs_clang_o3": 1.0272727459213962,
+      "speedup_hybrid_vs_fixed": 0.9664132428012093,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 27.933634992458522
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/29",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 0.8067233736346542,
+      "log2_speedup": -0.3098540383625237,
+      "speedup_hybrid_vs_clang_o3": 0.8311400680212074,
+      "log2_speedup_vs_clang_o3": -0.2668364669757045,
+      "o3_median_sec": 0.00177079439163208,
+      "clang_o3_median_sec": 0.0018243901431560516,
+      "hybrid_median_sec": 0.0021950453519821167,
+      "o3_ci": [
+        0.0017127208411693573,
+        0.0019306614995002747
+      ],
+      "clang_o3_ci": [
+        0.0017422474920749664,
+        0.004126865416765213
+      ],
+      "hybrid_ci": [
+        0.001587100327014923,
+        0.0026821456849575043
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-licm",
+        "-licm",
+        "-licm",
+        "-licm"
+      ],
+      "hybrid_vs_o3_ir_pct": -351.5527950310559,
+      "fixed_median_sec": 0.0018168240785598755,
+      "fixed_ci": [
+        0.0016136802732944489,
+        0.002280302345752716
+      ],
+      "speedup_fixed_vs_o3": 0.9746647529218782,
+      "speedup_fixed_vs_clang_o3": 1.0041644453557514,
+      "speedup_hybrid_vs_fixed": 0.8276931849810261,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 356.62525879917183
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/4",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 0.9399666491197699,
+      "log2_speedup": -0.08931852533441924,
+      "speedup_hybrid_vs_clang_o3": 0.9404877566233647,
+      "log2_speedup_vs_clang_o3": -0.08851893218485413,
+      "o3_median_sec": 0.0019822902977466583,
+      "clang_o3_median_sec": 0.0019833892583847046,
+      "hybrid_median_sec": 0.0021088942885398865,
+      "o3_ci": [
+        0.0019086338579654694,
+        0.002799302339553833
+      ],
+      "clang_o3_ci": [
+        0.0018838457763195038,
+        0.0022268109023571014
+      ],
+      "hybrid_ci": [
+        0.0019193589687347412,
+        0.00584835559129715
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-indvars",
+        "-indvars"
+      ],
+      "hybrid_vs_o3_ir_pct": -141.3625304136253,
+      "fixed_median_sec": 0.0020230337977409363,
+      "fixed_ci": [
+        0.0018902309238910675,
+        0.006435830146074295
+      ],
+      "speedup_fixed_vs_o3": 0.9798601980650175,
+      "speedup_fixed_vs_clang_o3": 0.9804034221274496,
+      "speedup_hybrid_vs_fixed": 0.9592864890072814,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 141.3625304136253
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/6",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 1.0796552460643525,
+      "log2_speedup": 0.11057070665232654,
+      "speedup_hybrid_vs_clang_o3": 1.0410316652636957,
+      "log2_speedup_vs_clang_o3": 0.05801395204186031,
+      "o3_median_sec": 0.001920752227306366,
+      "clang_o3_median_sec": 0.001852039247751236,
+      "hybrid_median_sec": 0.0017790421843528748,
+      "o3_ci": [
+        0.0017177388072013855,
+        0.0046290867030620575
+      ],
+      "clang_o3_ci": [
+        0.0017044954001903534,
+        0.0021948441863059998
+      ],
+      "hybrid_ci": [
+        0.0017202161252498627,
+        0.005356643348932266
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-licm",
+        "-loop-unroll",
+        "-loop-unswitch"
+      ],
+      "hybrid_vs_o3_ir_pct": -84.4566712517194,
+      "fixed_median_sec": 0.0018356330692768097,
+      "fixed_ci": [
+        0.001745171844959259,
+        0.002963535487651825
+      ],
+      "speedup_fixed_vs_o3": 1.0463704644758285,
+      "speedup_fixed_vs_clang_o3": 1.008937613267607,
+      "speedup_hybrid_vs_fixed": 1.031809748763501,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 71.38927097661623
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/8",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 1.014659793814433,
+      "log2_speedup": 0.02099608598158789,
+      "speedup_hybrid_vs_clang_o3": 0.9690865979381443,
+      "log2_speedup_vs_clang_o3": -0.0453025037220804,
+      "o3_median_sec": 0.0018332526087760925,
+      "clang_o3_median_sec": 0.0017509125173091888,
+      "hybrid_median_sec": 0.0018067657947540283,
+      "o3_ci": [
+        0.0017496384680271149,
+        0.0024278350174427032
+      ],
+      "clang_o3_ci": [
+        0.001740243285894394,
+        0.002124398946762085
+      ],
+      "hybrid_ci": [
+        0.001719210296869278,
+        0.0018478557467460632
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-licm",
+        "-loop-unswitch"
+      ],
+      "hybrid_vs_o3_ir_pct": -155.14851485148515,
+      "fixed_median_sec": 0.0017657987773418427,
+      "fixed_ci": [
+        0.001729339361190796,
+        0.0020377300679683685
+      ],
+      "speedup_fixed_vs_o3": 1.0382001801676362,
+      "speedup_fixed_vs_clang_o3": 0.9915696736096608,
+      "speedup_hybrid_vs_fixed": 0.9773257731958763,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 154.05940594059405
+    },
+    {
+      "benchmark_uri": "generator://csmith-v0/9",
+      "suite": "csmith-v0",
+      "protocol": "native",
+      "codegen": "-O3",
+      "speedup_hybrid_vs_o3": 1.0228927639481422,
+      "log2_speedup": 0.03265490654025672,
+      "speedup_hybrid_vs_clang_o3": 1.0811187507766227,
+      "log2_speedup_vs_clang_o3": 0.11252499832434663,
+      "o3_median_sec": 0.0018399730324745178,
+      "clang_o3_median_sec": 0.0019447095692157745,
+      "hybrid_median_sec": 0.0017987936735153198,
+      "o3_ci": [
+        0.0018154717981815338,
+        0.005595669150352478
+      ],
+      "clang_o3_ci": [
+        0.0017677322030067444,
+        0.0025371648371219635
+      ],
+      "hybrid_ci": [
+        0.0017587393522262573,
+        0.0021483637392520905
+      ],
+      "outputs_match": true,
+      "input_file": null,
+      "inputs_count": 1,
+      "pass_sequence": [
+        "-loop-unroll",
+        "-loop-unroll"
+      ],
+      "hybrid_vs_o3_ir_pct": -1055.9782608695652,
+      "fixed_median_sec": 0.001830175518989563,
+      "fixed_ci": [
+        0.0017379187047481537,
+        0.0019838735461235046
+      ],
+      "speedup_fixed_vs_o3": 1.0053533190578159,
+      "speedup_fixed_vs_clang_o3": 1.0625809104306267,
+      "speedup_hybrid_vs_fixed": 1.017446050615085,
+      "fixed_pass_sequence": [
+        "-loop-unroll",
+        "-loop-vectorize",
+        "-loop-deletion",
+        "-argpromotion",
+        "-globaldce"
+      ],
+      "fixed_vs_o3_ir_pct": 1055.9782608695652
+    }
+  ],
+  "fixed_benchmarks_evaluated": 9,
+  "wins_fixed_vs_o3": 7,
+  "losses_fixed_vs_o3": 2,
+  "geo_mean_speedup_fixed_vs_o3": 1.0223399056092952,
+  "wins_fixed_vs_clang_o3": 6,
+  "losses_fixed_vs_clang_o3": 3,
+  "geo_mean_speedup_fixed_vs_clang_o3": 1.0566778236973033,
+  "wins_hybrid_vs_fixed": 3,
+  "losses_hybrid_vs_fixed": 6,
+  "ties_hybrid_vs_fixed": 0,
+  "geo_mean_speedup_hybrid_vs_fixed": 0.9425988958316682,
+  "wilcoxon_signed_rank": {
+    "statistic": 16.0,
+    "p_value": 0.787109375,
+    "alternative": "hybrid faster than opt -O3 (on log2 speedups)"
+  },
+  "wilcoxon_signed_rank_vs_clang_o3": {
+    "statistic": 21.0,
+    "p_value": 0.58984375,
+    "alternative": "hybrid faster than clang -O3 (on log2 speedups)"
+  },
+  "total_rows": 9,
+  "failed": [],
+  "skipped": []
+}
