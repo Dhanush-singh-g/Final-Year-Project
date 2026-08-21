@@ -187,7 +187,9 @@ def load_sl_model(model_dir: Path):
                 model = pickle.load(f)
             LOGGER.info(f"Loaded SL model {model_path_pkl}")
     except Exception as e:
-        LOGGER.warning(f"Failed to load SL model: {e}")
+        import traceback
+        LOGGER.error(f"Failed to load SL model from {model_dir}: {e}")
+        traceback.print_exc()
 
     feature_meta = {}
     try:
