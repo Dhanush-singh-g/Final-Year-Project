@@ -1,0 +1,127 @@
+[
+  {
+    "benchmark_uri": "benchmark://cbench-v1/gsm",
+    "suite": "cbench-v1",
+    "protocol": "native",
+    "status": "ok",
+    "run_cmd": "./a.out -fps -c /home/daytona/.local/share/compiler_gym/llvm-v0/cbench-v1-runtime-data/runtime_data/telecom_gsm_data/1.au",
+    "build_cmd": "'$CC' '$IN' -isystem /usr/include/c++/11 -isystem /usr/include/x86_64-linux-gnu/c++/11 -isystem /usr/include/c++/11/backward -isystem /usr/lib/gcc/x86_64-linux-gnu/11/include -isystem /usr/local/include -isystem /usr/include/x86_64-linux-gnu -isystem /usr/include",
+    "codegen": "-O3",
+    "o0_ir_instruction_count": 14902,
+    "pass_sequence": [
+      "-loop-distribute"
+    ],
+    "final_ir": 14902,
+    "o3_ir_instruction_count": 10028,
+    "hybrid_vs_o3_ir_pct": -48.60390905464699,
+    "inputs": [
+      {
+        "input_file": "/home/daytona/.local/share/compiler_gym/llvm-v0/cbench-v1-runtime-data/runtime_data/telecom_gsm_data/2.au",
+        "input_index": 11,
+        "input_candidates": 20,
+        "o3": {
+          "n": 5,
+          "median_sec": 0.6276012458838522,
+          "mean_sec": 0.6219190533272922,
+          "std_sec": 0.013144213251336733,
+          "min_sec": 0.6046041699592024,
+          "max_sec": 0.6367948178667575,
+          "ci95_lo_sec": 0.6046041699592024,
+          "ci95_hi_sec": 0.6367948178667575
+        },
+        "clang_o3": {
+          "n": 5,
+          "median_sec": 0.6291656231041998,
+          "mean_sec": 0.6269915846642107,
+          "std_sec": 0.009852404910106978,
+          "min_sec": 0.6106519510503858,
+          "max_sec": 0.6364172571338713,
+          "ci95_lo_sec": 0.6106519510503858,
+          "ci95_hi_sec": 0.6364172571338713
+        },
+        "hybrid": {
+          "n": 5,
+          "median_sec": 0.6269294370431453,
+          "mean_sec": 0.6243767307605594,
+          "std_sec": 0.007454023557619027,
+          "min_sec": 0.6133693458978087,
+          "max_sec": 0.6329772928729653,
+          "ci95_lo_sec": 0.6133693458978087,
+          "ci95_hi_sec": 0.6329772928729653
+        },
+        "outputs_match": true,
+        "speedup_hybrid_vs_o3": 1.0010715860526114,
+        "speedup_hybrid_vs_clang_o3": 1.0035668863653957,
+        "fixed": {
+          "n": 5,
+          "median_sec": 0.6210676981136203,
+          "mean_sec": 0.6193387496750802,
+          "std_sec": 0.009154833099777769,
+          "min_sec": 0.6091264740098268,
+          "max_sec": 0.6318094120360911,
+          "ci95_lo_sec": 0.6091264740098268,
+          "ci95_hi_sec": 0.6318094120360911
+        },
+        "speedup_fixed_vs_o3": 1.0105198640825732,
+        "speedup_fixed_vs_clang_o3": 1.0130387154495,
+        "speedup_hybrid_vs_fixed": 0.9906500818382825
+      }
+    ],
+    "o3": {
+      "n": 5,
+      "median_sec": 0.6276012458838522,
+      "mean_sec": 0.6219190533272922,
+      "std_sec": 0.013144213251336733,
+      "min_sec": 0.6046041699592024,
+      "max_sec": 0.6367948178667575,
+      "ci95_lo_sec": 0.6046041699592024,
+      "ci95_hi_sec": 0.6367948178667575
+    },
+    "clang_o3": {
+      "n": 5,
+      "median_sec": 0.6291656231041998,
+      "mean_sec": 0.6269915846642107,
+      "std_sec": 0.009852404910106978,
+      "min_sec": 0.6106519510503858,
+      "max_sec": 0.6364172571338713,
+      "ci95_lo_sec": 0.6106519510503858,
+      "ci95_hi_sec": 0.6364172571338713
+    },
+    "hybrid": {
+      "n": 5,
+      "median_sec": 0.6269294370431453,
+      "mean_sec": 0.6243767307605594,
+      "std_sec": 0.007454023557619027,
+      "min_sec": 0.6133693458978087,
+      "max_sec": 0.6329772928729653,
+      "ci95_lo_sec": 0.6133693458978087,
+      "ci95_hi_sec": 0.6329772928729653
+    },
+    "outputs_match": true,
+    "speedup_hybrid_vs_o3": 1.0010715860526114,
+    "speedup_hybrid_vs_clang_o3": 1.0035668863653957,
+    "fixed_pass_sequence": [
+      "-loop-unroll",
+      "-loop-vectorize",
+      "-loop-deletion",
+      "-argpromotion",
+      "-globaldce"
+    ],
+    "fixed_final_ir": 14903,
+    "fixed_vs_o3_ir_pct": 48.613881132828084,
+    "fixed": {
+      "n": 5,
+      "median_sec": 0.6210676981136203,
+      "mean_sec": 0.6193387496750802,
+      "std_sec": 0.009154833099777769,
+      "min_sec": 0.6091264740098268,
+      "max_sec": 0.6318094120360911,
+      "ci95_lo_sec": 0.6091264740098268,
+      "ci95_hi_sec": 0.6318094120360911
+    },
+    "speedup_fixed_vs_o3": 1.0105198640825732,
+    "speedup_fixed_vs_clang_o3": 1.0130387154495,
+    "speedup_hybrid_vs_fixed": 0.9906500818382825,
+    "elapsed_sec": 21.5
+  }
+]

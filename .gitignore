@@ -1,22 +1,35 @@
-# Shell scripts
-*.sh
-
-# Python cache
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.egg-info/
+dist/
+build/
 
 # Pytest cache
 .pytest_cache/
 
-# Logs (transient; commit results, not logs)
+# Logs
 *.log
 
-# Dataset directories
+# Environment files (managed via Keys UI)
+.env
+.env.local
+.env.*.local
+
+# Datasets (large; managed separately, regenerated from scripts)
 datasets/raw/
 datasets/processed/
+datasets/replay_buffer/
 
-# O3 runtime harness build artifacts (compiled binaries + run outputs)
+# Compiled binaries and build artifacts
+*.o
+*.a
+*.so
+*.bc
+*.ll
+
+# CompilerGym runtime build artifacts
 results/o3_harness_work/
 results/o3_harness_work_ood/
 results/o3_harness_work_oodrel/
@@ -27,6 +40,17 @@ results/multistate_work/
 results/no_rl/
 results/msrl_episode_work/
 results/msrl_pilot_work/
+results/rf_pilot_work/
 
-# Windows "downloaded file" metadata sidecars (NTFS ADS materialized as files)
+# OS / editor
+.DS_Store
+Thumbs.db
 *Zone.Identifier
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temporary
+*.patch
